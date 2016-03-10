@@ -1,25 +1,106 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="oH4-Zq-DBk">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--Navigation Controller-->
+        <scene sceneID="6Dd-zf-1To">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aQd-S3-lMg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController id="oH4-Zq-DBk" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="oRu-ng-Q1k">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="jp1-ps-NK2" kind="relationship" relationship="rootViewController" id="ok7-Kf-PdI"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="-1251" y="-1045"/>
+        </scene>
+        <!--视频播放-->
+        <scene sceneID="BX6-00-Kbf">
+            <objects>
+                <viewController id="jp1-ps-NK2" customClass="ViewController" customModule="SwiftPlayer" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                        <viewControllerLayoutGuide type="top" id="ETN-N7-G64"/>
+                        <viewControllerLayoutGuide type="bottom" id="MQS-ZS-U1o"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                    <view key="view" contentMode="scaleToFill" id="AiL-AG-UNW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="48" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="ZdQ-GV-mQp">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="netVideoCell" id="mCd-3I-xWY" userLabel="videoListCell">
+                                        <rect key="frame" x="0.0" y="113.5" width="600" height="48"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mCd-3I-xWY" id="esV-oA-4jL">
+                                            <rect key="frame" x="0.0" y="0.0" width="567" height="47.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="点击加载网络视频" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iNJ-OY-Ox6">
+                                                    <rect key="frame" x="18" y="15" width="120" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="iNJ-OY-Ox6" firstAttribute="leading" secondItem="esV-oA-4jL" secondAttribute="leadingMargin" constant="10" id="T4a-Wm-78C"/>
+                                                <constraint firstItem="iNJ-OY-Ox6" firstAttribute="centerY" secondItem="esV-oA-4jL" secondAttribute="centerY" id="iDI-hZ-g9w"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="localVideoCell" id="ipo-hr-cvQ" userLabel="videoListCell">
+                                        <rect key="frame" x="0.0" y="161.5" width="600" height="48"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ipo-hr-cvQ" id="xtZ-6i-uYM">
+                                            <rect key="frame" x="0.0" y="0.0" width="567" height="47.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="点击加载本地视频" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2x-YZ-Exv">
+                                                    <rect key="frame" x="18" y="15" width="120" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="A2x-YZ-Exv" firstAttribute="centerY" secondItem="xtZ-6i-uYM" secondAttribute="centerY" id="XFp-Jd-Agn"/>
+                                                <constraint firstItem="A2x-YZ-Exv" firstAttribute="leading" secondItem="xtZ-6i-uYM" secondAttribute="leadingMargin" constant="10" id="vvx-5i-gI9"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="jp1-ps-NK2" id="JcK-Cm-pZ1"/>
+                                    <outlet property="delegate" destination="jp1-ps-NK2" id="vy8-v6-ZAi"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ZdQ-GV-mQp" firstAttribute="leading" secondItem="AiL-AG-UNW" secondAttribute="leading" id="O0O-sg-G4l"/>
+                            <constraint firstAttribute="trailing" secondItem="ZdQ-GV-mQp" secondAttribute="trailing" id="UI8-wK-ddS"/>
+                            <constraint firstItem="MQS-ZS-U1o" firstAttribute="top" secondItem="ZdQ-GV-mQp" secondAttribute="bottom" id="eXV-xx-pRJ"/>
+                            <constraint firstItem="ZdQ-GV-mQp" firstAttribute="top" secondItem="ETN-N7-G64" secondAttribute="bottom" constant="-64" id="h2i-bn-VlE"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="视频播放" id="Gyp-62-4Fu"/>
+                    <connections>
+                        <outlet property="tableView" destination="ZdQ-GV-mQp" id="Ot8-ng-zgC"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bet-kH-fA0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-448" y="-1045"/>
         </scene>
     </scenes>
 </document>
