@@ -15,30 +15,51 @@ class PlayerView: UIView {
     
     var videoURL: NSURL? {
         didSet{
-            if let url = videoURL {
-                setupPlayer(url)
-            }
+            startPlayer()
         }
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.backgroundColor = UIColor.blackColor()
-    }
+    internal lazy var player: AVPlayer? = {
+        if let videoURL = self.videoURL {
+            let playerItem = AVPlayerItem(URL: videoURL)
+            let player = AVPlayer(playerItem: playerItem)
+            
+            return player
+        }else {
+            return nil
+        }
+    }()
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        self.backgroundColor = UIColor.blackColor()
+    internal lazy var playerLayer: AVPlayerLayer? = {
+        if let player = self.player{
+            let playerLayer = AVPlayerLayer(player: player)
+            return playerLayer
+        }else {
+            return nil
+        }
+    }()
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if let playerLayer = playerLayer {
+            playerLayer.frame = self.bounds
+        }
     }
     
     //MARK:- private func
     
-    func setupPlayer(url: NSURL!) {
-        let playerItem = AVPlayerItem(URL: url)
-        let player = AVPlayer(playerItem: playerItem)
-        let playerLayer = AVPlayerLayer(player: player)
+    func startPlayer() {
+        if let playerLayer = playerLayer, let player = player {
+            layer.addSublayer(playerLayer)
+            player.play()
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoDidPlayEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
+        }
+    }
+}
+
+extension PlayerView {
+    internal func videoDidPlayEnd(noti :NSNotification) {
         
-        layer.insertSublayer(playerLayer, atIndex: 0)
-        player.play()
     }
 }

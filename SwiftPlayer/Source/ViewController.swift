@@ -41,9 +41,16 @@ class ViewController: UIViewController {
         let movieVC = segue.destinationViewController as! MovieViewController
         let cell = sender as! UITableViewCell
         let indePath = tableView.indexPathForCell(cell)
-
-        let url = NSURL(string: netDataSource[indePath!.row])
-        movieVC.videoURL = url
+        
+        let indexPath = tableView.indexPathForCell(cell)
+        
+        if indexPath!.section == 0 {
+            let url = NSURL(string: localDataSource[indePath!.row])
+            movieVC.videoURL = url
+        }else if indexPath!.section == 1 {
+            let url = NSURL(string: netDataSource[indePath!.row])
+            movieVC.videoURL = url
+        }
     }
 }
 
