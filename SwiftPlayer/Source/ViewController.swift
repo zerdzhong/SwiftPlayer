@@ -19,6 +19,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        navigationController?.interactivePopGestureRecognizer?.enabled = true
+        
         netDataSource = ["http://baobab.wdjcdn.com/14562919706254.mp4",
                       "http://baobab.wdjcdn.com/1456117847747a_x264.mp4",
                       "http://baobab.wdjcdn.com/14525705791193.mp4",
@@ -33,6 +35,15 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let movieVC = segue.destinationViewController as! MovieViewController
+        let cell = sender as! UITableViewCell
+        let indePath = tableView.indexPathForCell(cell)
+
+        let url = NSURL(string: netDataSource[indePath!.row])
+        movieVC.videoURL = url
     }
 }
 

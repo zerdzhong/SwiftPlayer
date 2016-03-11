@@ -14,6 +14,8 @@
 		47AA085B1C9172AD002B5430 /* SwiftPlayerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA085A1C9172AD002B5430 /* SwiftPlayerUITests.swift */; };
 		47AA086B1C91A5E3002B5430 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA08691C91A5E3002B5430 /* AppDelegate.swift */; };
 		47AA086C1C91A5E3002B5430 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA086A1C91A5E3002B5430 /* ViewController.swift */; };
+		47AA086F1C91AB03002B5430 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA086E1C91AB03002B5430 /* PlayerView.swift */; };
+		47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA08701C91AD5D002B5430 /* MovieViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		47AA085C1C9172AD002B5430 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47AA08691C91A5E3002B5430 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47AA086A1C91A5E3002B5430 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		47AA086E1C91AB03002B5430 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		47AA08701C91AD5D002B5430 /* MovieViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +134,7 @@
 				47AA086D1C91A620002B5430 /* PlayerCore */,
 				47AA08691C91A5E3002B5430 /* AppDelegate.swift */,
 				47AA086A1C91A5E3002B5430 /* ViewController.swift */,
+				47AA08701C91AD5D002B5430 /* MovieViewController.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -137,6 +142,7 @@
 		47AA086D1C91A620002B5430 /* PlayerCore */ = {
 			isa = PBXGroup;
 			children = (
+				47AA086E1C91AB03002B5430 /* PlayerView.swift */,
 			);
 			path = PlayerCore;
 			sourceTree = "<group>";
@@ -272,8 +278,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47AA086F1C91AB03002B5430 /* PlayerView.swift in Sources */,
 				47AA086C1C91A5E3002B5430 /* ViewController.swift in Sources */,
 				47AA086B1C91A5E3002B5430 /* AppDelegate.swift in Sources */,
+				47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
