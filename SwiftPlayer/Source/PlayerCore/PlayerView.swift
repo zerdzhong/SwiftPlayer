@@ -39,6 +39,28 @@ class PlayerView: UIView {
         }
     }()
     
+    var playerControlView = PlayerControlView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override func awakeFromNib() {
+        commonInit()
+    }
+    
+    private func commonInit() {
+        addSubview(playerControlView)
+        playerControlView.snp_makeConstraints { (make) -> Void in
+            make.edges.equalTo(self)
+        }
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         if let playerLayer = playerLayer {
@@ -50,7 +72,8 @@ class PlayerView: UIView {
     
     func startPlayer() {
         if let playerLayer = playerLayer, let player = player {
-            layer.addSublayer(playerLayer)
+            
+            layer.insertSublayer(playerLayer, atIndex: 0)
             player.play()
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoDidPlayEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)

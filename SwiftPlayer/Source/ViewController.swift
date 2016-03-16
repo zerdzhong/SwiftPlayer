@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var netDataSource: Array<String>!
-    var localDataSource: Array<String>!
+    var localDataSource: Array<NSURL>!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +29,9 @@ class ViewController: UIViewController {
                       "http://baobab.wdjcdn.com/1455782903700jy.mp4",
                       "http://baobab.wdjcdn.com/14564977406580.mp4"]
         
-        localDataSource = ["150511_JiveBike.mov"]
+        
+        localDataSource = Array<NSURL>()
+        localDataSource.append(NSBundle.mainBundle().URLForResource("150511_JiveBike", withExtension: "mov")!)
     }
 
     override func didReceiveMemoryWarning() {
@@ -45,7 +47,7 @@ class ViewController: UIViewController {
         let indexPath = tableView.indexPathForCell(cell)
         
         if indexPath!.section == 0 {
-            let url = NSURL(string: localDataSource[indePath!.row])
+            let url = localDataSource[indePath!.row]
             movieVC.videoURL = url
         }else if indexPath!.section == 1 {
             let url = NSURL(string: netDataSource[indePath!.row])

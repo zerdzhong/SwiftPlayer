@@ -16,6 +16,9 @@
 		47AA086C1C91A5E3002B5430 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA086A1C91A5E3002B5430 /* ViewController.swift */; };
 		47AA086F1C91AB03002B5430 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA086E1C91AB03002B5430 /* PlayerView.swift */; };
 		47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA08701C91AD5D002B5430 /* MovieViewController.swift */; };
+		47E1FD1E1C997AF800AD93D8 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */; };
+		47E1FD201C997E8600AD93D8 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */; };
+		47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +54,9 @@
 		47AA086A1C91A5E3002B5430 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		47AA086E1C91AB03002B5430 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		47AA08701C91AD5D002B5430 /* MovieViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieViewController.swift; sourceTree = "<group>"; };
+		47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
+		47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
+		47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47E1FD201C997E8600AD93D8 /* SnapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +109,8 @@
 			isa = PBXGroup;
 			children = (
 				47AA08681C91A5E3002B5430 /* Source */,
+				47E1FD211C997EAD00AD93D8 /* Framework */,
+				47E1FD231C9987B500AD93D8 /* Videos */,
 				47AA083E1C9172AD002B5430 /* Main.storyboard */,
 				47AA08411C9172AD002B5430 /* Assets.xcassets */,
 				47AA08431C9172AD002B5430 /* LaunchScreen.storyboard */,
@@ -143,8 +152,25 @@
 			isa = PBXGroup;
 			children = (
 				47AA086E1C91AB03002B5430 /* PlayerView.swift */,
+				47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */,
 			);
 			path = PlayerCore;
+			sourceTree = "<group>";
+		};
+		47E1FD211C997EAD00AD93D8 /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */,
+			);
+			name = Framework;
+			sourceTree = "<group>";
+		};
+		47E1FD231C9987B500AD93D8 /* Videos */ = {
+			isa = PBXGroup;
+			children = (
+				47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */,
+			);
+			path = Videos;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,6 +183,7 @@
 				47AA08331C9172AD002B5430 /* Sources */,
 				47AA08341C9172AD002B5430 /* Frameworks */,
 				47AA08351C9172AD002B5430 /* Resources */,
+				47E1FD221C99812200AD93D8 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -251,6 +278,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */,
 				47AA08451C9172AD002B5430 /* LaunchScreen.storyboard in Resources */,
 				47AA08421C9172AD002B5430 /* Assets.xcassets in Resources */,
 				47AA08401C9172AD002B5430 /* Main.storyboard in Resources */,
@@ -273,12 +301,30 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		47E1FD221C99812200AD93D8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/SnapKit.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		47AA08331C9172AD002B5430 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				47AA086F1C91AB03002B5430 /* PlayerView.swift in Sources */,
+				47E1FD1E1C997AF800AD93D8 /* PlayerControlView.swift in Sources */,
 				47AA086C1C91A5E3002B5430 /* ViewController.swift in Sources */,
 				47AA086B1C91A5E3002B5430 /* AppDelegate.swift in Sources */,
 				47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */,
@@ -423,6 +469,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = SwiftPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zerdzhong.SwiftPlayer;
@@ -434,6 +484,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = SwiftPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zerdzhong.SwiftPlayer;
