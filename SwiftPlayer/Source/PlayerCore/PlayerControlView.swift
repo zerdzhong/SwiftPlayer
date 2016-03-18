@@ -173,7 +173,9 @@ extension PlayerControlView
     }
     
     func clickFullScreenBtn() {
-        
+        if let control = playerControl {
+            control.switchFullScreen()
+        }
     }
     
     func progressSliderTouchBegan(slider: UISlider) {

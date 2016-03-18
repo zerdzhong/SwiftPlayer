@@ -48,6 +48,7 @@ class PlayerView: UIView{
     
     var playerControlView = PlayerControlView()
     var timer: NSTimer?
+    var isFullScreen = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -162,9 +163,7 @@ class PlayerView: UIView{
     }
     
     func setInterfaceOrientation(orientation: UIInterfaceOrientation) {
-        if UIDevice.currentDevice().respondsToSelector("setOrientation:") {
-
-        }
+        UIDevice.currentDevice().setValue(orientation.rawValue, forKey: "orientation")
     }
 }
 
@@ -184,6 +183,24 @@ extension PlayerView: PlayerControlInterface {
     
     func switchFullScreen() {
         
+        let orientation = UIDevice.currentDevice().orientation
+
+        switch (orientation) {
+            
+        case .PortraitUpsideDown, .FaceUp :
+            setInterfaceOrientation(.LandscapeRight)
+            
+        case .Portrait:
+            setInterfaceOrientation(.LandscapeRight)
+            
+        case .LandscapeLeft:
+            setInterfaceOrientation(.Portrait)
+            
+        case .LandscapeRight:
+            setInterfaceOrientation(.Portrait)
+        default:
+            break
+        }
     }
     
     func seekToProgress(progress: Float) {
