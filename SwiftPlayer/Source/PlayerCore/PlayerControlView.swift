@@ -86,7 +86,7 @@ class PlayerControlView: UIView {
         }
         
         startBtn.setImage(UIImage(named: "kr-video-player-pause"), forState: .Normal)
-        startBtn.addTarget(self, action: "clickStartBtn:", forControlEvents: .TouchUpInside)
+        startBtn.addTarget(self, action: #selector(PlayerControlView.clickStartBtn(_:)), forControlEvents: .TouchUpInside)
         bottomView.addSubview(startBtn)
         startBtn.snp_makeConstraints { (make) -> Void in
             make.width.height.equalTo(30)
@@ -105,7 +105,7 @@ class PlayerControlView: UIView {
         }
         
         fullScreenBtn.setImage(UIImage(named: "kr-video-player-fullscreen"), forState: .Normal)
-        fullScreenBtn.addTarget(self, action: "clickFullScreenBtn", forControlEvents: .TouchUpInside)
+        fullScreenBtn.addTarget(self, action: #selector(PlayerControlView.clickFullScreenBtn), forControlEvents: .TouchUpInside)
         bottomView.addSubview(fullScreenBtn)
         fullScreenBtn.snp_makeConstraints { (make) -> Void in
             make.width.height.equalTo(30)
@@ -136,9 +136,9 @@ class PlayerControlView: UIView {
         videoSlider.minimumTrackTintColor = UIColor.whiteColor()
         videoSlider.maximumTrackTintColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.3)
         
-        videoSlider.addTarget(self, action: "progressSliderTouchBegan:", forControlEvents: .TouchDown)
-        videoSlider.addTarget(self, action: "progressSliderValueChanged:", forControlEvents: .ValueChanged)
-        videoSlider.addTarget(self, action: "progressSliderTouchEnd:", forControlEvents: .TouchUpInside)
+        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderTouchBegan(_:)), forControlEvents: .TouchDown)
+        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderValueChanged(_:)), forControlEvents: .ValueChanged)
+        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderTouchEnd(_:)), forControlEvents: .TouchUpInside)
         
         bottomView.addSubview(videoSlider)
         videoSlider.snp_makeConstraints { (make) -> Void in

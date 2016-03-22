@@ -148,7 +148,7 @@ class PlayerView: UIView{
             player.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .New, context: nil)
             player.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .New, context: nil)
             
-            timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "playerTimerAction", userInfo: nil, repeats: true)
+            timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(PlayerView.playerTimerAction), userInfo: nil, repeats: true)
         }
     }
     
