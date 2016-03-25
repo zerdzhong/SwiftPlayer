@@ -19,6 +19,7 @@
 		47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA08701C91AD5D002B5430 /* MovieViewController.swift */; };
 		47E1FD1E1C997AF800AD93D8 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */; };
 		47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */; };
+		47F847C61CA521C200B6AC68 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F847C51CA521C200B6AC68 /* PlayButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
+		47F847C51CA521C200B6AC68 /* PlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +153,7 @@
 		47AA086D1C91A620002B5430 /* PlayerCore */ = {
 			isa = PBXGroup;
 			children = (
+				47F847C41CA5217800B6AC68 /* Views */,
 				47AA086E1C91AB03002B5430 /* PlayerView.swift */,
 				47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */,
 			);
@@ -171,6 +174,14 @@
 				47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */,
 			);
 			path = Videos;
+			sourceTree = "<group>";
+		};
+		47F847C41CA5217800B6AC68 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				47F847C51CA521C200B6AC68 /* PlayButton.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -328,6 +339,7 @@
 				47AA086C1C91A5E3002B5430 /* ViewController.swift in Sources */,
 				47AA086B1C91A5E3002B5430 /* AppDelegate.swift in Sources */,
 				47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */,
+				47F847C61CA521C200B6AC68 /* PlayButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

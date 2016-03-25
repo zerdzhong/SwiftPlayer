@@ -12,6 +12,7 @@ class MovieViewController: UIViewController {
     
     @IBOutlet weak var playerView: PlayerView!
     var videoURL: NSURL?
+    var playButton = PlayButton()
     
     override func viewDidLoad() {
         playerView.videoURL = videoURL
@@ -33,4 +34,5 @@ class MovieViewController: UIViewController {
             navigationController?.navigationBar.hidden = false
         }
     }
+    
 }

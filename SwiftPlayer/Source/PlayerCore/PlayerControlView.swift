@@ -15,7 +15,7 @@ class PlayerControlView: UIView {
     
     var videoSlider = UISlider()
     
-    var startBtn = UIButton()
+    var startBtn = PlayButton()
     var lockBtn = UIButton()
     var fullScreenBtn = UIButton()
     var currentTimeLabel = UILabel()
@@ -85,11 +85,12 @@ class PlayerControlView: UIView {
             make.height.equalTo(50)
         }
         
-        startBtn.setImage(UIImage(named: "kr-video-player-pause"), forState: .Normal)
         startBtn.addTarget(self, action: #selector(PlayerControlView.clickStartBtn(_:)), forControlEvents: .TouchUpInside)
+        startBtn.tintColor = UIColor.whiteColor()
+        startBtn.buttonState = .Playing
         bottomView.addSubview(startBtn)
         startBtn.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(30)
+            make.width.height.equalTo(20)
             make.left.equalTo(bottomView).offset(10)
             make.centerY.equalTo(bottomView)
         }
@@ -101,7 +102,7 @@ class PlayerControlView: UIView {
         
         currentTimeLabel.snp_makeConstraints { (make) -> Void in
             make.centerY.equalTo(bottomView)
-            make.left.equalTo(startBtn.snp_right).offset(2)
+            make.left.equalTo(startBtn.snp_right).offset(5)
         }
         
         fullScreenBtn.setImage(UIImage(named: "kr-video-player-fullscreen"), forState: .Normal)
@@ -152,24 +153,19 @@ class PlayerControlView: UIView {
 extension PlayerControlView
 {
     
-    func clickStartBtn(btn: UIButton) {
+    func clickStartBtn(btn: PlayButton) {
         
-        if btn.selected {
+        if btn.buttonState == .Paused {
             if let control = playerControl {
                 control.play()
             }
-            
-            btn.setImage(UIImage(named: "kr-video-player-pause"), forState: .Normal)
         }else {
             if let control = playerControl {
                 control.pause()
             }
-            
-            btn.setImage(UIImage(named: "kr-video-player-play"), forState: .Normal)
         }
         
-        btn.selected = !btn.selected
-        
+        btn.setButtonState(~btn.buttonState, animated: true)
     }
     
     func clickFullScreenBtn() {
