@@ -60,6 +60,10 @@ class PlayerControlView: UIView {
         commonInit()
     }
     
+    deinit {
+        print("deinit")
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         for subLayer in topView.layer.sublayers! {

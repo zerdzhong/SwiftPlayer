@@ -25,14 +25,17 @@ prefix func ~(state: PlayButtonState) -> PlayButtonState {
 
 class PlayButton: UIControl {
 
-    var buttonState = PlayButtonState.Paused
+    var buttonState = PlayButtonState.Paused {
+        didSet{
+            setButtonState(buttonState, animated: false)
+        }
+    }
     
     override var tintColor: UIColor! {
         didSet{
             shapeLayer.fillColor = tintColor.CGColor
         }
     }
-    
     
     private var shapeLayer = CAShapeLayer()
     
@@ -55,7 +58,7 @@ class PlayButton: UIControl {
     
     override func layoutSubviews() {
         shapeLayer.frame = bounds
-        shapeLayer.path = shapePathWithButtonState(buttonState)
+        shapeLayer.path = shapePathWithState(buttonState)
         super.layoutSubviews()
     }
     
@@ -80,20 +83,20 @@ class PlayButton: UIControl {
             morphAnimation.fillMode = kCAFillModeForwards
             
             morphAnimation.duration = 0.3
-            morphAnimation.fromValue = shapePathWithButtonState(beforeButtonState)
-            morphAnimation.toValue = shapePathWithButtonState(buttonState)
+            morphAnimation.fromValue = shapePathWithState(beforeButtonState)
+            morphAnimation.toValue = shapePathWithState(buttonState)
             
             shapeLayer.addAnimation(morphAnimation, forKey: morphAnimationKey)
         }else {
             shapeLayer.removeAnimationForKey(morphAnimationKey)
-            shapeLayer.path = shapePathWithButtonState(buttonState)
+            shapeLayer.path = shapePathWithState(buttonState)
         }
     }
     
-    func shapePathWithButtonState(buttonState: PlayButtonState) -> CGPath{
+    func shapePathWithState(buttonState: PlayButtonState) -> CGPath{
         
         let height = bounds.height
-        let minWidth = bounds.width * 0.32
+        let minWidth = bounds.width * 0.3
         
         let dtWidth = (bounds.width / 2.0 - minWidth) * buttonState.rawValue
         let width = minWidth + dtWidth

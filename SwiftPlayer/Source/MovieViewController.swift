@@ -12,7 +12,6 @@ class MovieViewController: UIViewController {
     
     @IBOutlet weak var playerView: PlayerView!
     var videoURL: NSURL?
-    var playButton = PlayButton()
     
     override func viewDidLoad() {
         playerView.videoURL = videoURL
@@ -25,6 +24,10 @@ class MovieViewController: UIViewController {
     
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         refreshNavigationBarHidden(size)
+    }
+    
+    deinit {
+        playerView.destoryPlayer()
     }
     
     func refreshNavigationBarHidden(size: CGSize) {

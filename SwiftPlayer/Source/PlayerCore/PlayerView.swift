@@ -11,6 +11,13 @@ import AVFoundation
 
 typealias PlayerBackBlock = () -> ()
 
+enum PlayerState {
+    case Playing
+    case Pause
+    case Buffering
+    case Seeking
+}
+
 protocol PlayerControlInterface: class {
     func seekToProgress(progress: Float)
     func play()
@@ -78,6 +85,7 @@ class PlayerView: UIView{
     }
     
     deinit {
+        print("deinit")
         NSNotificationCenter.defaultCenter().removeObserver(self)
         player?.currentItem?.removeObserver(self, forKeyPath: "status")
         player?.currentItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
@@ -150,6 +158,10 @@ class PlayerView: UIView{
             
             timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(PlayerView.playerTimerAction), userInfo: nil, repeats: true)
         }
+    }
+    
+    func destoryPlayer() {
+        timer?.invalidate()
     }
     
     func availableDuration() -> NSTimeInterval {
