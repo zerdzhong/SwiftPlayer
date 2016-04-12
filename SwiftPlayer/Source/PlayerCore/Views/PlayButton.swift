@@ -96,7 +96,7 @@ class PlayButton: UIControl {
     func shapePathWithState(buttonState: PlayButtonState) -> CGPath{
         
         let height = bounds.height
-        let minWidth = bounds.width * 0.3
+        let minWidth = bounds.width * 0.4
         
         let dtWidth = (bounds.width / 2.0 - minWidth) * buttonState.rawValue
         let width = minWidth + dtWidth

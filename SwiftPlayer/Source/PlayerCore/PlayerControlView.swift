@@ -9,9 +9,22 @@
 import UIKit
 import SnapKit
 
+enum PlayerPanDirection {
+    case Horizontal
+    case Vertical
+}
+
+struct PlayerPanInfo {
+    var startPoint: CGPoint = CGPointZero
+    var panDirection: PlayerPanDirection = .Horizontal
+    var changedTime: NSTimeInterval = 0.0
+    var seekProgress: Float = 0.0
+}
+
 class PlayerControlView: UIView {
     
-    weak var playerControl: PlayerControlInterface?
+    weak var playerControl: PlayerControlProtocol?
+    weak var playerItemInfo: PlayerItemInfoProtocol?
     
     var videoSlider = UISlider()
     
@@ -22,8 +35,18 @@ class PlayerControlView: UIView {
     var totalTimeLabel = UILabel()
     var progressView = UIProgressView()
     
+    lazy var horizontalLable: UILabel = {
+       let tempLabel = UILabel()
+        tempLabel.backgroundColor = UIColor.blackColor()
+        tempLabel.hidden = true
+        tempLabel.textColor = UIColor.whiteColor()
+        
+        return tempLabel
+    }()
+    
     lazy var bottomView: UIView = {
         let tempView = UIView()
+        tempView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         
         let bottomLayer = CAGradientLayer()
         bottomLayer.startPoint = CGPointZero
@@ -37,6 +60,7 @@ class PlayerControlView: UIView {
     
     lazy var topView : UIView = {
         let tempView = UIView()
+        tempView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         
         let topLayer = CAGradientLayer()
         topLayer.startPoint = CGPointMake(1,0)
@@ -48,6 +72,8 @@ class PlayerControlView: UIView {
         
         return tempView
     }()
+    
+    var panInfo = PlayerPanInfo()
     
     //MARK:- life cycle
     override init(frame: CGRect) {
@@ -64,19 +90,14 @@ class PlayerControlView: UIView {
         print("deinit")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        for subLayer in topView.layer.sublayers! {
-            subLayer.frame = topView.bounds
-        }
-        
-        for subLayer in bottomView.layer.sublayers! {
-            subLayer.frame = bottomView.bounds
-        }
-    }
-    
     //MARK:- commonInit
     private func commonInit() {
+        
+        addSubview(horizontalLable)
+        horizontalLable.snp_makeConstraints { (make) in
+            make.center.equalTo(self)
+        }
+        
         addSubview(bottomView)
         bottomView.snp_makeConstraints { (make) -> Void in
             make.bottom.right.left.equalTo(self)
@@ -94,7 +115,7 @@ class PlayerControlView: UIView {
         startBtn.buttonState = .Playing
         bottomView.addSubview(startBtn)
         startBtn.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(20)
+            make.width.height.equalTo(15)
             make.left.equalTo(bottomView).offset(10)
             make.centerY.equalTo(bottomView)
         }
@@ -150,10 +171,110 @@ class PlayerControlView: UIView {
             make.left.right.equalTo(progressView)
             make.centerY.equalTo(bottomView)
         }
-
     }
 }
 
+//MARK:- 手势操作
+extension PlayerControlView
+{
+    func addPanGesture() {
+        let panGesture = UIPanGestureRecognizer(target: self, action:#selector(PlayerControlView.panGestureHandler(_:)))
+        self.addGestureRecognizer(panGesture)
+    }
+    
+    func panGestureHandler(panGes: UIPanGestureRecognizer) {
+        
+        let point = panGes.locationInView(self)
+        let velocity = panGes.velocityInView(self)
+        
+        switch panGes.state {
+        case .Began:
+            if fabs(velocity.x) > fabs(velocity.y) {
+                panInfo.panDirection = .Horizontal
+            }else {
+                panInfo.panDirection = .Vertical
+            }
+            
+            panInfo.startPoint = point
+        case .Changed:
+            switch panInfo.panDirection {
+            case .Horizontal:
+                horizontalMoved(velocity.x)
+            case .Vertical:
+                verticalMoved(velocity.y)
+            }
+        case .Ended:
+            panGestureEnded()
+        default:
+            break;
+        }
+    }
+    
+    func horizontalMoved(dtX :CGFloat) {
+        
+        let videoTotalTime = playerItemInfo?.totalTime()
+        let videoCurrenTime = playerItemInfo?.currentTime()
+        
+        if let totalTime = videoTotalTime, let currenTime = videoCurrenTime {
+            var style = ""
+            if dtX < 0 {
+                style = "<<"
+            }else {
+                style = ">>"
+            }
+            
+            panInfo.changedTime += Double(dtX) / 200.0
+            
+            var destinationTime = panInfo.changedTime + currenTime
+            
+            if destinationTime > totalTime {
+                destinationTime = totalTime
+            }else if destinationTime < 0 {
+                destinationTime = 0
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), { [unowned self] in
+                self.horizontalLable.text = style + " " + self.durationStringWithTime(destinationTime) + "/" + self.durationStringWithTime(totalTime)
+                self.horizontalLable.hidden = false
+                
+                self.panInfo.seekProgress = Float(destinationTime/totalTime)
+            })
+        }
+    }
+    
+    func verticalMoved(dtY: CGFloat)  {
+        
+        if panInfo.startPoint.x > bounds.size.width / 2 {
+            //音量
+        }else {
+            //亮度
+            UIScreen.mainScreen().brightness -= dtY / 10000
+            dispatch_async(dispatch_get_main_queue(), { [unowned self] in
+                self.horizontalLable.text = String(format: "亮度%.0f%%",UIScreen.mainScreen().brightness*100.0)
+                self.horizontalLable.hidden = false
+            })
+        }
+        
+    }
+    
+    func panGestureEnded() {
+        
+        self.horizontalLable.hidden = true
+        
+        if panInfo.panDirection == .Horizontal {
+            self.playerControl?.seekToProgress(panInfo.seekProgress)
+        }
+    }
+    
+    func durationStringWithTime(time: NSTimeInterval) -> String {
+        let min = String(format: "%02d", Int(time / 60))
+        let sec = String(format: "%02d", Int(time % 60))
+        
+        return min + ":" + sec
+    }
+}
+
+//MARK:- 控制播放器
 extension PlayerControlView
 {
     

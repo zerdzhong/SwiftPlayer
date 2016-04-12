@@ -18,11 +18,16 @@ enum PlayerState {
     case Seeking
 }
 
-protocol PlayerControlInterface: class {
+protocol PlayerControlProtocol: class {
     func seekToProgress(progress: Float)
     func play()
     func pause()
     func switchFullScreen()
+}
+
+protocol PlayerItemInfoProtocol: class {
+    func currentTime() -> NSTimeInterval!
+    func totalTime() -> NSTimeInterval!
 }
 
 class PlayerView: UIView{
@@ -100,16 +105,22 @@ class PlayerView: UIView{
             return
         }
         
-        if player?.status == .ReadyToPlay {
+        if let keyPathString = keyPath {
             
-        }else if keyPath == "loadedTimeRanges" {
-            let timeInterval = availableDuration()
-            let duration = player?.currentItem?.duration
-            let totalDuration = CMTimeGetSeconds(duration!)
-            
-            let progress = timeInterval / totalDuration
-            
-            playerControlView.progressView.setProgress(Float(progress), animated: false)
+            if keyPathString == "status" {
+                if player?.status == .ReadyToPlay {
+                    //添加手势
+                    playerControlView.addPanGesture()
+                }
+            }else if keyPathString == "loadedTimeRanges" {
+                let timeInterval = availableDuration()
+                let duration = player?.currentItem?.duration
+                let totalDuration = CMTimeGetSeconds(duration!)
+                
+                let progress = timeInterval / totalDuration
+                
+                playerControlView.progressView.setProgress(Float(progress), animated: false)
+            }
         }
     }
     
@@ -147,6 +158,7 @@ class PlayerView: UIView{
             player.play()
             
             playerControlView.playerControl = self
+            playerControlView.playerItemInfo = self
             
 //            NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoDidPlayEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
             
@@ -179,7 +191,28 @@ class PlayerView: UIView{
     }
 }
 
-extension PlayerView: PlayerControlInterface {
+//MARK:- 视频信息接口
+
+extension PlayerView: PlayerItemInfoProtocol {
+    func currentTime() -> NSTimeInterval! {
+        if let playerItem = player?.currentItem {
+            return CMTimeGetSeconds(playerItem.currentTime())
+        }else {
+            return CMTimeGetSeconds(kCMTimeIndefinite)
+        }
+    }
+    
+    func totalTime() -> NSTimeInterval! {
+        if let playerItem = player?.currentItem {
+            return CMTimeGetSeconds(playerItem.duration)
+        }else {
+            return CMTimeGetSeconds(kCMTimeIndefinite)
+        }
+    }
+}
+
+//MARK:- 播放控制接口
+extension PlayerView: PlayerControlProtocol {
     
     func play() {
         if let player = player {
