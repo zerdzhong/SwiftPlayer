@@ -64,7 +64,7 @@ class ViewController: UIViewController {
         do {
             let videos = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsDir).flatMap { (itemString: String) -> NSURL? in
                 if itemString.containsString("mp4") {
-                    let itemPath = documentsDir + itemString
+                    let itemPath = documentsDir + "/" + itemString
                     return NSURL(fileURLWithPath: itemPath)
                 }else {
                     return nil
