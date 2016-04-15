@@ -8,33 +8,26 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UITableViewController {
     
-    @IBOutlet weak var tableView: UITableView!
+    var netDataSource: Array<NSURL>! = [NSURL(string: "http://baobab.wdjcdn.com/14562919706254.mp4")!,
+                                       NSURL(string: "http://baobab.wdjcdn.com/1456117847747a_x264.mp4")!,
+                                       NSURL(string: "http://baobab.wdjcdn.com/14525705791193.mp4")!,
+                                       NSURL(string: "http://baobab.wdjcdn.com/1456459181808howtoloseweight_x264.mp4")!,
+                                       NSURL(string: "http://baobab.wdjcdn.com/1455968234865481297704.mp4")!,
+                                       NSURL(string: "http://baobab.wdjcdn.com/1455782903700jy.mp4")!,
+                                       NSURL(string: "http://baobab.wdjcdn.com/14564977406580.mp4")!]
     
-    var netDataSource: Array<String>!
-    var localDataSource: Array<NSURL>!
+    var localDataSource: Array<NSURL>! = [NSBundle.mainBundle().URLForResource("150511_JiveBike", withExtension: "mov")!]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        navigationController?.interactivePopGestureRecognizer?.enabled = true
-        
-        netDataSource = ["http://baobab.wdjcdn.com/14562919706254.mp4",
-                      "http://baobab.wdjcdn.com/1456117847747a_x264.mp4",
-                      "http://baobab.wdjcdn.com/14525705791193.mp4",
-                      "http://baobab.wdjcdn.com/1456459181808howtoloseweight_x264.mp4",
-                      "http://baobab.wdjcdn.com/1455968234865481297704.mp4",
-                      "http://baobab.wdjcdn.com/1455782903700jy.mp4",
-                      "http://baobab.wdjcdn.com/14564977406580.mp4"]
-        
-        
-        localDataSource = Array<NSURL>()
-        localDataSource.append(NSBundle.mainBundle().URLForResource("150511_JiveBike", withExtension: "mov")!)
-        loadDocumentVideo()
-        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(ViewController.loadDocumentVideo))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(ViewController.addRemoteVideo))
+        
+        loadDocumentVideo()
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,9 +45,31 @@ class ViewController: UIViewController {
             let url = localDataSource[indexPath!.row]
             movieVC.videoURL = url
         }else if indexPath!.section == 1 {
-            let url = NSURL(string: netDataSource[indexPath!.row])
+            let url = netDataSource[indexPath!.row]
             movieVC.videoURL = url
         }
+    }
+    
+    func addRemoteVideo() {
+        
+        let alert = UIAlertController(title: "输入视频URL", message: nil, preferredStyle: .Alert)
+        
+        alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+            textField.text = "http://"
+        })
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action) -> Void in
+            let textField = alert.textFields![0] as UITextField
+            print("Text field: \(textField.text)")
+            if let urlString = textField.text,let url = NSURL(string: urlString) {
+                if !self.netDataSource.contains(url) {
+                    self.netDataSource.append(url)
+                    self.tableView.reloadData()
+                }
+            }
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     func loadDocumentVideo() {
@@ -85,10 +100,11 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource
+extension ViewController
 {
+    
     //MARL:- UITableViewDelegate
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if indexPath.section == 0 {
@@ -99,25 +115,24 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     //MARK:- UITableViewDataSource
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return (section == 0) ? "本地视频" : "网络视频"
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return (section == 0) ? localDataSource.count : netDataSource.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: UITableViewCell!
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("videoCell")!
         if indexPath.section == 0 {
-            cell = tableView.dequeueReusableCellWithIdentifier("localVideoCell")
             cell.textLabel?.text = localDataSource[indexPath.row].lastPathComponent
         }else if indexPath.section == 1 {
-            cell = tableView.dequeueReusableCellWithIdentifier("netVideoCell")
+            cell.textLabel?.text = netDataSource[indexPath.row].lastPathComponent
         }
         
         return cell
