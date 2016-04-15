@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MediaPlayer
 import SnapKit
 
 enum PlayerPanDirection {
@@ -246,6 +247,15 @@ extension PlayerControlView
         
         if panInfo.startPoint.x > bounds.size.width / 2 {
             //音量
+            MPMusicPlayerController.applicationMusicPlayer()
+            let volumeView = MPVolumeView()
+            for view in volumeView.subviews {
+                if let slider = view as? UISlider{
+                    if slider.dynamicType.description() == "MPVolumeSlider" {
+                        slider.value -= Float(dtY / 10000)
+                    }
+                }
+            }
         }else {
             //亮度
             UIScreen.mainScreen().brightness -= dtY / 10000

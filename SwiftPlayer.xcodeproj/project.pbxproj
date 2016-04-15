@@ -19,6 +19,7 @@
 		47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AA08701C91AD5D002B5430 /* MovieViewController.swift */; };
 		47E1FD1E1C997AF800AD93D8 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */; };
 		47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */; };
+		47F7FE1D1CBCECB90087F894 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */; };
 		47F847C61CA521C200B6AC68 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F847C51CA521C200B6AC68 /* PlayButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,7 @@
 		47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
+		47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		47F847C51CA521C200B6AC68 /* PlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47F7FE1D1CBCECB90087F894 /* MediaPlayer.framework in Frameworks */,
 				477A21E51CA1184800316017 /* SnapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -163,6 +166,7 @@
 		47E1FD211C997EAD00AD93D8 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */,
 				47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */,
 			);
 			name = Framework;
