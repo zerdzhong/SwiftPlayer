@@ -13,7 +13,6 @@ class ViewController: UITableViewController {
     var netDataSource: Array<NSURL>! = [NSURL(string: "http://baobab.wdjcdn.com/14562919706254.mp4")!,
                                        NSURL(string: "http://baobab.wdjcdn.com/1456117847747a_x264.mp4")!,
                                        NSURL(string: "http://baobab.wdjcdn.com/14525705791193.mp4")!,
-                                       NSURL(string: "http://baobab.wdjcdn.com/1456459181808howtoloseweight_x264.mp4")!,
                                        NSURL(string: "http://baobab.wdjcdn.com/1455968234865481297704.mp4")!,
                                        NSURL(string: "http://baobab.wdjcdn.com/1455782903700jy.mp4")!,
                                        NSURL(string: "http://baobab.wdjcdn.com/14564977406580.mp4")!]
@@ -24,8 +23,8 @@ class ViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(ViewController.loadDocumentVideo))
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(ViewController.addRemoteVideo))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(loadDocumentVideo))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(addRemoteVideo))
         
         loadDocumentVideo()
     }
@@ -78,7 +77,7 @@ class ViewController: UITableViewController {
         
         do {
             let videos = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsDir).flatMap { (itemString: String) -> NSURL? in
-                if itemString.containsString("mp4") {
+                if itemString.containsString("mp4") || itemString.containsString("rmvb"){
                     let itemPath = documentsDir + "/" + itemString
                     return NSURL(fileURLWithPath: itemPath)
                 }else {

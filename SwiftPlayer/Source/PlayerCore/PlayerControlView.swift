@@ -76,6 +76,8 @@ class PlayerControlView: UIView {
     
     var panInfo = PlayerPanInfo()
     
+    private let delayHiddenTime = 4.0
+    
     //MARK:- life cycle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -172,14 +174,61 @@ class PlayerControlView: UIView {
             make.left.right.equalTo(progressView)
             make.centerY.equalTo(bottomView)
         }
+        
+        addDouleTapGesture()
+        showControlView()
+    }
+    
+    func dismissControlView() {
+        print("control view dismiss")
+        self.bottomView.hidden = true
+        self.topView.hidden = true
+    }
+    
+    func cancelDismissControlView() {
+        NSObject.cancelPreviousPerformRequestsWithTarget(self, selector: #selector(dismissControlView), object: nil)
+    }
+    
+    func showControlView(delayDismiss isDelay: Bool = true) {
+        self.bottomView.hidden = false
+        self.topView.hidden = false
+        
+        if isDelay {
+            performSelector(#selector(dismissControlView), withObject: nil, afterDelay: delayHiddenTime)
+        }
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        showControlView()
     }
 }
 
 //MARK:- 手势操作
-extension PlayerControlView
-{
+extension PlayerControlView: UIGestureRecognizerDelegate {
+    
+    internal func addDouleTapGesture() {
+        let doubleTapGes = UITapGestureRecognizer(target: self, action: #selector(doubleTapGestureHandler(_:)))
+        doubleTapGes.delegate = self
+        doubleTapGes.numberOfTapsRequired = 2
+        self.addGestureRecognizer(doubleTapGes)
+    }
+    
+    internal func doubleTapGestureHandler(tapGes: UITapGestureRecognizer) {
+        print("double taped")
+        clickStartBtn(startBtn)
+        switch tapGes.state {
+        case .Began:
+            showControlView(delayDismiss: false)
+        case .Ended, .Cancelled, .Failed:
+            showControlView()
+        default:
+            break
+        }
+    }
+    
     func addPanGesture() {
         let panGesture = UIPanGestureRecognizer(target: self, action:#selector(PlayerControlView.panGestureHandler(_:)))
+        panGesture.delegate = self
         self.addGestureRecognizer(panGesture)
     }
     
@@ -190,6 +239,8 @@ extension PlayerControlView
         
         switch panGes.state {
         case .Began:
+            showControlView(delayDismiss: false)
+            
             if fabs(velocity.x) > fabs(velocity.y) {
                 panInfo.panDirection = .Horizontal
             }else {
@@ -205,6 +256,7 @@ extension PlayerControlView
                 verticalMoved(velocity.y)
             }
         case .Ended:
+            showControlView()
             panGestureEnded()
         default:
             break;
@@ -264,7 +316,6 @@ extension PlayerControlView
                 self.horizontalLable.hidden = false
             })
         }
-        
     }
     
     func panGestureEnded() {
