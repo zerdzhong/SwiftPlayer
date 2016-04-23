@@ -11,10 +11,23 @@ import UIKit
 class MovieViewController: UIViewController {
     
     @IBOutlet weak var playerView: PlayerView!
-    var videoURL: NSURL?
+    var videoURLString: String = ""
     
     override func viewDidLoad() {
-        playerView.videoURL = videoURL
+        if videoURLString.containsString("http") {
+            playerView.videoURL = NSURL(string: videoURLString)
+        }else {
+            playerView.videoURL = NSURL(fileURLWithPath: videoURLString)
+        }
+        
+        if videoURLString.containsString("rmvb") {
+            do {
+                try PlayerDecoder().openFile(videoURLString)
+            } catch {
+                print("error")
+            }
+        }
+        
         refreshNavigationBarHidden(view.bounds.size)
     }
     

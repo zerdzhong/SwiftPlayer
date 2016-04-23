@@ -33,8 +33,10 @@ protocol PlayerItemInfoProtocol: class {
 class PlayerView: UIView{
     
     var videoURL: NSURL? {
-        didSet{
-            startPlayer()
+        didSet {
+            if  videoURL != nil{
+                startPlayer()
+            }
         }
     }
     
@@ -161,7 +163,6 @@ class PlayerView: UIView{
             playerControlView.playerItemInfo = self
             
 //            NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoDidPlayEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
-            
             
             player.currentItem?.addObserver(self, forKeyPath: "status", options: .New, context: nil)
             player.currentItem?.addObserver(self, forKeyPath: "loadedTimeRanges", options: .New, context: nil)

@@ -10,14 +10,14 @@ import UIKit
 
 class ViewController: UITableViewController {
     
-    var netDataSource: Array<NSURL>! = [NSURL(string: "http://baobab.wdjcdn.com/14562919706254.mp4")!,
-                                       NSURL(string: "http://baobab.wdjcdn.com/1456117847747a_x264.mp4")!,
-                                       NSURL(string: "http://baobab.wdjcdn.com/14525705791193.mp4")!,
-                                       NSURL(string: "http://baobab.wdjcdn.com/1455968234865481297704.mp4")!,
-                                       NSURL(string: "http://baobab.wdjcdn.com/1455782903700jy.mp4")!,
-                                       NSURL(string: "http://baobab.wdjcdn.com/14564977406580.mp4")!]
+    var netDataSource: Array<String> = ["http://baobab.wdjcdn.com/14562919706254.mp4",
+                                       "http://baobab.wdjcdn.com/1456117847747a_x264.mp4",
+                                       "http://baobab.wdjcdn.com/14525705791193.mp4",
+                                       "http://baobab.wdjcdn.com/1455968234865481297704.mp4",
+                                       "http://baobab.wdjcdn.com/1455782903700jy.mp4",
+                                       "http://baobab.wdjcdn.com/14564977406580.mp4"]
     
-    var localDataSource: Array<NSURL>! = [NSBundle.mainBundle().URLForResource("150511_JiveBike", withExtension: "mov")!]
+    var localDataSource: Array<String> = [NSBundle.mainBundle().pathForResource("150511_JiveBike", ofType: "mov")!]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,11 +41,11 @@ class ViewController: UITableViewController {
         let indexPath = tableView.indexPathForCell(cell)
         
         if indexPath!.section == 0 {
-            let url = localDataSource[indexPath!.row]
-            movieVC.videoURL = url
+            let urlString = localDataSource[indexPath!.row]
+            movieVC.videoURLString = urlString
         }else if indexPath!.section == 1 {
-            let url = netDataSource[indexPath!.row]
-            movieVC.videoURL = url
+            let urlString = netDataSource[indexPath!.row]
+            movieVC.videoURLString = urlString
         }
     }
     
@@ -60,9 +60,9 @@ class ViewController: UITableViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action) -> Void in
             let textField = alert.textFields![0] as UITextField
             print("Text field: \(textField.text)")
-            if let urlString = textField.text,let url = NSURL(string: urlString) {
-                if !self.netDataSource.contains(url) {
-                    self.netDataSource.append(url)
+            if let urlString = textField.text {
+                if !self.netDataSource.contains(urlString) {
+                    self.netDataSource.append(urlString)
                     self.tableView.reloadData()
                 }
             }
@@ -76,16 +76,17 @@ class ViewController: UITableViewController {
         let documentsDir = paths.firstObject as! String
         
         do {
-            let videos = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsDir).flatMap { (itemString: String) -> NSURL? in
+            let videos = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsDir).flatMap { (itemString: String) -> String? in
                 if itemString.containsString("mp4") || itemString.containsString("rmvb"){
                     let itemPath = documentsDir + "/" + itemString
-                    return NSURL(fileURLWithPath: itemPath)
+                    
+                    return itemPath
                 }else {
                     return nil
                 }
             }
             
-            videos.forEach({ (item: NSURL) in
+            videos.forEach({ (item: String) in
                 if !localDataSource.contains(item) {
                     localDataSource.append(item)
                 }
@@ -129,9 +130,9 @@ extension ViewController
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("videoCell")!
         if indexPath.section == 0 {
-            cell.textLabel?.text = localDataSource[indexPath.row].lastPathComponent
+            cell.textLabel?.text = NSURL(fileURLWithPath: localDataSource[indexPath.row]).lastPathComponent
         }else if indexPath.section == 1 {
-            cell.textLabel?.text = netDataSource[indexPath.row].lastPathComponent
+            cell.textLabel?.text = NSURL(string: netDataSource[indexPath.row])?.lastPathComponent
         }
         
         return cell
