@@ -29,6 +29,7 @@
 		47B3F4721CC8C62B00582B4E /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4711CC8C62B00582B4E /* VideoToolbox.framework */; };
 		47B3F4741CC8C68F00582B4E /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4731CC8C68F00582B4E /* libbz2.tbd */; };
 		47B3F4751CC8C69F00582B4E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4671CC8C1A000582B4E /* libz.tbd */; };
+		47B3F5431CCE271200582B4E /* PlayerGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B3F5421CCE271200582B4E /* PlayerGLView.swift */; };
 		47E1FD1E1C997AF800AD93D8 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */; };
 		47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */; };
 		47F7FE1D1CBCECB90087F894 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */; };
@@ -178,6 +179,7 @@
 		47B3F46D1CC8C46200582B4E /* SwiftPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		47B3F4711CC8C62B00582B4E /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		47B3F4731CC8C68F00582B4E /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		47B3F5421CCE271200582B4E /* PlayerGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLView.swift; sourceTree = "<group>"; };
 		47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
@@ -295,6 +297,7 @@
 				47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */,
 				47B3F46B1CC8C28D00582B4E /* PlayerDecoder.swift */,
 				47B3F46D1CC8C46200582B4E /* SwiftPlayer-Bridging-Header.h */,
+				47B3F5421CCE271200582B4E /* PlayerGLView.swift */,
 			);
 			path = PlayerCore;
 			sourceTree = "<group>";
@@ -669,6 +672,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47B3F5431CCE271200582B4E /* PlayerGLView.swift in Sources */,
 				47AA086F1C91AB03002B5430 /* PlayerView.swift in Sources */,
 				47E1FD1E1C997AF800AD93D8 /* PlayerControlView.swift in Sources */,
 				47B3F46C1CC8C28D00582B4E /* PlayerDecoder.swift in Sources */,
