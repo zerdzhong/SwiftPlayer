@@ -833,6 +833,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/SwiftPlayer/Vendor/FFmpeg-iOS/lib",
 				);
+				OTHER_SWIFT_FLAGS = "-D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zerdzhong.SwiftPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SwiftPlayer/Source/PlayerCore/SwiftPlayer-Bridging-Header.h";
