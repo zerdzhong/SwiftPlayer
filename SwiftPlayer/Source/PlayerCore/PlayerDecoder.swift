@@ -393,6 +393,24 @@ class PlayerDecoder: NSObject {
     
 }
 
+extension PlayerDecoder {
+    func frameWidth() -> UInt {
+        if let codecCtx = videoCodecContext {
+            return UInt(codecCtx.memory.width)
+        }
+        
+        return 0
+    }
+    
+    func frameHeight() -> UInt {
+        if let codecCtx = videoCodecContext {
+            return UInt(codecCtx.memory.height)
+        }
+        
+        return 0
+    }
+}
+
 private func audioCodecIsSupported(audio: UnsafePointer<AVCodecContext>) -> Bool
 {
     if (audio.memory.sample_fmt == AV_SAMPLE_FMT_S16) {

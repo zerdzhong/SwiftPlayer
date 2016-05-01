@@ -22,7 +22,10 @@ class MovieViewController: UIViewController {
         
         if videoURLString.containsString("rmvb") {
             do {
-                try PlayerDecoder().openFile(videoURLString)
+                let decoder = PlayerDecoder()
+                try decoder.openFile(videoURLString)
+                
+                decoder.asyncDecodeFrames(0.1)
             } catch {
                 print("error")
             }

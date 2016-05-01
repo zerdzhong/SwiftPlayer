@@ -292,11 +292,11 @@
 		47AA086D1C91A620002B5430 /* PlayerCore */ = {
 			isa = PBXGroup;
 			children = (
+				47B3F46D1CC8C46200582B4E /* SwiftPlayer-Bridging-Header.h */,
 				47F847C41CA5217800B6AC68 /* Views */,
 				47AA086E1C91AB03002B5430 /* PlayerView.swift */,
 				47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */,
 				47B3F46B1CC8C28D00582B4E /* PlayerDecoder.swift */,
-				47B3F46D1CC8C46200582B4E /* SwiftPlayer-Bridging-Header.h */,
 				47B3F5421CCE271200582B4E /* PlayerGLView.swift */,
 			);
 			path = PlayerCore;

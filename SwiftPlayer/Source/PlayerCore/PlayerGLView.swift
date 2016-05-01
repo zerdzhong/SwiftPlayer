@@ -140,35 +140,37 @@ class PlayerGLView: UIView {
     private var backingWidth: GLint = 0
     private var backingHeight: GLint = 0
     
-    private let vertices:Array<GLfloat> = [-1.0 ,   -1.0,
+    private var vertices:Array<GLfloat> = [-1.0 ,   -1.0,
                                            1.0  ,   -1.0,
                                            -1.0 ,   1.0,
                                            1.0  ,   1.0]
     private var uniformMatrix: Int32 = 0
     private var render: MovieGLRender?
+    private var decoder: PlayerDecoder?
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
     
-    init(frame: CGRect, decoder: PlayerDecoder) {
+    convenience init(frame: CGRect, decoder: PlayerDecoder) {
+        self.init(frame: frame)
+        
+        self.decoder = decoder
         if decoder.setupVideoFrameFormat(VideoFrameFormat.YUV) {
             render = MovieGLYUVRender()
         }else {
             render = MovieGLRGBRender()
         }
-        super.init(frame: frame)
-        commonInit()
     }
     
-    func render(frame: VideoFrame) -> Void {
+    func renderFrame(frame: VideoFrame) -> Void {
         let texCoords:[GLfloat] = [0.0, 1.0,
                                    1.0, 1.0,
                                    0.0, 0.0,
@@ -181,14 +183,45 @@ class PlayerGLView: UIView {
         
         glClearColor(0, 0, 0, 1.0)
         glClear(UInt32(GL_COLOR_BUFFER_BIT))
+        
         glUseProgram(program)
         
-
         render?.setFrame(frame)
         
         if ((render?.prepareRender()) != nil) {
             
+            let modelviewProj = mat4f_LoadOrtho(-1.0, right: 1.0, bottom: -1.0, top: 1.0, near: -1.0, far: 1.0)
+            
+            glUniformMatrix4fv(uniformMatrix, 1, GLboolean(GL_FALSE), modelviewProj);
+            
+            glVertexAttribPointer(ATTRBUTEIndex.VERTEX.rawValue, 2, UInt32(GL_FLOAT), 0, 0, vertices);
+            glEnableVertexAttribArray(ATTRBUTEIndex.VERTEX.rawValue);
+            glVertexAttribPointer(ATTRBUTEIndex.TEXCOORD.rawValue, 2, UInt32(GL_FLOAT), 0, 0, texCoords);
+            glEnableVertexAttribArray(ATTRBUTEIndex.TEXCOORD.rawValue);
+            
+            glDrawArrays(UInt32(GL_TRIANGLE_STRIP), 0, 4);
         }
+        
+        glBindRenderbuffer(UInt32(GL_RENDERBUFFER), renderBuffer);
+        eaglContenxt.presentRenderbuffer(Int(GL_RENDERBUFFER))
+    }
+    
+    override func layoutSubviews() {
+        glBindRenderbuffer(UInt32(GL_RENDERBUFFER), renderBuffer)
+        eaglContenxt.renderbufferStorage(Int(GL_RENDERBUFFER), fromDrawable: eaglLayer)
+        
+        glGetRenderbufferParameteriv(UInt32(GL_RENDERBUFFER), UInt32(GL_RENDERBUFFER_WIDTH), &backingWidth)
+        glGetRenderbufferParameteriv(UInt32(GL_RENDERBUFFER), UInt32(GL_RENDERBUFFER_HEIGHT), &backingHeight)
+        
+        let status = glCheckFramebufferStatus(UInt32(GL_FRAMEBUFFER))
+        if status != UInt32(GL_FRAMEBUFFER_COMPLETE) {
+            print("failed to make complete framebuffer object \(status)")
+        }else {
+            print("OK setup GL framebuffer \(backingWidth), \(backingHeight)")
+        }
+        
+        updateVertices()
+        renderFrame(VideoFrame())
     }
     
     private func commonInit() {
@@ -305,6 +338,34 @@ class PlayerGLView: UIView {
         
         return true
     }
+    
+    private func updateVertices() {
+        
+        let fit     = (self.contentMode == .ScaleAspectFit)
+        var width:UInt   = 0
+        var height:UInt  = 0
+        
+        if let decoder = self.decoder {
+            width   = decoder.frameWidth()
+            height  = decoder.frameHeight()
+        }
+        
+        let dH      = Float(backingHeight) / Float(height)
+        let dW      = Float(backingWidth)	  / Float(width)
+        let dd      = fit ? min(dH, dW) : max(dH, dW);
+        let h       = (Float(height) * dd / Float(backingHeight))
+        let w       = (Float(width)  * dd / Float(backingWidth ))
+        
+        vertices[0] = -w;
+        vertices[1] = -h;
+        vertices[2] =   w;
+        vertices[3] = -h;
+        vertices[4] = -w;
+        vertices[5] =   h;
+        vertices[6] =   w;
+        vertices[7] =   h;
+
+    }
 }
 
 private func compileGLShader(type: GLenum, shaderString: String) -> GLuint {
@@ -345,4 +406,38 @@ private func compileGLShader(type: GLenum, shaderString: String) -> GLuint {
     }
     
     return 0
+}
+
+private func mat4f_LoadOrtho(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) -> Array<Float> {
+    
+    var mout = Array<Float>()
+    
+    let r_l = right - left
+    let t_b = top - bottom
+    let f_n = far - near
+    let tx = -(right + left) / (right - left)
+    let ty = -(top + bottom) / (top - bottom)
+    let tz = -(far + near) / (far - near)
+    
+    mout[0] = 2.0 / r_l
+    mout[1] = 0.0
+    mout[2] = 0.0
+    mout[3] = 0.0
+    
+    mout[4] = 0.0
+    mout[5] = 2.0 / t_b
+    mout[6] = 0.0
+    mout[7] = 0.0
+    
+    mout[8] = 0.0
+    mout[9] = 0.0
+    mout[10] = -2.0 / f_n
+    mout[11] = 0.0
+    
+    mout[12] = tx;
+    mout[13] = ty
+    mout[14] = tz
+    mout[15] = 1.0
+    
+    return mout
 }
