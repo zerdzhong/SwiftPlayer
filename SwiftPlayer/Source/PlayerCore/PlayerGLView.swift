@@ -148,6 +148,8 @@ class PlayerGLView: UIView {
     private var render: MovieGLRender?
     private var decoder: PlayerDecoder?
     
+    var videoFrames = Array<VideoFrame>()
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -167,6 +169,38 @@ class PlayerGLView: UIView {
             render = MovieGLYUVRender()
         }else {
             render = MovieGLRGBRender()
+        }
+    }
+    
+    func play(fileURL: String) -> Void{
+        do {
+            let decoder = PlayerDecoder()
+            try decoder.openFile(fileURL)
+
+            
+            let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
+            dispatch_after(popTime, dispatch_get_main_queue()) {
+                
+            }
+            
+            decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
+                self.addFrames(frames)
+            })
+        } catch {
+            print("error")
+        }
+    }
+    
+    func addFrames(frames: Array<VideoFrame>?) -> Void {
+        if ((decoder?.vaildVideo()) != nil) {
+            let lockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.LockQueue", nil)
+            dispatch_sync(lockQueue) {
+                for frame: VideoFrame in frames! {
+                    if frame.type == .Video {
+                        self.videoFrames.append(frame)
+                    }
+                }
+            }
         }
     }
     
@@ -410,7 +444,7 @@ private func compileGLShader(type: GLenum, shaderString: String) -> GLuint {
 
 private func mat4f_LoadOrtho(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) -> Array<Float> {
     
-    var mout = Array<Float>()
+    var mout = Array<Float>(count: 16, repeatedValue: 0)
     
     let r_l = right - left
     let t_b = top - bottom

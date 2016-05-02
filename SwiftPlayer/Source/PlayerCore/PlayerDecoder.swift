@@ -64,7 +64,7 @@ class PlayerDecoder: NSObject {
     private var videoCodecContext: UnsafeMutablePointer<AVCodecContext>?
     
     private var videoStream: UnsafeMutablePointer<AVStream>?
-    private var videoStreamIndex: Int32 = 0
+    private var videoStreamIndex: Int32 = -1
     private var videoFrame: UnsafeMutablePointer<AVFrame>?
     
     private var audioStream: UnsafeMutablePointer<AVStream>?
@@ -119,11 +119,11 @@ class PlayerDecoder: NSObject {
         return frameFormat == format
     }
     
-    func asyncDecodeFrames(minDuration: Double) -> Void {
+    func asyncDecodeFrames(minDuration: Double, completeBlock:(frames:Array<VideoFrame>?)->()) -> Void {
         let dispatchQueue = dispatch_queue_create("SwiftPlayerDecoder", DISPATCH_QUEUE_SERIAL)
         
         dispatch_async(dispatchQueue) {
-            self.decodeFrames(minDuration)
+            completeBlock(frames: self.decodeFrames(minDuration))
         }
     }
     
@@ -290,6 +290,7 @@ class PlayerDecoder: NSObject {
     //MARK:- VideoStream
     
     private func openVideoStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
+        videoStreamIndex = -1
         let videoStreams = collectStreamIndexs(formartCtx, codecType: AVMEDIA_TYPE_VIDEO)
         
         if videoStreams.count == 0 {
@@ -408,6 +409,10 @@ extension PlayerDecoder {
         }
         
         return 0
+    }
+    
+    func vaildVideo() -> Bool {
+        return videoStreamIndex != -1
     }
 }
 

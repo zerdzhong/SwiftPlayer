@@ -21,14 +21,13 @@ class MovieViewController: UIViewController {
         }
         
         if videoURLString.containsString("rmvb") {
-            do {
-                let decoder = PlayerDecoder()
-                try decoder.openFile(videoURLString)
-                
-                decoder.asyncDecodeFrames(0.1)
-            } catch {
-                print("error")
-            }
+            
+            let decoder = PlayerDecoder()
+            
+            let glView = PlayerGLView(frame: CGRectMake(100, 300, 200, 200), decoder: decoder)
+            glView.play(videoURLString)
+            
+            self.view.addSubview(glView)
         }
         
         refreshNavigationBarHidden(view.bounds.size)
