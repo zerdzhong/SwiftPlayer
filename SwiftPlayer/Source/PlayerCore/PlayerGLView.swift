@@ -177,11 +177,12 @@ class PlayerGLView: UIView {
             let decoder = PlayerDecoder()
             try decoder.openFile(fileURL)
 
+            decoder.setupVideoFrameFormat(.YUV)
             
-            let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
-            dispatch_after(popTime, dispatch_get_main_queue()) {
-                
-            }
+//            let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
+//            dispatch_after(popTime, dispatch_get_main_queue()) {
+//                
+//            }
             
             decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
                 self.addFrames(frames)
@@ -192,6 +193,11 @@ class PlayerGLView: UIView {
     }
     
     func addFrames(frames: Array<VideoFrame>?) -> Void {
+        
+        if frames == nil {
+            return
+        }
+        
         if ((decoder?.vaildVideo()) != nil) {
             let lockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.LockQueue", nil)
             dispatch_sync(lockQueue) {
@@ -255,7 +261,7 @@ class PlayerGLView: UIView {
         }
         
         updateVertices()
-        renderFrame(VideoFrame())
+//        renderFrame(VideoFrame())
     }
     
     private func commonInit() {
@@ -276,6 +282,7 @@ class PlayerGLView: UIView {
     
     private func setupGLLayer() -> Void {
         self.layer.insertSublayer(eaglLayer, atIndex: 0)
+        eaglLayer.backgroundColor = UIColor.redColor().CGColor
         eaglLayer.opaque = true
         eaglLayer.drawableProperties = [kEAGLDrawablePropertyRetainedBacking:NSNumber(bool: false),
                                         kEAGLDrawablePropertyColorFormat:kEAGLColorFormatRGBA8]

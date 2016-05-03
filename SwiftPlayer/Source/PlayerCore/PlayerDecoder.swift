@@ -170,66 +170,12 @@ class PlayerDecoder: NSObject {
 //                                    _videoCodecCtx->height);
 //                            }
                             
-                            if videoFrame.memory.data.0 == nil {
-                                break;
-                            }
-                            
-                            var decodedFrame: VideoFrame?
-                            
-                            if frameFormat == .Some(.YUV)  {
-                                let yuvFrame = VideoFrameYUV()
-                                yuvFrame.luma = copyFrameData(videoFrame.memory.data.0,
-                                                              lineSize: videoFrame.memory.linesize.0,
-                                                              width: videoCodecCtx.memory.width,
-                                                              height: videoCodecCtx.memory.height)
-                                
-                                yuvFrame.chromaB = copyFrameData(videoFrame.memory.data.1,
-                                                                 lineSize: videoFrame.memory.linesize.1,
-                                                                 width: videoCodecCtx.memory.width / 2,
-                                                                 height: videoCodecCtx.memory.height / 2)
-                                
-                                yuvFrame.chromaR = copyFrameData(videoFrame.memory.data.2,
-                                                                 lineSize: videoFrame.memory.linesize.1,
-                                                                 width: videoCodecCtx.memory.width / 2,
-                                                                 height: videoCodecCtx.memory.height / 2)
-                                
-                                decodedFrame = yuvFrame
-                                
-                            }else if frameFormat == .Some(.RGB) {
-//                                if swsContext != nil && !setupScaler() {
-//                                    print("fail setup video scaler")
-//                                    return nil
-//                                }
-                                
-//                                sws_scale(swsContext, unsafeBitCast(videoFrame.memory.data, UnsafePointer<UnsafePointer<UInt8>>.self), unsafeBitCast(videoFrame.memory.linesize, UnsafePointer<Int32>.self), 0, videoCodecCtx.memory.height, picture!.data, picture!.linesize)
-                            }
-                            
+                            let decodedFrame = handleVideoFrame(videoFrame, codecContext: videoCodecCtx)
                             
                             if let frame = decodedFrame {
-                                frame.width = UInt(videoCodecCtx.memory.width)
-                                frame.height = UInt(videoCodecCtx.memory.height)
-                                frame.position = Double(av_frame_get_best_effort_timestamp(videoFrame)) * videoTimeBase
-                                
-                                let frameDuration = Double(av_frame_get_pkt_duration(videoFrame))
-                                if (frameDuration > 0) {
-                                    
-                                    frame.duration = frameDuration * videoTimeBase;
-                                    frame.duration += Double(videoFrame.memory.repeat_pict) * videoTimeBase * 0.5;
-                                    
-                                    //if (_videoFrame->repeat_pict > 0) {
-                                    //    LoggerVideo(0, @"_videoFrame.repeat_pict %d", _videoFrame->repeat_pict);
-                                    //}
-                                    
-                                } else {
-                                    
-                                    // sometimes, ffmpeg unable to determine a frame duration
-                                    // as example yuvj420p stream from web camera
-                                    frame.duration = 1.0 / fps;
-                                }    
                                 
                                 result.append(frame)
                                 
-//                                _position = frame.position;
                                 decodedDuration += frame.duration
                                 if (decodedDuration > minDuration) {
                                     finished = true
@@ -252,16 +198,76 @@ class PlayerDecoder: NSObject {
         return nil
     }
     
-    private func handleVideoFrame() {
-        
+    private func handleVideoFrame(frame: UnsafeMutablePointer<AVFrame>,
+                                  codecContext: UnsafeMutablePointer<AVCodecContext>)
+        -> VideoFrame?{
+            if frame.memory.data.0 == nil {
+                return nil
+            }
+            
+            var decodedFrame: VideoFrame?
+            
+            if frameFormat == .Some(.YUV)  {
+                let yuvFrame = VideoFrameYUV()
+                yuvFrame.luma = copyFrameData(frame.memory.data.0,
+                                              lineSize: frame.memory.linesize.0,
+                                              width: codecContext.memory.width,
+                                              height: codecContext.memory.height)
+                
+                yuvFrame.chromaB = copyFrameData(frame.memory.data.1,
+                                                 lineSize: frame.memory.linesize.1,
+                                                 width: codecContext.memory.width / 2,
+                                                 height: codecContext.memory.height / 2)
+                
+                yuvFrame.chromaR = copyFrameData(frame.memory.data.2,
+                                                 lineSize: frame.memory.linesize.1,
+                                                 width: codecContext.memory.width / 2,
+                                                 height: codecContext.memory.height / 2)
+                
+                decodedFrame = yuvFrame
+                
+            }else if frameFormat == .Some(.RGB) {
+//                if swsContext != nil && !setupScaler() {
+//                    print("fail setup video scaler")
+//                    return nil
+//                }
+//                
+//                sws_scale(swsContext, unsafeBitCast(videoFrame.memory.data, UnsafePointer<UnsafePointer<UInt8>>.self), unsafeBitCast(videoFrame.memory.linesize, UnsafePointer<Int32>.self), 0, videoCodecCtx.memory.height, picture!.data, picture!.linesize)
+                
+//                let rgbFrame = VideoFrameRGB()
+//                rgbFrame.rgb = picture?.data.0
+            }
+            
+            decodedFrame?.width = UInt(codecContext.memory.width)
+            decodedFrame?.height = UInt(codecContext.memory.height)
+            decodedFrame?.position = Double(av_frame_get_best_effort_timestamp(frame)) * videoTimeBase
+            
+            let frameDuration = Double(av_frame_get_pkt_duration(frame))
+            if (frameDuration > 0) {
+                
+                decodedFrame?.duration = frameDuration * videoTimeBase;
+                decodedFrame?.duration += Double(frame.memory.repeat_pict) * videoTimeBase * 0.5;
+                
+                //if (_videoFrame->repeat_pict > 0) {
+                //    LoggerVideo(0, @"_videoFrame.repeat_pict %d", _videoFrame->repeat_pict);
+                //}
+                
+            } else {
+                
+                // sometimes, ffmpeg unable to determine a frame duration
+                // as example yuvj420p stream from web camera
+                decodedFrame?.duration = 1.0 / fps;
+            }
+            
+            return decodedFrame
     }
     
 //    private func setupScaler() -> Bool{
 //        closeScaler()
-//        
+//
 //        if var picture = self.picture, let videoCodecCtx = self.videoCodecContext {
 //            pictureValid = (avpicture_alloc(&picture, AV_PIX_FMT_RGB24, videoCodecCtx.memory.width, videoCodecCtx.memory.height) == 0)
-//            
+//
 //            if !pictureValid {
 //                return false
 //            }
@@ -286,7 +292,7 @@ class PlayerDecoder: NSObject {
 //            pictureValid = false
 //        }
 //    }
-    
+//    
     //MARK:- VideoStream
     
     private func openVideoStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
@@ -443,17 +449,17 @@ private func collectStreamIndexs(formatContext: UnsafePointer<AVFormatContext>, 
 private func copyFrameData(source: UnsafeMutablePointer<UInt8>, lineSize: Int32, width: Int32, height: Int32) -> NSMutableData?{
     let width = Int(min(width, lineSize))
     let height = Int(height)
-    var offset = 0
+    var src = source
     
     let data = NSMutableData(length: width * height)
     let dataPointer = data?.mutableBytes
     
     if  var dst = dataPointer {
         for _ in 0..<height {
-            source.assignFrom(source, count: offset)
+            
             memcpy(dst, source, width)
             dst += width
-            offset += Int(lineSize)
+            src = src.advancedBy(Int(lineSize))
         }
     }
     
