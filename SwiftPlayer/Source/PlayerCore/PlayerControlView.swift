@@ -328,6 +328,11 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
     }
     
     func durationStringWithTime(time: NSTimeInterval) -> String {
+        
+        if time.isNaN {
+            return ""
+        }
+        
         let min = String(format: "%02d", Int(time / 60))
         let sec = String(format: "%02d", Int(time % 60))
         

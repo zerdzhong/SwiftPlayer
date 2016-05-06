@@ -179,6 +179,10 @@ class PlayerGLView: UIView {
     private var decoder: PlayerDecoder?
     
     var videoFrames = Array<VideoFrame>()
+    var bufferedDuration: Double = 0
+    var minBufferedDuration: Double = 0.2
+    
+    let lockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.LockQueue", nil)
     
     
     override init(frame: CGRect) {
@@ -195,11 +199,11 @@ class PlayerGLView: UIView {
         self.init(frame: frame)
         
         self.decoder = decoder
-        if decoder.setupVideoFrameFormat(VideoFrameFormat.YUV) {
+//        if decoder.setupVideoFrameFormat(VideoFrameFormat.YUV) {
             render = MovieGLYUVRender()
-        }else {
-            render = MovieGLRGBRender()
-        }
+//        }else {
+//            render = MovieGLRGBRender()
+//        }
     }
     
     func play(fileURL: String) -> Void{
@@ -233,7 +237,7 @@ class PlayerGLView: UIView {
             if decoder.isEOF {
                 return
             }
-        }else {
+        }else if bufferedDuration < minBufferedDuration{
             decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
                 self.addFrames(frames)
             })
@@ -246,12 +250,17 @@ class PlayerGLView: UIView {
     }
     
     private func presentFrame() {
-        if videoFrames.count > 0 {
-            let frame = videoFrames[0]
-            videoFrames.removeAtIndex(0)
-            
-            renderFrame(frame)
+        if videoFrames.count <= 0 {
+            return
         }
+        
+        let frame = videoFrames[0]
+        dispatch_sync(lockQueue) {
+            self.videoFrames.removeAtIndex(0)
+            self.bufferedDuration -= frame.duration
+        }
+        
+        renderFrame(frame)
     }
     
     private func addFrames(frames: Array<VideoFrame>?) -> Void {
@@ -261,11 +270,11 @@ class PlayerGLView: UIView {
         }
         
         if ((decoder?.vaildVideo()) != nil) {
-            let lockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.LockQueue", nil)
             dispatch_sync(lockQueue) {
                 for frame: VideoFrame in frames! {
                     if frame.type == .Video {
                         self.videoFrames.append(frame)
+                        self.bufferedDuration += frame.duration
                     }
                 }
             }

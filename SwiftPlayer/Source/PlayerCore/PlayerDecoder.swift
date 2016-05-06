@@ -170,7 +170,7 @@ class PlayerDecoder: NSObject {
                     var packetSize = packet.size
                     
                     while packetSize > 0 {
-                        var gotFrame:Int32 = 0
+                        var gotFrame:Int32 = 1
                         let length = avcodec_decode_video2(videoCodecCtx, videoFrame, &gotFrame, &packet)
                         
                         if length < 0 || gotFrame == 0{
@@ -178,11 +178,9 @@ class PlayerDecoder: NSObject {
                             break;
                         }
                         
-                        
                         let decodedFrame = handleVideoFrame(videoFrame, codecContext: videoCodecCtx)
                         
                         if let frame = decodedFrame {
-                            
                             result.append(frame)
                             
                             decodedDuration += frame.duration
@@ -191,11 +189,9 @@ class PlayerDecoder: NSObject {
                             }
                         }
                         
-                        if 0 == length {
-                            break
+                        if 0 != length {
+                            packetSize -= length
                         }
-                        
-                        packetSize -= length
                     }
                 }
                 
