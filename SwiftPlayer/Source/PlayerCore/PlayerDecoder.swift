@@ -29,27 +29,44 @@ enum VideoFrameFormat {
     case YUV
 }
 
-class MovieFrame {
-    var type:MovieFrameType?
-    var position: Double = 0
-    var duration: Double = 0
+protocol MovieFrame {
+    var type:MovieFrameType { get }
+    var position: Double { get set }
+    var duration: Double { get set }
+}
+
+extension MovieFrame {
+    var position: Double {
+        return 0
+    }
+    
+    var duration: Double {
+        return 0
+    }
 }
 
 class VideoFrame: MovieFrame {
     var format: VideoFrameFormat?
     var width: UInt = 0
     var height: UInt = 0
+    
+    var position: Double = 0.0
+    var duration: Double = 0.0
+    
+    var type: MovieFrameType {
+        return .Video
+    }
 }
 
 class VideoFrameYUV: VideoFrame {
-    var luma: NSData?
-    var chromaB: NSData?
-    var chromaR: NSData?
+    var luma = NSData()
+    var chromaB = NSData()
+    var chromaR = NSData()
 }
 
 class VideoFrameRGB: VideoFrame {
     var lineSize: UInt = 0
-    var rgb: NSData?
+    var rgb = NSData()
 }
 
 typealias SwsContext = COpaquePointer
@@ -156,32 +173,22 @@ class PlayerDecoder: NSObject {
                         var gotFrame:Int32 = 0
                         let length = avcodec_decode_video2(videoCodecCtx, videoFrame, &gotFrame, &packet)
                         
-                        if length < 0 {
+                        if length < 0 || gotFrame == 0{
                             print("decode video error, skip packet")
                             break;
                         }
                         
-                        if gotFrame != 0 {
-//                            if !disableDeinterlacing && videoFrame.memory.interlaced_frame != 0{
-//                                avpicture_deinterlace((AVPicture*)_videoFrame,
-//                                                      (AVPicture*)_videoFrame,
-//                                                      _videoCodecCtx->pix_fmt,
-//                                    _videoCodecCtx->width,
-//                                    _videoCodecCtx->height);
-//                            }
+                        
+                        let decodedFrame = handleVideoFrame(videoFrame, codecContext: videoCodecCtx)
+                        
+                        if let frame = decodedFrame {
                             
-                            let decodedFrame = handleVideoFrame(videoFrame, codecContext: videoCodecCtx)
+                            result.append(frame)
                             
-                            if let frame = decodedFrame {
-                                
-                                result.append(frame)
-                                
-                                decodedDuration += frame.duration
-                                if (decodedDuration > minDuration) {
-                                    finished = true
-                                }
+                            decodedDuration += frame.duration
+                            if (decodedDuration > minDuration) {
+                                finished = true
                             }
-                            
                         }
                         
                         if 0 == length {
@@ -191,7 +198,11 @@ class PlayerDecoder: NSObject {
                         packetSize -= length
                     }
                 }
+                
+                av_packet_unref(&packet)
             }
+            
+            return result
         }
         
         
@@ -446,12 +457,12 @@ private func collectStreamIndexs(formatContext: UnsafePointer<AVFormatContext>, 
     return streamIndexs
 }
 
-private func copyFrameData(source: UnsafeMutablePointer<UInt8>, lineSize: Int32, width: Int32, height: Int32) -> NSMutableData?{
+private func copyFrameData(source: UnsafeMutablePointer<UInt8>, lineSize: Int32, width: Int32, height: Int32) -> NSMutableData{
     let width = Int(min(width, lineSize))
     let height = Int(height)
     var src = source
     
-    let data = NSMutableData(length: width * height)
+    let data: NSMutableData! = NSMutableData(length: width * height)
     let dataPointer = data?.mutableBytes
     
     if  var dst = dataPointer {

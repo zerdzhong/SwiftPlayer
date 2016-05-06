@@ -51,7 +51,7 @@ protocol MovieGLRender {
     func isValid() -> Bool
     func fragmentShader() -> String
     func prepareRender() -> Bool
-    func setFrame(frame: VideoFrame) -> Void
+    mutating func setFrame(frame: VideoFrame) -> Void
     mutating func resolveUniforms(program: GLuint) -> Void
 }
 
@@ -84,7 +84,7 @@ struct MovieGLRGBRender: MovieGLRender {
         return true;
     }
     
-    func setFrame(frame: VideoFrame) -> Void {
+    mutating func setFrame(frame: VideoFrame) -> Void {
         
     }
 }
@@ -122,8 +122,38 @@ struct MovieGLYUVRender: MovieGLRender {
         return true
     }
     
-    func setFrame(frame: VideoFrame) -> Void {
-        
+    mutating func setFrame(frame: VideoFrame) -> Void {
+        if frame is VideoFrameYUV {
+            let yuvFrame = frame as! VideoFrameYUV
+
+            let frameWidth = yuvFrame.width
+            let frameHeight = yuvFrame.height
+            
+            glPixelStorei(GLuint(GL_UNPACK_ALIGNMENT), 1)
+            
+            if 0 == textures[0] {
+                glGenTextures(3, &textures)
+            }
+            
+            let pixels = [yuvFrame.luma.bytes, yuvFrame.chromaB.bytes, yuvFrame.chromaR.bytes]
+            let widths = [frameWidth, frameWidth / 2, frameWidth / 2]
+            let heights = [frameHeight, frameHeight / 2, frameHeight / 2]
+            
+            for i in 0..<3 {
+                glBindBuffer(GLuint(GL_TEXTURE_2D), textures[i])
+                glTexImage2D(GLuint(GL_TEXTURE_2D), 0,
+                             GLint(GL_LUMINANCE),
+                             GLsizei(widths[i]),
+                             GLsizei(heights[i]), 0,
+                             GLuint(GL_LUMINANCE),
+                             GLuint(GL_UNSIGNED_BYTE), pixels[i])
+                
+                glTexParameteri(GLuint(GL_TEXTURE_2D), GLuint(GL_TEXTURE_MAG_FILTER), GLint(GL_LINEAR))
+                glTexParameteri(GLuint(GL_TEXTURE_2D), GLuint(GL_TEXTURE_MIN_FILTER), GLint(GL_LINEAR))
+                glTexParameterf(GLuint(GL_TEXTURE_2D), GLuint(GL_TEXTURE_WRAP_S), GLfloat(GL_CLAMP_TO_EDGE))
+                glTexParameterf(GLuint(GL_TEXTURE_2D), GLuint(GL_TEXTURE_WRAP_T), GLfloat(GL_CLAMP_TO_EDGE))
+            }
+        }
     }
 }
 
@@ -179,20 +209,52 @@ class PlayerGLView: UIView {
 
             decoder.setupVideoFrameFormat(.YUV)
             
-//            let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
-//            dispatch_after(popTime, dispatch_get_main_queue()) {
-//                
-//            }
-            
             decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
                 self.addFrames(frames)
             })
+            
+            let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
+            dispatch_after(popTime, dispatch_get_main_queue()) {
+                self.tick(decoder)
+            }
+            
+            
         } catch {
             print("error")
         }
     }
     
-    func addFrames(frames: Array<VideoFrame>?) -> Void {
+    private func tick(decoder: PlayerDecoder) {
+        let leftFrame = videoFrames.count
+        
+        presentFrame()
+        
+        if 0 == leftFrame {
+            if decoder.isEOF {
+                return
+            }
+        }else {
+            decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
+                self.addFrames(frames)
+            })
+        }
+        
+        let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
+        dispatch_after(popTime, dispatch_get_main_queue()) {
+            self.tick(decoder)
+        }
+    }
+    
+    private func presentFrame() {
+        if videoFrames.count > 0 {
+            let frame = videoFrames[0]
+            videoFrames.removeAtIndex(0)
+            
+            renderFrame(frame)
+        }
+    }
+    
+    private func addFrames(frames: Array<VideoFrame>?) -> Void {
         
         if frames == nil {
             return
@@ -210,7 +272,7 @@ class PlayerGLView: UIView {
         }
     }
     
-    func renderFrame(frame: VideoFrame) -> Void {
+   private func renderFrame(frame: VideoFrame) -> Void {
         let texCoords:[GLfloat] = [0.0, 1.0,
                                    1.0, 1.0,
                                    0.0, 0.0,
