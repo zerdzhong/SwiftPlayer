@@ -77,7 +77,10 @@ class ViewController: UITableViewController {
         
         do {
             let videos = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsDir).flatMap { (itemString: String) -> String? in
-                if itemString.containsString("mp4") || itemString.containsString("rmvb"){
+                if itemString.containsString("mp4")
+                || itemString.containsString("rmvb")
+                || itemString.containsString("mkv")
+                    {
                     let itemPath = documentsDir + "/" + itemString
                     
                     return itemPath

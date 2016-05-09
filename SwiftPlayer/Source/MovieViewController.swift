@@ -20,7 +20,7 @@ class MovieViewController: UIViewController {
             playerView.videoURL = NSURL(fileURLWithPath: videoURLString)
         }
         
-        if videoURLString.containsString("rmvb") {
+        if videoURLString.containsString("rmvb") || videoURLString.containsString("mkv") {
             
             let decoder = PlayerDecoder()
             
