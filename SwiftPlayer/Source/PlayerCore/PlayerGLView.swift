@@ -184,6 +184,9 @@ class PlayerGLView: UIView {
     
     let lockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.LockQueue", nil)
     
+    override class func layerClass() -> AnyClass {
+        return CAEAGLLayer.self
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -222,6 +225,7 @@ class PlayerGLView: UIView {
                 self.tick(decoder)
             }
             
+            self.decoder = decoder
             
         } catch {
             print("error")
@@ -352,21 +356,15 @@ class PlayerGLView: UIView {
     }
     
     private func setupGLLayer() -> Void {
-        self.layer.insertSublayer(eaglLayer, atIndex: 0)
+        eaglLayer = self.layer as! CAEAGLLayer
         eaglLayer.backgroundColor = UIColor.redColor().CGColor
         eaglLayer.opaque = true
         eaglLayer.drawableProperties = [kEAGLDrawablePropertyRetainedBacking:NSNumber(bool: false),
                                         kEAGLDrawablePropertyColorFormat:kEAGLColorFormatRGBA8]
         
-        if eaglContenxt != nil || EAGLContext.setCurrentContext(eaglContenxt) {
+        if eaglContenxt == nil || !EAGLContext.setCurrentContext(eaglContenxt) {
             print("failed to setup EAGLContext")
         }
-    }
-    
-    private func setupFrameBuffer() -> Void {
-        glGenFramebuffers(1, &frameBuffer)
-        glBindFramebuffer(UInt32(GL_FRAMEBUFFER), frameBuffer)
-        glFramebufferRenderbuffer(UInt32(GL_FRAMEBUFFER), UInt32(GL_COLOR_ATTACHMENT0), UInt32(GL_RENDERBUFFER), renderBuffer)
     }
     
     private func setupRenderBuffer() -> Void {
@@ -377,6 +375,13 @@ class PlayerGLView: UIView {
         glGetRenderbufferParameteriv(UInt32(GL_RENDERBUFFER), UInt32(GL_RENDERBUFFER_WIDTH), &backingWidth);
         glGetRenderbufferParameteriv(UInt32(GL_RENDERBUFFER), UInt32(GL_RENDERBUFFER_HEIGHT), &backingHeight);
     }
+    
+    private func setupFrameBuffer() -> Void {
+        glGenFramebuffers(1, &frameBuffer)
+        glBindFramebuffer(UInt32(GL_FRAMEBUFFER), frameBuffer)
+        glFramebufferRenderbuffer(UInt32(GL_FRAMEBUFFER), UInt32(GL_COLOR_ATTACHMENT0), UInt32(GL_RENDERBUFFER), renderBuffer)
+    }
+    
     
     private func setupShaders() -> Bool{
         
