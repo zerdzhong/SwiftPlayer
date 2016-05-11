@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		47157B781CE2DF2800E556B4 /* YUVFragmentShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 47157B771CE2DF2800E556B4 /* YUVFragmentShader.glsl */; };
+		47157B7A1CE2DF6300E556B4 /* RGBFragmentShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 47157B791CE2DF6300E556B4 /* RGBFragmentShader.glsl */; };
+		47157B7C1CE2DF8E00E556B4 /* VertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 47157B7B1CE2DF8E00E556B4 /* VertexShader.glsl */; };
 		477A21E51CA1184800316017 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */; };
 		47AA08401C9172AD002B5430 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47AA083E1C9172AD002B5430 /* Main.storyboard */; };
 		47AA08421C9172AD002B5430 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47AA08411C9172AD002B5430 /* Assets.xcassets */; };
@@ -30,6 +33,7 @@
 		47B3F4741CC8C68F00582B4E /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4731CC8C68F00582B4E /* libbz2.tbd */; };
 		47B3F4751CC8C69F00582B4E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4671CC8C1A000582B4E /* libz.tbd */; };
 		47B3F5431CCE271200582B4E /* PlayerGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B3F5421CCE271200582B4E /* PlayerGLView.swift */; };
+		47BDD3CD1CE2108C00054050 /* GLESUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47BDD3CC1CE2108C00054050 /* GLESUtils.swift */; };
 		47E1FD1E1C997AF800AD93D8 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */; };
 		47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */; };
 		47F7FE1D1CBCECB90087F894 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */; };
@@ -54,6 +58,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		47157B771CE2DF2800E556B4 /* YUVFragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = YUVFragmentShader.glsl; sourceTree = "<group>"; };
+		47157B791CE2DF6300E556B4 /* RGBFragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = RGBFragmentShader.glsl; sourceTree = "<group>"; };
+		47157B7B1CE2DF8E00E556B4 /* VertexShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = VertexShader.glsl; sourceTree = "<group>"; };
 		47AA08371C9172AD002B5430 /* SwiftPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47AA083F1C9172AD002B5430 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		47AA08411C9172AD002B5430 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -180,6 +187,7 @@
 		47B3F4711CC8C62B00582B4E /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		47B3F4731CC8C68F00582B4E /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		47B3F5421CCE271200582B4E /* PlayerGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLView.swift; sourceTree = "<group>"; };
+		47BDD3CC1CE2108C00054050 /* GLESUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLESUtils.swift; sourceTree = "<group>"; };
 		47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
@@ -225,6 +233,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		47157B761CE2DEA700E556B4 /* GLSL */ = {
+			isa = PBXGroup;
+			children = (
+				47157B771CE2DF2800E556B4 /* YUVFragmentShader.glsl */,
+				47157B791CE2DF6300E556B4 /* RGBFragmentShader.glsl */,
+				47157B7B1CE2DF8E00E556B4 /* VertexShader.glsl */,
+			);
+			path = GLSL;
+			sourceTree = "<group>";
+		};
 		47AA082E1C9172AC002B5430 = {
 			isa = PBXGroup;
 			children = (
@@ -293,6 +311,8 @@
 			isa = PBXGroup;
 			children = (
 				47B3F46D1CC8C46200582B4E /* SwiftPlayer-Bridging-Header.h */,
+				47157B761CE2DEA700E556B4 /* GLSL */,
+				47BDD3CB1CE2108C00054050 /* Utils */,
 				47F847C41CA5217800B6AC68 /* Views */,
 				47AA086E1C91AB03002B5430 /* PlayerView.swift */,
 				47E1FD1D1C997AF800AD93D8 /* PlayerControlView.swift */,
@@ -493,6 +513,14 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
+		47BDD3CB1CE2108C00054050 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				47BDD3CC1CE2108C00054050 /* GLESUtils.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		47E1FD211C997EAD00AD93D8 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -627,9 +655,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47157B7C1CE2DF8E00E556B4 /* VertexShader.glsl in Resources */,
 				47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */,
 				47AA08451C9172AD002B5430 /* LaunchScreen.storyboard in Resources */,
+				47157B7A1CE2DF6300E556B4 /* RGBFragmentShader.glsl in Resources */,
 				47AA08421C9172AD002B5430 /* Assets.xcassets in Resources */,
+				47157B781CE2DF2800E556B4 /* YUVFragmentShader.glsl in Resources */,
 				47AA08401C9172AD002B5430 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -679,6 +710,7 @@
 				47AA086C1C91A5E3002B5430 /* ViewController.swift in Sources */,
 				47AA086B1C91A5E3002B5430 /* AppDelegate.swift in Sources */,
 				47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */,
+				47BDD3CD1CE2108C00054050 /* GLESUtils.swift in Sources */,
 				47F847C61CA521C200B6AC68 /* PlayButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
