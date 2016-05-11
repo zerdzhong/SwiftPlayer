@@ -9,39 +9,6 @@
 import UIKit
 import OpenGLES
 
-let vertexShader =  "attribute vec4 position;" +
-                    "attribute vec2 texcoord;" +
-                    "uniform mat4 modelViewProjectionMatrix;" +
-                    "varying vec2 v_texcoord;" +
-
-                    "void main()" +
-                    "{" +
-                        "gl_Position = modelViewProjectionMatrix * position;" +
-                        "v_texcoord = texcoord.xy;" +
-                    "}"
-
-let rgbFragmentShader = "varying highp vec2 v_texcoord;" +
-                        "uniform sampler2D s_texture;" +
-                        "void main()" +
-                        "{" +
-                            " gl_FragColor = texture2D(s_texture, v_texcoord);" +
-                        "}"
-
-let yuvFragmentShader = "varying highp vec2 v_texcoord;" +
-                        "uniform sampler2D s_texture_y;" +
-                        "uniform sampler2D s_texture_u;" +
-                        "uniform sampler2D s_texture_v;" +
-                        "void main()" +
-                        "{" +
-                            "highp float y = texture2D(s_texture_y, v_texcoord).r;" +
-                            "highp float u = texture2D(s_texture_u, v_texcoord).r - 0.5;" +
-                            "highp float v = texture2D(s_texture_v, v_texcoord).r - 0.5;" +
-                            "highp float r = y +             1.402 * v;" +
-                            "highp float g = y - 0.344 * u - 0.714 * v;" +
-                            "highp float b = y + 1.772 * u;" +
-                            "gl_FragColor = vec4(r,g,b,1.0);" +
-                        "}"
-
 enum ATTRBUTEIndex: UInt32 {
     case VERTEX
     case TEXCOORD
@@ -49,7 +16,7 @@ enum ATTRBUTEIndex: UInt32 {
 
 protocol MovieGLRender {
     func isValid() -> Bool
-    func fragmentShader() -> String
+    func loadFragmentShader() -> GLuint
     func prepareRender() -> Bool
     mutating func setFrame(frame: VideoFrame) -> Void
     mutating func resolveUniforms(program: GLuint) -> Void
@@ -64,8 +31,8 @@ struct MovieGLRGBRender: MovieGLRender {
         return (texture != 0)
     }
     
-    func fragmentShader() -> String {
-        return rgbFragmentShader
+    func loadFragmentShader() -> GLuint {
+        return loadShader(UInt32(GL_FRAGMENT_SHADER), shaderPath:  NSBundle.mainBundle().pathForResource("RGBFragmentShader", ofType: "glsl")!)
     }
     
     mutating func resolveUniforms(program: GLuint) -> Void {
@@ -98,8 +65,8 @@ struct MovieGLYUVRender: MovieGLRender {
         return (textures[0] != 0)
     }
     
-    func fragmentShader() -> String {
-        return yuvFragmentShader
+    func loadFragmentShader() -> GLuint {
+        return loadShader(UInt32(GL_FRAGMENT_SHADER), shaderPath:  NSBundle.mainBundle().pathForResource("YUVFragmentShader", ofType: "glsl")!)
     }
     
     mutating func resolveUniforms(program: GLuint) -> Void {
@@ -175,7 +142,7 @@ class PlayerGLView: UIView {
                                            -1.0 ,   1.0,
                                            1.0  ,   1.0]
     private var uniformMatrix: Int32 = 0
-    private var render: MovieGLRender?
+    private var render: MovieGLRender! = MovieGLYUVRender()
     private var decoder: PlayerDecoder?
     
     var videoFrames = Array<VideoFrame>()
@@ -188,33 +155,19 @@ class PlayerGLView: UIView {
         return CAEAGLLayer.self
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInit()
-    }
-    
-    convenience init(frame: CGRect, decoder: PlayerDecoder) {
-        self.init(frame: frame)
-        
-        self.decoder = decoder
-//        if decoder.setupVideoFrameFormat(VideoFrameFormat.YUV) {
-            render = MovieGLYUVRender()
-//        }else {
-//            render = MovieGLRGBRender()
-//        }
-    }
     
     func play(fileURL: String) -> Void{
         do {
             let decoder = PlayerDecoder()
             try decoder.openFile(fileURL)
-
-            decoder.setupVideoFrameFormat(.YUV)
+            
+            if decoder.setupVideoFrameFormat(VideoFrameFormat.YUV) {
+                render = MovieGLYUVRender()
+            }else {
+                render = MovieGLRGBRender()
+            }
+            
+            commonInit()
             
             decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
                 self.addFrames(frames)
@@ -285,7 +238,7 @@ class PlayerGLView: UIView {
         }
     }
     
-   private func renderFrame(frame: VideoFrame) -> Void {
+    private func renderFrame(frame: VideoFrame?) -> Void {
         let texCoords:[GLfloat] = [0.0, 1.0,
                                    1.0, 1.0,
                                    0.0, 0.0,
@@ -301,9 +254,11 @@ class PlayerGLView: UIView {
         
         glUseProgram(program)
         
-        render?.setFrame(frame)
+        if let frame = frame {
+            render.setFrame(frame)
+        }
         
-        if ((render?.prepareRender()) != nil) {
+        if render.prepareRender() {
             
             let modelviewProj = mat4f_LoadOrtho(-1.0, right: 1.0, bottom: -1.0, top: 1.0, near: -1.0, far: 1.0)
             
@@ -336,7 +291,7 @@ class PlayerGLView: UIView {
         }
         
         updateVertices()
-//        renderFrame(VideoFrame())
+        renderFrame(nil)
     }
     
     private func commonInit() {
@@ -390,8 +345,8 @@ class PlayerGLView: UIView {
         if var render = self.render {
             program = glCreateProgram()
             
-            let vertShader = compileGLShader(UInt32(GL_VERTEX_SHADER), shaderString: vertexShader)
-            let fragShader = compileGLShader(UInt32(GL_FRAGMENT_SHADER), shaderString: render.fragmentShader())
+            let vertShader = loadShader(UInt32(GL_VERTEX_SHADER), shaderPath: NSBundle.mainBundle().pathForResource("VertexShader", ofType: "glsl")!)
+            let fragShader = render.loadFragmentShader()
             
             if vertShader != 0 && fragShader != 0 {
                 glAttachShader(program, vertShader)
@@ -468,66 +423,26 @@ class PlayerGLView: UIView {
         }
         
         let dH      = Float(backingHeight) / Float(height)
-        let dW      = Float(backingWidth)	  / Float(width)
+        let dW      = Float(backingWidth)  / Float(width)
         let dd      = fit ? min(dH, dW) : max(dH, dW);
         let h       = (Float(height) * dd / Float(backingHeight))
         let w       = (Float(width)  * dd / Float(backingWidth ))
         
         vertices[0] = -w;
         vertices[1] = -h;
-        vertices[2] =   w;
+        vertices[2] =  w;
         vertices[3] = -h;
         vertices[4] = -w;
-        vertices[5] =   h;
-        vertices[6] =   w;
-        vertices[7] =   h;
+        vertices[5] =  h;
+        vertices[6] =  w;
+        vertices[7] =  h;
 
     }
 }
 
-private func compileGLShader(type: GLenum, shaderString: String) -> GLuint {
+private func mat4f_LoadOrtho(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) -> Array<GLfloat> {
     
-    if let cShtringPoint = shaderString.cStringUsingEncoding(NSUTF8StringEncoding) {
-        var sources = UnsafePointer<GLchar>(cShtringPoint)
-        
-        let shader = glCreateShader(type)
-        if shader == 0 || shader == UInt32(GL_INVALID_ENUM) {
-            print("Failed to create shader \(type)")
-            return 0
-        }
-        
-        glShaderSource(shader, 1, &sources, nil)
-        glCompileShader(shader)
-        
-        #if DEBUG
-            var logLength: GLint = 0
-            glGetShaderiv(shader, UInt32(GL_INFO_LOG_LENGTH), &logLength)
-            if logLength > 0 {
-                let log = malloc(Int(logLength))
-                glGetShaderInfoLog(shader, logLength, &logLength, unsafeBitCast(log, UnsafeMutablePointer<GLchar>.self))
-                print("Shader compile log:\(log)")
-                free(log)
-            }
-        #endif
-        
-        var status: GLint = 0
-        glGetShaderiv(shader, UInt32(GL_COMPILE_STATUS), &status)
-        
-        if status == GL_FALSE {
-            glDeleteShader(shader)
-            print("Failed to create shader")
-            return 0
-        }
-        
-        return shader
-    }
-    
-    return 0
-}
-
-private func mat4f_LoadOrtho(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) -> Array<Float> {
-    
-    var mout = Array<Float>(count: 16, repeatedValue: 0)
+    var mout = Array<GLfloat>(count: 16, repeatedValue: 0)
     
     let r_l = right - left
     let t_b = top - bottom
