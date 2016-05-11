@@ -21,14 +21,11 @@ class MovieViewController: UIViewController {
         }
         
         if videoURLString.containsString("rmvb") || videoURLString.containsString("mkv") {
-            
-            let decoder = PlayerDecoder()
-            
-            let glView = PlayerGLView(frame: CGRectMake(100, 300, 200, 200), decoder: decoder)
-            glView.play(videoURLString)
-            
+            let glView = PlayerGLView(frame: self.view.bounds)
             self.view.addSubview(glView)
+            glView.play(videoURLString)
         }
+        
         
         refreshNavigationBarHidden(view.bounds.size)
     }

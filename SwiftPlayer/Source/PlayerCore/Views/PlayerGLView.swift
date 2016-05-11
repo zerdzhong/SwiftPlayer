@@ -81,7 +81,7 @@ struct MovieGLYUVRender: MovieGLRender {
         }
         
         for i in 0..<3 {
-            glActiveTexture(UInt32(GL_TEXTURE0 + i));
+            glActiveTexture(GLenum(GL_TEXTURE0 + i));
             glBindTexture(UInt32(GL_TEXTURE_2D), textures[i]);
             glUniform1i(uniformSamplers[i], GLint(i));
         }
