@@ -466,7 +466,7 @@ private func copyFrameData(source: UnsafeMutablePointer<UInt8>, lineSize: Int32,
     if  var dst = dataPointer {
         for _ in 0..<height {
             
-            memcpy(dst, source, width)
+            memcpy(dst, src, width)
             dst += width
             src = src.advancedBy(Int(lineSize))
         }
