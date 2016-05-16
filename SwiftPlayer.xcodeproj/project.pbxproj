@@ -17,6 +17,8 @@
 		473C72481CE3202D00CA8934 /* PlayerGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473C72421CE3202D00CA8934 /* PlayerGLView.swift */; };
 		473C72491CE3202D00CA8934 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473C72431CE3202D00CA8934 /* PlayerView.swift */; };
 		477A21E51CA1184800316017 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */; };
+		478745681CE6FE2100FB880D /* snsd.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 478745671CE6FE2100FB880D /* snsd.mp4 */; };
+		4787456A1CE6FFED00FB880D /* PlayerFileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478745691CE6FFED00FB880D /* PlayerFileReader.swift */; };
 		47AA08401C9172AD002B5430 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47AA083E1C9172AD002B5430 /* Main.storyboard */; };
 		47AA08421C9172AD002B5430 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47AA08411C9172AD002B5430 /* Assets.xcassets */; };
 		47AA08451C9172AD002B5430 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47AA08431C9172AD002B5430 /* LaunchScreen.storyboard */; };
@@ -36,6 +38,7 @@
 		47B3F4721CC8C62B00582B4E /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4711CC8C62B00582B4E /* VideoToolbox.framework */; };
 		47B3F4741CC8C68F00582B4E /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4731CC8C68F00582B4E /* libbz2.tbd */; };
 		47B3F4751CC8C69F00582B4E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4671CC8C1A000582B4E /* libz.tbd */; };
+		47D9B4F81CE9682000C8989B /* PlayerGLRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9B4F71CE9682000C8989B /* PlayerGLRender.swift */; };
 		47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */; };
 		47F7FE1D1CBCECB90087F894 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
@@ -67,6 +70,8 @@
 		473C72411CE3202D00CA8934 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		473C72421CE3202D00CA8934 /* PlayerGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLView.swift; sourceTree = "<group>"; };
 		473C72431CE3202D00CA8934 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		478745671CE6FE2100FB880D /* snsd.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = snsd.mp4; sourceTree = "<group>"; };
+		478745691CE6FFED00FB880D /* PlayerFileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerFileReader.swift; sourceTree = "<group>"; };
 		47AA08371C9172AD002B5430 /* SwiftPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47AA083F1C9172AD002B5430 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		47AA08411C9172AD002B5430 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -190,6 +195,7 @@
 		47B3F46D1CC8C46200582B4E /* SwiftPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		47B3F4711CC8C62B00582B4E /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		47B3F4731CC8C68F00582B4E /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		47D9B4F71CE9682000C8989B /* PlayerGLRender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLRender.swift; sourceTree = "<group>"; };
 		47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
 		47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -248,6 +254,8 @@
 			children = (
 				473C723D1CE3202D00CA8934 /* GLESUtils.swift */,
 				473C723E1CE3202D00CA8934 /* PlayerDecoder.swift */,
+				478745691CE6FFED00FB880D /* PlayerFileReader.swift */,
+				47D9B4F71CE9682000C8989B /* PlayerGLRender.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -545,6 +553,7 @@
 		47E1FD231C9987B500AD93D8 /* Videos */ = {
 			isa = PBXGroup;
 			children = (
+				478745671CE6FE2100FB880D /* snsd.mp4 */,
 				47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */,
 			);
 			path = Videos;
@@ -662,6 +671,7 @@
 				47AA08421C9172AD002B5430 /* Assets.xcassets in Resources */,
 				47157B781CE2DF2800E556B4 /* YUVFragmentShader.glsl in Resources */,
 				47AA08401C9172AD002B5430 /* Main.storyboard in Resources */,
+				478745681CE6FE2100FB880D /* snsd.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -706,12 +716,14 @@
 				473C72491CE3202D00CA8934 /* PlayerView.swift in Sources */,
 				473C72481CE3202D00CA8934 /* PlayerGLView.swift in Sources */,
 				47AA086C1C91A5E3002B5430 /* ViewController.swift in Sources */,
+				4787456A1CE6FFED00FB880D /* PlayerFileReader.swift in Sources */,
 				473C72451CE3202D00CA8934 /* PlayerDecoder.swift in Sources */,
 				47AA086B1C91A5E3002B5430 /* AppDelegate.swift in Sources */,
 				473C72441CE3202D00CA8934 /* GLESUtils.swift in Sources */,
 				473C72471CE3202D00CA8934 /* PlayerControlView.swift in Sources */,
 				47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */,
 				473C72461CE3202D00CA8934 /* PlayButton.swift in Sources */,
+				47D9B4F81CE9682000C8989B /* PlayerGLRender.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
