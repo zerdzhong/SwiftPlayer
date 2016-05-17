@@ -17,7 +17,9 @@ class ViewController: UITableViewController {
                                        "http://baobab.wdjcdn.com/1455782903700jy.mp4",
                                        "http://baobab.wdjcdn.com/14564977406580.mp4"]
     
-    var localDataSource: Array<String> = [NSBundle.mainBundle().pathForResource("150511_JiveBike", ofType: "mov")!]
+    
+    var localDataSource: Array<String> = [NSBundle.mainBundle().pathForResource("150511_JiveBike", ofType: "mov")!,
+                                          NSBundle.mainBundle().pathForResource("snsd", ofType: "mp4")!]
 
     override func viewDidLoad() {
         super.viewDidLoad()

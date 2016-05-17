@@ -14,18 +14,17 @@ class MovieViewController: UIViewController {
     var videoURLString: String = ""
     
     override func viewDidLoad() {
-        if videoURLString.containsString("http") {
-            playerView.videoURL = NSURL(string: videoURLString)
-        }else {
-            playerView.videoURL = NSURL(fileURLWithPath: videoURLString)
-        }
+//        if videoURLString.containsString("http") {
+//            playerView.videoURL = NSURL(string: videoURLString)
+//        }else {
+//            playerView.videoURL = NSURL(fileURLWithPath: videoURLString)
+//        }
         
-        if videoURLString.containsString("rmvb") || videoURLString.containsString("mkv") {
+//        if videoURLString.containsString("rmvb") || videoURLString.containsString("mkv") {
             let glView = PlayerGLView(frame: self.view.bounds)
             self.view.addSubview(glView)
             glView.play(videoURLString)
-        }
-        
+//        }
         
         refreshNavigationBarHidden(view.bounds.size)
     }
