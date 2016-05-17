@@ -67,16 +67,14 @@ class PlayerGLView: UIView {
             
             decoder.setupVideoFrameFormat(VideoFrameFormat.YUV)
             
-            decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
-                if frames?.count > 0 {
-                    self.renderFrame(frames![0])
-                }
+            decoder.asyncDecodeFrames(0.4, completeBlock: { (frames) in
+                self.addFrames(frames)
             })
             
-//            let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
-//            dispatch_after(popTime, dispatch_get_main_queue()) {
-//                self.tick(decoder)
-//            }
+            let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
+            dispatch_after(popTime, dispatch_get_main_queue()) {
+                self.tick(decoder)
+            }
             
             self.decoder = decoder
             
@@ -97,7 +95,7 @@ class PlayerGLView: UIView {
         }
         
         if bufferedDuration < minBufferedDuration{
-            decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
+            decoder.asyncDecodeFrames(0.4, completeBlock: { (frames) in
                 self.addFrames(frames)
             })
         }
