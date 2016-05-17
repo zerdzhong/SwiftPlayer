@@ -13,11 +13,11 @@ protocol MovieGLRender {
     func isValid() -> Bool
     func loadFragmentShader() -> GLuint
     func prepareRender() -> Bool
-    mutating func setFrame(frame: VideoFrame) -> Void
-    mutating func resolveUniforms(program: GLuint) -> Void
+    func setFrame(frame: VideoFrame) -> Void
+    func resolveUniforms(program: GLuint) -> Void
 }
 
-struct MovieGLRGBRender: MovieGLRender {
+class MovieGLRGBRender: MovieGLRender {
     
     var texture: GLuint = 0
     var uniformSampler: GLint = 0
@@ -30,7 +30,7 @@ struct MovieGLRGBRender: MovieGLRender {
         return loadShader(UInt32(GL_FRAGMENT_SHADER), shaderPath:  NSBundle.mainBundle().pathForResource("RGBFragmentShader", ofType: "glsl")!)
     }
     
-    mutating func resolveUniforms(program: GLuint) -> Void {
+    func resolveUniforms(program: GLuint) -> Void {
         uniformSampler = glGetUniformLocation(program, "s_texture")
     }
     
@@ -46,12 +46,12 @@ struct MovieGLRGBRender: MovieGLRender {
         return true;
     }
     
-    mutating func setFrame(frame: VideoFrame) -> Void {
+    func setFrame(frame: VideoFrame) -> Void {
         
     }
 }
 
-struct MovieGLYUVRender: MovieGLRender {
+class MovieGLYUVRender: MovieGLRender {
     
     private var uniformSamplers = [GLint](count: 3, repeatedValue: 0)
     private var textures = [GLuint](count: 3, repeatedValue: 0)
@@ -65,7 +65,7 @@ struct MovieGLYUVRender: MovieGLRender {
         return loadShader(UInt32(GL_FRAGMENT_SHADER), shaderPath:  shaderPath)
     }
     
-    mutating func resolveUniforms(program: GLuint) -> Void {
+    func resolveUniforms(program: GLuint) -> Void {
         uniformSamplers[0] = glGetUniformLocation(program, "s_texture_y");
         uniformSamplers[1] = glGetUniformLocation(program, "s_texture_u");
         uniformSamplers[2] = glGetUniformLocation(program, "s_texture_v");
@@ -85,7 +85,7 @@ struct MovieGLYUVRender: MovieGLRender {
         return true
     }
     
-    mutating func setFrame(frame: VideoFrame) -> Void {
+    func setFrame(frame: VideoFrame) -> Void {
         if let yuvFrame = frame as? VideoFrameYUV {
             
             let frameWidth = yuvFrame.width

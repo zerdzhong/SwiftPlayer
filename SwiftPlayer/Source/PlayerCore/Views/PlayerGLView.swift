@@ -32,8 +32,8 @@ class PlayerGLView: UIView {
                                            -1.0 ,   1.0,
                                            1.0  ,   1.0]
     private var uniformMatrix: Int32 = 0
-    private var render = MovieGLYUVRender()
-    private var decoder: PlayerDecoder?
+    private var render : MovieGLRender!
+    private var decoder = PlayerDecoder()
     
     var videoFrames = Array<VideoFrame>()
     var bufferedDuration: Double = 0
@@ -45,41 +45,42 @@ class PlayerGLView: UIView {
         return CAEAGLLayer.self
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
-    }
-    
     required init?(coder aDecoder: NSCoder) {
+        render = MovieGLYUVRender()
         super.init(coder: aDecoder)
     }
     
-    func play(fileURL: String) -> Void{
+    init(frame: CGRect, fileURL: String) {
+        
+        super.init(frame: frame)
+        
         do {
-            let decoder = PlayerDecoder()
             try decoder.openFile(fileURL)
             
-//            if decoder.setupVideoFrameFormat(VideoFrameFormat.YUV) {
-//                render = MovieGLYUVRender()
-//            }else {
-//                render = MovieGLRGBRender()
-//            }
+            if decoder.setupVideoFrameFormat(VideoFrameFormat.YUV) {
+                render = MovieGLYUVRender()
+            }else {
+                render = MovieGLRGBRender()
+            }
             
             decoder.setupVideoFrameFormat(VideoFrameFormat.YUV)
             
-            decoder.asyncDecodeFrames(0.4, completeBlock: { (frames) in
-                self.addFrames(frames)
-            })
-            
-            let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
-            dispatch_after(popTime, dispatch_get_main_queue()) {
-                self.tick(decoder)
-            }
-            
-            self.decoder = decoder
-            
         } catch {
             print("error")
+        }
+        
+        commonInit()
+    }
+    
+    func play() -> Void{
+        
+        decoder.asyncDecodeFrames(0.4, completeBlock: { (frames) in
+            self.addFrames(frames)
+        })
+        
+        let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
+        dispatch_after(popTime, dispatch_get_main_queue()) {
+            self.tick(self.decoder)
         }
     }
     
@@ -126,7 +127,7 @@ class PlayerGLView: UIView {
             return
         }
         
-        if ((decoder?.vaildVideo()) != nil) {
+        if decoder.vaildVideo() {
             dispatch_sync(lockQueue) {
                 for frame: VideoFrame in frames! {
                     if frame.type == .Video {
@@ -241,7 +242,7 @@ class PlayerGLView: UIView {
         
         var result = false
         
-//        if var render = self.render {
+        if let render = self.render {
             program = glCreateProgram()
             
             let vertShader = loadShader(UInt32(GL_VERTEX_SHADER), shaderPath: NSBundle.mainBundle().pathForResource("VertexShader", ofType: "glsl")!)
@@ -280,7 +281,7 @@ class PlayerGLView: UIView {
                 glDeleteProgram(program);
                 program = 0;
             }
-//        }
+        }
         
         return result;
     }
@@ -316,10 +317,9 @@ class PlayerGLView: UIView {
         var width:UInt   = 0
         var height:UInt  = 0
         
-        if let decoder = self.decoder {
-            width   = decoder.frameWidth()
-            height  = decoder.frameHeight()
-        }
+
+        width   = decoder.frameWidth()
+        height  = decoder.frameHeight()
         
         let dH      = Float(backingHeight) / Float(height)
         let dW      = Float(backingWidth)  / Float(width)
