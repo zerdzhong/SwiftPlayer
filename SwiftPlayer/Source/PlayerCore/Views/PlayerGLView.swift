@@ -41,6 +41,10 @@ class PlayerGLView: UIView {
     
     let lockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.LockQueue", nil)
     
+    private var tickCorrectionTime: NSTimeInterval = 0
+    private var moviePosition: NSTimeInterval = 0
+    private var tickCorrectionPosition: NSTimeInterval = 0
+    
     override class func layerClass() -> AnyClass {
         return CAEAGLLayer.self
     }
@@ -87,7 +91,7 @@ class PlayerGLView: UIView {
     private func tick(decoder: PlayerDecoder) {
         let leftFrame = videoFrames.count
         
-        presentFrame()
+        let interval = presentFrame()
         
         if 0 == leftFrame {
             if decoder.isEOF {
@@ -101,15 +105,40 @@ class PlayerGLView: UIView {
             })
         }
         
-        let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
+        let correction = tickCorrection()
+        let time = max(interval + correction, 0.01)
+        
+        let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC)))
         dispatch_after(popTime, dispatch_get_main_queue()) {
             self.tick(decoder)
         }
     }
     
-    private func presentFrame() {
+    func tickCorrection() -> NSTimeInterval {
+        let now = NSDate.timeIntervalSinceReferenceDate()
+        
+        if tickCorrectionTime == 0 {
+            tickCorrectionTime = now
+            tickCorrectionPosition = moviePosition
+            return 0
+        }
+        
+        let dPosition = moviePosition - tickCorrectionPosition
+        let dTime = now - tickCorrectionTime
+        var correction = dPosition - dTime;
+        
+        if correction > 1 || correction < -1 {
+            print("tick correction reset \(correction)")
+            correction = 0
+            tickCorrectionTime = 0
+        }
+        
+        return correction
+    }
+    
+    private func presentFrame() -> NSTimeInterval {
         if videoFrames.count <= 0 {
-            return
+            return 0
         }
         
         let frame = videoFrames[0]
@@ -118,7 +147,10 @@ class PlayerGLView: UIView {
             self.bufferedDuration -= frame.duration
         }
         
+        moviePosition = frame.position
         renderFrame(frame)
+        
+        return frame.duration
     }
     
     private func addFrames(frames: Array<VideoFrame>?) -> Void {
