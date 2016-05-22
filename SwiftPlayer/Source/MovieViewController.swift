@@ -22,7 +22,7 @@ class MovieViewController: UIViewController {
         
 //        if videoURLString.containsString("rmvb") || videoURLString.containsString("mkv") {
         let glView = PlayerGLView(frame: self.view.bounds, fileURL: videoURLString)
-//            glView.frame = self.view.bounds
+        glView.contentMode = .ScaleAspectFit
             self.view.addSubview(glView)
             glView.play()
 //        }
