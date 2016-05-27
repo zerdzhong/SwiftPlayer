@@ -76,6 +76,7 @@ class PlayerDecoder: NSObject {
     var fps: Double = 0
     var isEOF: Bool = false
     var disableDeinterlacing: Bool = true
+    var decoding: Bool = false;
     
     private var pFormatCtx: UnsafeMutablePointer<AVFormatContext>?
     private var videoCodecContext: UnsafeMutablePointer<AVCodecContext>?
@@ -92,6 +93,8 @@ class PlayerDecoder: NSObject {
     
     private var picture: AVPicture?
     private var pictureValid: Bool = false
+    
+    private let dispatchQueue = dispatch_queue_create("SwiftPlayerDecoder", DISPATCH_QUEUE_SERIAL)
     
     //    private var swsContext = SwsContext()
     
@@ -137,10 +140,17 @@ class PlayerDecoder: NSObject {
     }
     
     func asyncDecodeFrames(minDuration: Double, completeBlock:(frames:Array<VideoFrame>?)->()) -> Void {
-        let dispatchQueue = dispatch_queue_create("SwiftPlayerDecoder", DISPATCH_QUEUE_SERIAL)
+        
+        if decoding {
+            return
+        }
+        
+        decoding = true
         
         dispatch_async(dispatchQueue) {
             completeBlock(frames: self.decodeFrames(minDuration))
+            
+            self.decoding = false;
         }
     }
     

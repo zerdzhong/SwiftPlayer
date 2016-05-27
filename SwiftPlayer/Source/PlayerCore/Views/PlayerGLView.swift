@@ -99,8 +99,8 @@ class PlayerGLView: UIView {
             }
         }
         
-        if bufferedDuration < minBufferedDuration{
-            decoder.asyncDecodeFrames(0.4, completeBlock: { (frames) in
+        if (leftFrame == 0 || bufferedDuration < minBufferedDuration) {
+            decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
                 self.addFrames(frames)
             })
         }
