@@ -16,6 +16,8 @@
 		473C72471CE3202D00CA8934 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473C72411CE3202D00CA8934 /* PlayerControlView.swift */; };
 		473C72481CE3202D00CA8934 /* PlayerGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473C72421CE3202D00CA8934 /* PlayerGLView.swift */; };
 		473C72491CE3202D00CA8934 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473C72431CE3202D00CA8934 /* PlayerView.swift */; };
+		4770B8DC1CF9C92700B19A75 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4770B8DB1CF9C92700B19A75 /* AudioManager.swift */; };
+		4770B8DE1CF9D1EB00B19A75 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4770B8DD1CF9D1EB00B19A75 /* AudioToolbox.framework */; };
 		477A21E51CA1184800316017 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */; };
 		478745681CE6FE2100FB880D /* snsd.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 478745671CE6FE2100FB880D /* snsd.mp4 */; };
 		4787456A1CE6FFED00FB880D /* PlayerFileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478745691CE6FFED00FB880D /* PlayerFileReader.swift */; };
@@ -70,6 +72,8 @@
 		473C72411CE3202D00CA8934 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		473C72421CE3202D00CA8934 /* PlayerGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLView.swift; sourceTree = "<group>"; };
 		473C72431CE3202D00CA8934 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		4770B8DB1CF9C92700B19A75 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		4770B8DD1CF9D1EB00B19A75 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		478745671CE6FE2100FB880D /* snsd.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = snsd.mp4; sourceTree = "<group>"; };
 		478745691CE6FFED00FB880D /* PlayerFileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerFileReader.swift; sourceTree = "<group>"; };
 		47AA08371C9172AD002B5430 /* SwiftPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -206,6 +210,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4770B8DE1CF9D1EB00B19A75 /* AudioToolbox.framework in Frameworks */,
 				47B3F4751CC8C69F00582B4E /* libz.tbd in Frameworks */,
 				47B3F4741CC8C68F00582B4E /* libbz2.tbd in Frameworks */,
 				47B3F4721CC8C62B00582B4E /* VideoToolbox.framework in Frameworks */,
@@ -269,6 +274,14 @@
 				473C72431CE3202D00CA8934 /* PlayerView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		4770B8DA1CF9668000B19A75 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				4770B8DB1CF9C92700B19A75 /* AudioManager.swift */,
+			);
+			path = Audio;
 			sourceTree = "<group>";
 		};
 		47AA082E1C9172AC002B5430 = {
@@ -339,6 +352,7 @@
 			isa = PBXGroup;
 			children = (
 				47B3F46D1CC8C46200582B4E /* SwiftPlayer-Bridging-Header.h */,
+				4770B8DA1CF9668000B19A75 /* Audio */,
 				473C723C1CE3202D00CA8934 /* Utils */,
 				473C723F1CE3202D00CA8934 /* Views */,
 				47157B761CE2DEA700E556B4 /* GLSL */,
@@ -540,6 +554,7 @@
 		47E1FD211C997EAD00AD93D8 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				4770B8DD1CF9D1EB00B19A75 /* AudioToolbox.framework */,
 				47B3F4731CC8C68F00582B4E /* libbz2.tbd */,
 				47B3F4711CC8C62B00582B4E /* VideoToolbox.framework */,
 				47B3F4691CC8C20D00582B4E /* libiconv.tbd */,
@@ -719,6 +734,7 @@
 				4787456A1CE6FFED00FB880D /* PlayerFileReader.swift in Sources */,
 				473C72451CE3202D00CA8934 /* PlayerDecoder.swift in Sources */,
 				47AA086B1C91A5E3002B5430 /* AppDelegate.swift in Sources */,
+				4770B8DC1CF9C92700B19A75 /* AudioManager.swift in Sources */,
 				473C72441CE3202D00CA8934 /* GLESUtils.swift in Sources */,
 				473C72471CE3202D00CA8934 /* PlayerControlView.swift in Sources */,
 				47AA08711C91AD5D002B5430 /* MovieViewController.swift in Sources */,
