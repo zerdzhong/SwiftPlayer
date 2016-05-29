@@ -16,6 +16,11 @@ enum AudioManagerError: ErrorType {
 typealias AudioManagerOutputCallback = (data :Array<Float>, frameCount:Int, channelCount: Int) -> ()
 
 class AudioManager: NSObject {
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume")
+    }
 
     func activeAudioSession() -> Bool {
         do {
@@ -33,6 +38,20 @@ class AudioManager: NSObject {
            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
         }catch {
             throw AudioManagerError.CategorySetError
+        }
+         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleAudioRouteChange), name: AVAudioSessionRouteChangeNotification, object: nil)
+        
+        AVAudioSession.sharedInstance().addObserver(self, forKeyPath: "outputVolume", options: [.Initial, .New], context: nil);
+    }
+    
+    func handleAudioRouteChange() -> Void {
+        
+    }
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if keyPath == "outputVolume", let volume = (change?[NSKeyValueChangeNewKey] as? NSNumber)?.floatValue {
+            print("Volume: \(volume)")
         }
     }
 }
