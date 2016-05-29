@@ -9,6 +9,10 @@
 import Foundation
 import AVFoundation
 
+enum AudioManagerError: ErrorType {
+    case CategorySetError
+}
+
 typealias AudioManagerOutputCallback = (data :Array<Float>, frameCount:Int, channelCount: Int) -> ()
 
 class AudioManager: NSObject {
@@ -16,7 +20,7 @@ class AudioManager: NSObject {
     func activeAudioSession() -> Bool {
         do {
             try AVAudioSession.sharedInstance().setActive(true)
-            
+            try setupAudio()
         }catch {
             return false
         }
@@ -25,6 +29,10 @@ class AudioManager: NSObject {
     }
     
     private func setupAudio() throws {
-        AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        do {
+           try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        }catch {
+            throw AudioManagerError.CategorySetError
+        }
     }
 }
