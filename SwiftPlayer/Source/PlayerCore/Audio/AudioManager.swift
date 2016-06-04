@@ -14,6 +14,8 @@ enum AudioManagerError: ErrorType {
     case AudioUintCreateError
     case StreamFormatGetError
     case StreamFormatSetError
+    case RenderCallbackSetError
+    case AudioUintInitError
 }
 
 typealias AudioManagerOutputCallback = (data :Array<Float>, frameCount:Int, channelCount: Int) -> ()
@@ -21,7 +23,10 @@ typealias AudioManagerOutputCallback = (data :Array<Float>, frameCount:Int, chan
 class AudioManager: NSObject {
     
     private var audioUint =  AudioUnit()
+    
     private var outputFormat = AudioStreamBasicDescription()
+    private var numBytesPerSample: UInt32 = 0
+    private var numOutputChannels: UInt32 = 0
     
     var samplingRate: Float64 = 0
     
@@ -81,6 +86,23 @@ class AudioManager: NSObject {
         if status != noErr {
             throw AudioManagerError.StreamFormatSetError
         }
+        
+        numBytesPerSample = outputFormat.mBitsPerChannel / 8;
+        numOutputChannels = outputFormat.mChannelsPerFrame;
+        
+        var callbackStruct = AURenderCallbackStruct(inputProc: renderCallback, inputProcRefCon:  UnsafeMutablePointer(unsafeAddressOf(self)))
+        
+        status = AudioUnitSetProperty(audioUint, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &callbackStruct, UInt32(sizeof(AURenderCallbackStruct)))
+        
+        if status != noErr {
+            throw AudioManagerError.RenderCallbackSetError
+        }
+        
+        status = AudioUnitInitialize(audioUint)
+        
+        if status != noErr {
+            throw AudioManagerError.RenderCallbackSetError
+        }
     }
     
     func handleAudioRouteChange() -> Void {
@@ -91,5 +113,11 @@ class AudioManager: NSObject {
         if keyPath == "outputVolume", let volume = (change?[NSKeyValueChangeNewKey] as? NSNumber)?.floatValue {
             print("Volume: \(volume)")
         }
+    }
+    
+    private let renderCallback: AURenderCallback = { (inRefCon, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData) -> OSStatus in
+
+        
+        return noErr
     }
 }
