@@ -29,6 +29,7 @@ class AudioManager: NSObject {
     private var numOutputChannels: UInt32 = 0
     
     var samplingRate: Float64 = 0
+    var isPlaying: Bool = false
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -44,6 +45,23 @@ class AudioManager: NSObject {
         }
         
         return false
+    }
+    
+    func play() -> Bool {
+        if !isPlaying {
+            if self.activeAudioSession() {
+                let result = AudioOutputUnitStart(audioUint)
+                isPlaying = (result == noErr)
+            }
+        }
+        
+        return isPlaying
+    }
+    
+    func pause() -> Void {
+        if isPlaying {
+            AudioOutputUnitStop(audioUint)
+        }
     }
     
     private func setupAudio() throws {
