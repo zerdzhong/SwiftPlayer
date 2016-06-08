@@ -98,7 +98,6 @@ class PlayerDecoder: NSObject {
     
     //    private var swsContext = SwsContext()
     
-    
     func openFile(path: NSString) throws {
         av_register_all()
         

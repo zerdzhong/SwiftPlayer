@@ -133,8 +133,18 @@ class AudioManager: NSObject {
         }
     }
     
-    private let renderCallback: AURenderCallback = { (inRefCon, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData) -> OSStatus in
+    private let renderCallback: AURenderCallback = { (inRefCon:UnsafeMutablePointer<Void>, ioActionFlags:UnsafeMutablePointer<AudioUnitRenderActionFlags>, inTimeStamp:UnsafePointer<AudioTimeStamp>, inBusNumber:UInt32, inNumberFrames:UInt32, ioData:UnsafeMutablePointer<AudioBufferList>) -> OSStatus in
 
+        for iBuffer in 0..<ioData.memory.mNumberBuffers {
+            var bufferPointer = unsafeBitCast(ioData.memory.mBuffers, UnsafeMutablePointer<AudioBuffer>.self)
+            
+            memset(bufferPointer.advancedBy(Int(iBuffer)), 0, Int(bufferPointer.advancedBy(Int(iBuffer)).memory.mDataByteSize))
+        }
+
+        let mySelf = Unmanaged<AudioManager>.fromOpaque(COpaquePointer(inRefCon)).takeRetainedValue()
+        if mySelf.isPlaying {
+            
+        }
         
         return noErr
     }
