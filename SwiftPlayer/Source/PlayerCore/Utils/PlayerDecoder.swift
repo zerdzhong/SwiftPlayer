@@ -79,13 +79,18 @@ class PlayerDecoder: NSObject {
     var decoding: Bool = false;
     
     private var pFormatCtx: UnsafeMutablePointer<AVFormatContext>?
+    
     private var videoCodecContext: UnsafeMutablePointer<AVCodecContext>?
-    
-    private var videoStream: UnsafeMutablePointer<AVStream>?
     private var videoStreamIndex: Int32 = -1
+    private var videoStream: UnsafeMutablePointer<AVStream>?
     private var videoFrame: UnsafeMutablePointer<AVFrame>?
-    
+
+    private var audioCodecContext: UnsafeMutablePointer<AVCodecContext>?
+    private var audioStreamIndex: Int32 = -1
     private var audioStream: UnsafeMutablePointer<AVStream>?
+    private var audioFrame: UnsafeMutablePointer<AVFrame>?
+    
+    private var audioTimeBase: Float = -1
     
     private var frameFormat: VideoFrameFormat?
     
@@ -124,6 +129,12 @@ class PlayerDecoder: NSObject {
         } catch let error as DecodeError{
             throw error
         }
+        
+//        do {
+//            try openAudioStreams(formatContext)
+//        }catch {
+//            
+//        }
         
         self.pFormatCtx = formatContext
     }
@@ -382,24 +393,25 @@ class PlayerDecoder: NSObject {
     }
     
     //MARK:- AudioStream
-    private func openAudioStreams() throws {
-        if let context = self.pFormatCtx {
-            let videoStreams = collectStreamIndexs(context, codecType: AVMEDIA_TYPE_AUDIO)
+    private func openAudioStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
+        
+        let audioStreams = collectStreamIndexs(formartCtx, codecType: AVMEDIA_TYPE_AUDIO)
+        
+        if audioStreams.count == 0 {
+            throw DecodeError.EmptyStreams
+        }
+        
+        for audioStreamIndex in audioStreams {
+            let stream = formartCtx.memory.streams[audioStreamIndex]
             
-            if videoStreams.count == 0 {
-                throw DecodeError.EmptyStreams
-            }
-            
-            for videoStreamIndex in videoStreams {
-                let stream = context.memory.streams[videoStreamIndex]
+            do {
+                try openAudioStream(stream)
+                self.videoStreamIndex = Int32(audioStreamIndex)
+                break
+            } catch {
                 
-                do {
-                    try openAudioStream(stream)
-                    break
-                } catch {
-                    
-                }
             }
+            
         }
     }
     
@@ -414,7 +426,26 @@ class PlayerDecoder: NSObject {
         if avcodec_open2(codecContex, codec, nil) < 0 {
             throw DecodeError.OpenCodecFailed
         }
+        
+        audioFrame = av_frame_alloc()
+        
+        audioStream = stream
+        audioCodecContext = codecContex
+        
+        audioTimeBase = avStreamFPSTimeBase(stream, defaultTimeBase: 0.025).pTimeBase
+    
     }
+    
+    private func audioCodecIsSupported(audioCodeCtx:UnsafeMutablePointer<AVCodecContext>) -> Bool{
+        if (audioCodeCtx.memory.sample_fmt == AV_SAMPLE_FMT_S16) {
+            
+            print("\(audioCodeCtx.memory.sample_rate),\(audioCodeCtx.memory.channels)")
+        
+            return true
+        }
+        return false;
+    }
+
     
 }
 
@@ -482,6 +513,35 @@ private func copyFrameData(source: UnsafeMutablePointer<UInt8>, lineSize: Int32,
     }
     
     return data
+}
+
+private func avStreamFPSTimeBase(st:UnsafeMutablePointer<AVStream> , defaultTimeBase: Float) -> (pFPS:Float, pTimeBase:Float) {
+    
+    var fps: Float = 0
+    var timebase: Float = 0
+    
+    if (st.memory.time_base.den >= 1) && (st.memory.time_base.num >= 1) {
+        timebase = Float(av_q2d(st.memory.time_base))
+    } else if (st.memory.codec.memory.time_base.den >= 1) && (st.memory.codec.memory.time_base.num >= 1) {
+        timebase = Float(av_q2d(st.memory.codec.memory.time_base))
+    } else {
+        timebase = defaultTimeBase;
+    }
+    
+    if (st.memory.codec.memory.ticks_per_frame != 1) {
+        print("WARNING: st.codec.ticks_per_frame=\(st.memory.codec.memory.ticks_per_frame)")
+        //timebase *= st->codec->ticks_per_frame;
+    }
+    
+    if (st.memory.avg_frame_rate.den >= 1) && (st.memory.avg_frame_rate.num >= 1) {
+        fps = Float(av_q2d(st.memory.avg_frame_rate))
+    } else if (st.memory.r_frame_rate.den >= 1) && (st.memory.r_frame_rate.num >= 1) {
+        fps = Float(av_q2d(st.memory.r_frame_rate))
+    } else {
+        fps = 1.0 / timebase
+    }
+    
+    return (fps, timebase)
 }
 
 
