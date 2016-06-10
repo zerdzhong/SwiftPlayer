@@ -28,6 +28,8 @@ class AudioManager: NSObject {
     private var numBytesPerSample: UInt32 = 0
     private var numOutputChannels: UInt32 = 0
     
+    var outputCallback: AudioManagerOutputCallback?
+    
     var samplingRate: Float64 = 0
     var isPlaying: Bool = false
     
@@ -135,17 +137,21 @@ class AudioManager: NSObject {
     
     private let renderCallback: AURenderCallback = { (inRefCon:UnsafeMutablePointer<Void>, ioActionFlags:UnsafeMutablePointer<AudioUnitRenderActionFlags>, inTimeStamp:UnsafePointer<AudioTimeStamp>, inBusNumber:UInt32, inNumberFrames:UInt32, ioData:UnsafeMutablePointer<AudioBufferList>) -> OSStatus in
 
+        let mySelf = Unmanaged<AudioManager>.fromOpaque(COpaquePointer(inRefCon)).takeRetainedValue()
+        mySelf.renderFrames(inNumberFrames, ioData: ioData)
+        
+        return noErr
+    }
+    
+    private func renderFrames(frameCount: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>) {
         for iBuffer in 0..<ioData.memory.mNumberBuffers {
-            var bufferPointer = unsafeBitCast(ioData.memory.mBuffers, UnsafeMutablePointer<AudioBuffer>.self)
+            let bufferPointer = unsafeBitCast(ioData.memory.mBuffers, UnsafeMutablePointer<AudioBuffer>.self)
             
             memset(bufferPointer.advancedBy(Int(iBuffer)), 0, Int(bufferPointer.advancedBy(Int(iBuffer)).memory.mDataByteSize))
         }
-
-        let mySelf = Unmanaged<AudioManager>.fromOpaque(COpaquePointer(inRefCon)).takeRetainedValue()
-        if mySelf.isPlaying {
+        
+        if let callback = outputCallback where isPlaying {
             
         }
-        
-        return noErr
     }
 }
