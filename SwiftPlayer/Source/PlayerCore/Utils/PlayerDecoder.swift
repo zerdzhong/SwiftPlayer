@@ -90,6 +90,8 @@ class PlayerDecoder: NSObject {
     private var audioStream: UnsafeMutablePointer<AVStream>?
     private var audioFrame: UnsafeMutablePointer<AVFrame>?
     
+    private var subtitleIndexs = Array<Int>()
+    
     private var audioTimeBase: Float = -1
     
     private var frameFormat: VideoFrameFormat?
@@ -130,11 +132,13 @@ class PlayerDecoder: NSObject {
             throw error
         }
         
-//        do {
-//            try openAudioStreams(formatContext)
-//        }catch {
-//            
-//        }
+        do {
+            try openAudioStreams(formatContext)
+        }catch let error as DecodeError{
+            throw error
+        }
+        
+        subtitleIndexs = collectStreamIndexs(formatContext, codecType: AVMEDIA_TYPE_SUBTITLE)
         
         self.pFormatCtx = formatContext
     }
@@ -394,7 +398,7 @@ class PlayerDecoder: NSObject {
     
     //MARK:- AudioStream
     private func openAudioStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
-        
+        videoStreamIndex = -1
         let audioStreams = collectStreamIndexs(formartCtx, codecType: AVMEDIA_TYPE_AUDIO)
         
         if audioStreams.count == 0 {
