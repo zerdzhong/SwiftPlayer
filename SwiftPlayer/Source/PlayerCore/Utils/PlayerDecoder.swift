@@ -398,7 +398,7 @@ class PlayerDecoder: NSObject {
     
     //MARK:- AudioStream
     private func openAudioStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
-        videoStreamIndex = -1
+        audioStreamIndex = -1
         let audioStreams = collectStreamIndexs(formartCtx, codecType: AVMEDIA_TYPE_AUDIO)
         
         if audioStreams.count == 0 {
@@ -410,12 +410,11 @@ class PlayerDecoder: NSObject {
             
             do {
                 try openAudioStream(stream)
-                self.videoStreamIndex = Int32(audioStreamIndex)
+                self.audioStreamIndex = Int32(audioStreamIndex)
                 break
             } catch {
                 
             }
-            
         }
     }
     
