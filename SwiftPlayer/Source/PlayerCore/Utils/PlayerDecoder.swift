@@ -69,6 +69,18 @@ class VideoFrameRGB: VideoFrame {
     var rgb = NSData()
 }
 
+class AudioFrame: MovieFrame {
+    
+    var samples = NSData()
+    
+    var position: Double = 0.0
+    var duration: Double = 0.0
+    
+    var type: MovieFrameType {
+        return .Audio
+    }
+}
+
 typealias SwsContext = COpaquePointer
 
 class PlayerDecoder: NSObject {
@@ -153,7 +165,7 @@ class PlayerDecoder: NSObject {
         return frameFormat == format
     }
     
-    func asyncDecodeFrames(minDuration: Double, completeBlock:(frames:Array<VideoFrame>?)->()) -> Void {
+    func asyncDecodeFrames(minDuration: Double, completeBlock:(frames:Array<MovieFrame>?)->()) -> Void {
         
         if decoding {
             return
@@ -168,7 +180,7 @@ class PlayerDecoder: NSObject {
         }
     }
     
-    func decodeFrames(minDuration: Double) -> Array<VideoFrame>? {
+    func decodeFrames(minDuration: Double) -> Array<MovieFrame>? {
         
         if videoStream == nil &&  audioStream == nil{
             return nil
@@ -176,9 +188,9 @@ class PlayerDecoder: NSObject {
         
         if let formatCtx = self.pFormatCtx,
             let videoCodecCtx = self.videoCodecContext,
-            let videoFrame = self.videoFrame
+            let audioCodecCtx = self.audioCodecContext
         {
-            var result = Array<VideoFrame>()
+            var result = Array<MovieFrame>()
             var decodedDuration = Double(0)
             var finished = false
             
@@ -190,7 +202,7 @@ class PlayerDecoder: NSObject {
                     break
                 }
                 
-                if packet.stream_index == videoStreamIndex {
+                if let videoFrame = self.videoFrame where packet.stream_index == videoStreamIndex {
                     var packetSize = packet.size
                     
                     while packetSize > 0 {
@@ -204,6 +216,35 @@ class PlayerDecoder: NSObject {
                         
                         if gotFrame > 0 {
                             let decodedFrame = handleVideoFrame(videoFrame, codecContext: videoCodecCtx)
+                            
+                            if let frame = decodedFrame {
+                                result.append(frame)
+                                
+                                decodedDuration += frame.duration
+                                if (decodedDuration > minDuration) {
+                                    finished = true
+                                }
+                            }
+                        }
+                        
+                        if 0 != length {
+                            packetSize -= length
+                        }
+                    }
+                }else if let audioFrame = self.audioFrame where packet.stream_index == audioStreamIndex {
+                    var packetSize = packet.size
+                    
+                    while packetSize > 0 {
+                        var gotFrame:Int32 = 0
+                        let length = avcodec_decode_audio4(audioCodecCtx, audioFrame, &gotFrame, &packet)
+                        
+                        if  length < 0 {
+                            print("decode audio error, skip packet")
+                            break;
+                        }
+                        
+                        if gotFrame > 0 {
+                            let decodedFrame = handleAudioFrame(audioFrame, codecContext: audioCodecCtx)
                             
                             if let frame = decodedFrame {
                                 result.append(frame)
@@ -326,6 +367,13 @@ class PlayerDecoder: NSObject {
     //        }
     //    }
     //
+    
+    private func handleAudioFrame(frame: UnsafeMutablePointer<AVFrame>,
+                                  codecContext: UnsafeMutablePointer<AVCodecContext>)
+        -> AudioFrame? {
+            return nil
+    }
+    
     //MARK:- VideoStream
     
     private func openVideoStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {

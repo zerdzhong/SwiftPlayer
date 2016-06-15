@@ -153,7 +153,7 @@ class PlayerGLView: UIView {
         return frame.duration
     }
     
-    private func addFrames(frames: Array<VideoFrame>?) -> Void {
+    private func addFrames(frames: Array<MovieFrame>?) -> Void {
         
         if frames == nil {
             return
@@ -161,9 +161,9 @@ class PlayerGLView: UIView {
         
         if decoder.vaildVideo() {
             dispatch_sync(lockQueue) {
-                for frame: VideoFrame in frames! {
-                    if frame.type == .Video {
-                        self.videoFrames.append(frame)
+                for frame in frames! {
+                    if frame is VideoFrame && frame.type == .Video {
+                        self.videoFrames.append(frame as! VideoFrame)
                         self.bufferedDuration += frame.duration
                     }
                 }
