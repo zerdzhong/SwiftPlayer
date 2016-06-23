@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		47003A881D1C098A002289E8 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47003A851D1C098A002289E8 /* 150511_JiveBike.mov */; };
+		47003A891D1C098A002289E8 /* audiotest.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 47003A861D1C098A002289E8 /* audiotest.mp3 */; };
+		47003A8A1D1C098A002289E8 /* snsd.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 47003A871D1C098A002289E8 /* snsd.mp4 */; };
 		47157B781CE2DF2800E556B4 /* YUVFragmentShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 47157B771CE2DF2800E556B4 /* YUVFragmentShader.glsl */; };
 		47157B7A1CE2DF6300E556B4 /* RGBFragmentShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 47157B791CE2DF6300E556B4 /* RGBFragmentShader.glsl */; };
 		47157B7C1CE2DF8E00E556B4 /* VertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 47157B7B1CE2DF8E00E556B4 /* VertexShader.glsl */; };
@@ -19,7 +22,6 @@
 		4770B8DC1CF9C92700B19A75 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4770B8DB1CF9C92700B19A75 /* AudioManager.swift */; };
 		4770B8DE1CF9D1EB00B19A75 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4770B8DD1CF9D1EB00B19A75 /* AudioToolbox.framework */; };
 		477A21E51CA1184800316017 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */; };
-		478745681CE6FE2100FB880D /* snsd.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 478745671CE6FE2100FB880D /* snsd.mp4 */; };
 		4787456A1CE6FFED00FB880D /* PlayerFileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478745691CE6FFED00FB880D /* PlayerFileReader.swift */; };
 		47AA08401C9172AD002B5430 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47AA083E1C9172AD002B5430 /* Main.storyboard */; };
 		47AA08421C9172AD002B5430 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47AA08411C9172AD002B5430 /* Assets.xcassets */; };
@@ -41,7 +43,6 @@
 		47B3F4741CC8C68F00582B4E /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4731CC8C68F00582B4E /* libbz2.tbd */; };
 		47B3F4751CC8C69F00582B4E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47B3F4671CC8C1A000582B4E /* libz.tbd */; };
 		47D9B4F81CE9682000C8989B /* PlayerGLRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9B4F71CE9682000C8989B /* PlayerGLRender.swift */; };
-		47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */; };
 		47F7FE1D1CBCECB90087F894 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		47003A851D1C098A002289E8 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
+		47003A861D1C098A002289E8 /* audiotest.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = audiotest.mp3; sourceTree = "<group>"; };
+		47003A871D1C098A002289E8 /* snsd.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = snsd.mp4; sourceTree = "<group>"; };
 		47157B771CE2DF2800E556B4 /* YUVFragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = YUVFragmentShader.glsl; sourceTree = "<group>"; };
 		47157B791CE2DF6300E556B4 /* RGBFragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = RGBFragmentShader.glsl; sourceTree = "<group>"; };
 		47157B7B1CE2DF8E00E556B4 /* VertexShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = VertexShader.glsl; sourceTree = "<group>"; };
@@ -74,7 +78,6 @@
 		473C72431CE3202D00CA8934 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		4770B8DB1CF9C92700B19A75 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		4770B8DD1CF9D1EB00B19A75 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		478745671CE6FE2100FB880D /* snsd.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = snsd.mp4; sourceTree = "<group>"; };
 		478745691CE6FFED00FB880D /* PlayerFileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerFileReader.swift; sourceTree = "<group>"; };
 		47AA08371C9172AD002B5430 /* SwiftPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47AA083F1C9172AD002B5430 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -201,7 +204,6 @@
 		47B3F4731CC8C68F00582B4E /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		47D9B4F71CE9682000C8989B /* PlayerGLRender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLRender.swift; sourceTree = "<group>"; };
 		47E1FD1F1C997E8600AD93D8 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
-		47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
 		47F7FE1C1CBCECB90087F894 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -244,6 +246,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		47003A841D1C098A002289E8 /* Meidas */ = {
+			isa = PBXGroup;
+			children = (
+				47003A851D1C098A002289E8 /* 150511_JiveBike.mov */,
+				47003A861D1C098A002289E8 /* audiotest.mp3 */,
+				47003A871D1C098A002289E8 /* snsd.mp4 */,
+			);
+			path = Meidas;
+			sourceTree = "<group>";
+		};
 		47157B761CE2DEA700E556B4 /* GLSL */ = {
 			isa = PBXGroup;
 			children = (
@@ -308,8 +320,8 @@
 			isa = PBXGroup;
 			children = (
 				47AA08681C91A5E3002B5430 /* Source */,
+				47003A841D1C098A002289E8 /* Meidas */,
 				47E1FD211C997EAD00AD93D8 /* Framework */,
-				47E1FD231C9987B500AD93D8 /* Videos */,
 				47B3F3ED1CC8BC3E00582B4E /* Vendor */,
 				47AA083E1C9172AD002B5430 /* Main.storyboard */,
 				47AA08411C9172AD002B5430 /* Assets.xcassets */,
@@ -565,15 +577,6 @@
 			name = Framework;
 			sourceTree = "<group>";
 		};
-		47E1FD231C9987B500AD93D8 /* Videos */ = {
-			isa = PBXGroup;
-			children = (
-				478745671CE6FE2100FB880D /* snsd.mp4 */,
-				47E1FD241C9987B500AD93D8 /* 150511_JiveBike.mov */,
-			);
-			path = Videos;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -679,14 +682,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47003A881D1C098A002289E8 /* 150511_JiveBike.mov in Resources */,
 				47157B7C1CE2DF8E00E556B4 /* VertexShader.glsl in Resources */,
-				47E1FD251C9987B500AD93D8 /* 150511_JiveBike.mov in Resources */,
 				47AA08451C9172AD002B5430 /* LaunchScreen.storyboard in Resources */,
 				47157B7A1CE2DF6300E556B4 /* RGBFragmentShader.glsl in Resources */,
 				47AA08421C9172AD002B5430 /* Assets.xcassets in Resources */,
+				47003A8A1D1C098A002289E8 /* snsd.mp4 in Resources */,
 				47157B781CE2DF2800E556B4 /* YUVFragmentShader.glsl in Resources */,
+				47003A891D1C098A002289E8 /* audiotest.mp3 in Resources */,
 				47AA08401C9172AD002B5430 /* Main.storyboard in Resources */,
-				478745681CE6FE2100FB880D /* snsd.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
