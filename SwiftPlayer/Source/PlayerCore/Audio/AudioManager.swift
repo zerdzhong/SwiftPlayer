@@ -26,10 +26,10 @@ class AudioManager: NSObject {
     
     private var outputFormat = AudioStreamBasicDescription()
     private var numBytesPerSample: UInt32 = 0
-    private var numOutputChannels: UInt32 = 0
     
     var outputCallback: AudioManagerOutputCallback?
     
+    var numOutputChannels: UInt32 = 0
     var samplingRate: Float64 = 0
     var isPlaying: Bool = false
     
