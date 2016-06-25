@@ -13,6 +13,7 @@ enum DecodeError: ErrorType {
     case StreamInfoNotFound
     case CodecNotFound
     case OpenCodecFailed
+    case ReSamplerFailed
     case AllocateFrameFailed
     case EmptyStreams
 }
@@ -82,6 +83,7 @@ class AudioFrame: MovieFrame {
 }
 
 typealias SwsContext = COpaquePointer
+typealias SwrContext = COpaquePointer
 
 class PlayerDecoder: NSObject {
     
@@ -101,6 +103,7 @@ class PlayerDecoder: NSObject {
     private var audioStreamIndex: Int32 = -1
     private var audioStream: UnsafeMutablePointer<AVStream>?
     private var audioFrame: UnsafeMutablePointer<AVFrame>?
+    private var swrContext: UnsafeMutablePointer<SwrContext>?
     
     private var subtitleIndexs = Array<Int>()
     
@@ -469,6 +472,7 @@ class PlayerDecoder: NSObject {
     private func openAudioStream(stream: UnsafeMutablePointer<AVStream>) throws {
         let codecContex = stream.memory.codec
         let codec = avcodec_find_decoder(codecContex.memory.codec_id)
+        var swrContext: SwrContext? = nil
         
         if codec == nil {
             throw DecodeError.CodecNotFound
@@ -478,7 +482,37 @@ class PlayerDecoder: NSObject {
             throw DecodeError.OpenCodecFailed
         }
         
+        if !audioCodecIsSupported(codecContex) {
+            swrContext = swr_alloc_set_opts(nil,
+                                                av_get_default_channel_layout(4),
+                                                AV_SAMPLE_FMT_S16,
+                                                16,
+                                                av_get_default_channel_layout(codecContex.memory.channels),
+                                                codecContex.memory.sample_fmt,
+                                                codecContex.memory.sample_rate,
+                                                0, nil)
+            
+            if swrContext == nil || swr_init(swrContext!) != 0 {
+                if swrContext != nil {
+                    swr_free(&swrContext!)
+                }
+                
+                avcodec_close(codecContex)
+                
+                throw DecodeError.ReSamplerFailed
+            }
+        }
+        
         audioFrame = av_frame_alloc()
+        
+        if audioFrame == nil {
+            if var context = swrContext {
+                swr_free(&context)
+            }
+            
+            avcodec_close(codecContex)
+            throw DecodeError.AllocateFrameFailed
+        }
         
         audioStream = stream
         audioCodecContext = codecContex

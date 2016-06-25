@@ -6,3 +6,4 @@
 #include "libavcodec/avcodec.h"
 #include "libavutil/pixfmt.h"
 #include "libswscale/swscale.h"
+#include "libswresample/swresample.h"
