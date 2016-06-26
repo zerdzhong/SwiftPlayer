@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Accelerate
 
 enum DecodeError: ErrorType {
     case OpenFileFailed
@@ -374,7 +375,53 @@ class PlayerDecoder: NSObject {
     private func handleAudioFrame(frame: UnsafeMutablePointer<AVFrame>,
                                   codecContext: UnsafeMutablePointer<AVCodecContext>)
         -> AudioFrame? {
-            return nil
+            if audioFrame?.memory.data.0  == nil {
+                return nil
+            }
+            
+            var numFrames: Int32 = 0
+            var audioData: UnsafeMutablePointer<Int16> = nil
+            var numChannels: UInt8 = 1
+ 
+            
+            
+            if let context = swrContext {
+//                let bufferSize = av_samples_get_buffer_size(nil, codecContext.memory.channels, 1, AV_SAMPLE_FMT_S16, 1)
+//                
+//                swr_convert(context.memory, <#T##out: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>##UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>#>, audioFrame.memory.nb_samples * , <#T##in: UnsafeMutablePointer<UnsafePointer<UInt8>>##UnsafeMutablePointer<UnsafePointer<UInt8>>#>, <#T##in_count: Int32##Int32#>)
+            } else {
+                
+                if (codecContext.memory.sample_fmt != AV_SAMPLE_FMT_S16) {
+                    print("bucheck, audio format is invalid")
+                    return nil
+                }
+                
+                audioData = UnsafeMutablePointer<Int16>((audioFrame?.memory.data.0)!)
+                numFrames = (audioFrame?.memory.nb_samples)!
+            }
+            
+            
+            let numElements = Int(numFrames) * Int(numChannels)
+            let data = NSMutableData(capacity:numElements * sizeof(Float))
+            
+            var scale = 1.0 / Float(INT16_MAX)
+            vDSP_vflt16(audioData, 1, UnsafeMutablePointer<Float>(data!.mutableBytes), 1, UInt(numElements))
+            vDSP_vsmul(UnsafeMutablePointer<Float>(data!.mutableBytes), 1, &scale, UnsafeMutablePointer<Float>(data!.mutableBytes), 1, UInt(numElements))
+            
+            let frame = AudioFrame()
+            frame.position = Double(av_frame_get_best_effort_timestamp(audioFrame!)) * Double(audioTimeBase)
+            frame.duration = Double(av_frame_get_pkt_duration(audioFrame!)) * Double(audioTimeBase)
+            frame.samples = data!
+            
+            if frame.duration == 0 {
+                // sometimes ffmpeg can't determine the duration of audio frame
+                // especially of wma/wmv format
+                // so in this case must compute duration
+                frame.duration = Double(frame.samples.length / (sizeof(Float) * Int(numChannels) * 2))
+            }
+            
+            
+            return frame
     }
     
     //MARK:- VideoStream
