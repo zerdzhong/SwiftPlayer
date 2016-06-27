@@ -36,10 +36,12 @@ class PlayerGLView: UIView {
     private var decoder = PlayerDecoder()
     
     var videoFrames = Array<VideoFrame>()
+    var audioFrames = Array<AudioFrame>()
     var bufferedDuration: Double = 0
     var minBufferedDuration: Double = 0.2
     
-    let lockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.LockQueue", nil)
+    let videoLockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.videoLockQueue", nil)
+    let audioLockQueue = dispatch_queue_create("com.zerdzhong.SwiftPlayer.audioLockQueue", nil)
     
     private var tickCorrectionTime: NSTimeInterval = 0
     private var moviePosition: NSTimeInterval = 0
@@ -89,7 +91,7 @@ class PlayerGLView: UIView {
     }
     
     private func tick(decoder: PlayerDecoder) {
-        let leftFrame = videoFrames.count
+        let leftFrame = (decoder.validVideo() ? videoFrames.count : 0) + (decoder.validAudio() ? audioFrames.count : 0)
         
         let interval = presentFrame()
         
@@ -142,7 +144,7 @@ class PlayerGLView: UIView {
         }
         
         let frame = videoFrames[0]
-        dispatch_sync(lockQueue) {
+        dispatch_sync(videoLockQueue) {
             self.videoFrames.removeAtIndex(0)
             self.bufferedDuration -= frame.duration
         }
@@ -159,14 +161,29 @@ class PlayerGLView: UIView {
             return
         }
         
-        if decoder.vaildVideo() {
-            dispatch_sync(lockQueue) {
+        if decoder.validVideo() {
+            dispatch_sync(videoLockQueue) {
                 for frame in frames! {
                     if frame is VideoFrame && frame.type == .Video {
                         self.videoFrames.append(frame as! VideoFrame)
                         self.bufferedDuration += frame.duration
                     }
                 }
+            }
+        }else if decoder.validAudio() {
+            dispatch_sync(audioLockQueue) {
+                for frame in frames! {
+                    if frame is AudioFrame && frame.type == .Audio {
+                        self.audioFrames.append(frame as! AudioFrame)
+                        if !self.decoder.validVideo() {
+                            self.bufferedDuration += frame.duration
+                        }
+                    }
+                }
+            }
+            
+            if !decoder.validVideo() {
+                
             }
         }
     }

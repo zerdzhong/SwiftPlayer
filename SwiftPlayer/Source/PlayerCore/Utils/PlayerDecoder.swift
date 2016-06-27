@@ -383,8 +383,6 @@ class PlayerDecoder: NSObject {
             var audioData: UnsafeMutablePointer<Int16> = nil
             var numChannels: UInt8 = 1
  
-            
-            
             if let context = swrContext {
 //                let bufferSize = av_samples_get_buffer_size(nil, codecContext.memory.channels, 1, AV_SAMPLE_FMT_S16, 1)
 //                
@@ -598,8 +596,12 @@ extension PlayerDecoder {
         return 0
     }
     
-    func vaildVideo() -> Bool {
+    func validVideo() -> Bool {
         return videoStreamIndex != -1
+    }
+    
+    func validAudio() -> Bool {
+        return audioStreamIndex != -1
     }
 }
 
