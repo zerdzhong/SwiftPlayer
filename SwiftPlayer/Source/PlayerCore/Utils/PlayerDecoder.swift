@@ -608,12 +608,13 @@ extension PlayerDecoder {
 private func audioCodecIsSupported(audio: UnsafePointer<AVCodecContext>) -> Bool
 {
     if (audio.memory.sample_fmt == AV_SAMPLE_FMT_S16) {
-        
-        let audioManager = AudioManager()
-        return  (Int32(audioManager.samplingRate) == audio.memory.sample_rate) &&
-        (Int32(audioManager.numOutputChannels) == audio.memory.channels)
+
+        return true
+//        let audioManager = AudioManager()
+//        return  (Int32(audioManager.samplingRate) == audio.memory.sample_rate) &&
+//        (Int32(audioManager.numOutputChannels) == audio.memory.channels)
     }
-    return false;
+    return false
 }
 
 private func collectStreamIndexs(formatContext: UnsafePointer<AVFormatContext>, codecType: AVMediaType) -> Array<Int>{
