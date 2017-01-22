@@ -13,8 +13,8 @@ protocol MovieGLRender {
     func isValid() -> Bool
     func loadFragmentShader() -> GLuint
     func prepareRender() -> Bool
-    func setFrame(frame: VideoFrame) -> Void
-    func resolveUniforms(program: GLuint) -> Void
+    func setFrame(_ frame: VideoFrame) -> Void
+    func resolveUniforms(_ program: GLuint) -> Void
 }
 
 class MovieGLRGBRender: MovieGLRender {
@@ -27,10 +27,10 @@ class MovieGLRGBRender: MovieGLRender {
     }
     
     func loadFragmentShader() -> GLuint {
-        return loadShader(UInt32(GL_FRAGMENT_SHADER), shaderPath:  NSBundle.mainBundle().pathForResource("RGBFragmentShader", ofType: "glsl")!)
+        return loadShader(UInt32(GL_FRAGMENT_SHADER), shaderPath:  Bundle.main.path(forResource: "RGBFragmentShader", ofType: "glsl")!)
     }
     
-    func resolveUniforms(program: GLuint) -> Void {
+    func resolveUniforms(_ program: GLuint) -> Void {
         uniformSampler = glGetUniformLocation(program, "s_texture")
     }
     
@@ -46,26 +46,26 @@ class MovieGLRGBRender: MovieGLRender {
         return true;
     }
     
-    func setFrame(frame: VideoFrame) -> Void {
+    func setFrame(_ frame: VideoFrame) -> Void {
         
     }
 }
 
 class MovieGLYUVRender: MovieGLRender {
     
-    private var uniformSamplers = [GLint](count: 3, repeatedValue: 0)
-    private var textures = [GLuint](count: 3, repeatedValue: 0)
+    fileprivate var uniformSamplers = [GLint](repeating: 0, count: 3)
+    fileprivate var textures = [GLuint](repeating: 0, count: 3)
     
     func isValid() -> Bool {
         return (textures[0] != 0)
     }
     
     func loadFragmentShader() -> GLuint {
-        let shaderPath = NSBundle.mainBundle().pathForResource("YUVFragmentShader", ofType: "glsl")!
+        let shaderPath = Bundle.main.path(forResource: "YUVFragmentShader", ofType: "glsl")!
         return loadShader(UInt32(GL_FRAGMENT_SHADER), shaderPath:  shaderPath)
     }
     
-    func resolveUniforms(program: GLuint) -> Void {
+    func resolveUniforms(_ program: GLuint) -> Void {
         uniformSamplers[0] = glGetUniformLocation(program, "s_texture_y");
         uniformSamplers[1] = glGetUniformLocation(program, "s_texture_u");
         uniformSamplers[2] = glGetUniformLocation(program, "s_texture_v");
@@ -85,15 +85,15 @@ class MovieGLYUVRender: MovieGLRender {
         return true
     }
     
-    func setFrame(frame: VideoFrame) -> Void {
+    func setFrame(_ frame: VideoFrame) -> Void {
         if let yuvFrame = frame as? VideoFrameYUV {
             
             let frameWidth = yuvFrame.width
             let frameHeight = yuvFrame.height
             
-            assert(yuvFrame.luma.length == Int(frameWidth * frameHeight))
-            assert(yuvFrame.chromaB.length == Int(frameWidth * frameHeight) / 4)
-            assert(yuvFrame.chromaR.length == Int(frameWidth * frameHeight) / 4)
+            assert(yuvFrame.luma.count == Int(frameWidth * frameHeight))
+            assert(yuvFrame.chromaB.count == Int(frameWidth * frameHeight) / 4)
+            assert(yuvFrame.chromaR.count == Int(frameWidth * frameHeight) / 4)
             
             glPixelStorei(GLuint(GL_UNPACK_ALIGNMENT), 1)
             
@@ -101,7 +101,7 @@ class MovieGLYUVRender: MovieGLRender {
                 glGenTextures(3, &textures)
             }
             
-            let pixels = [yuvFrame.luma.bytes, yuvFrame.chromaB.bytes, yuvFrame.chromaR.bytes]
+            let pixels = [(yuvFrame.luma as NSData).bytes, (yuvFrame.chromaB as NSData).bytes, (yuvFrame.chromaR as NSData).bytes]
             let widths = [frameWidth, frameWidth / 2, frameWidth / 2]
             let heights = [frameHeight, frameHeight / 2, frameHeight / 2]
             

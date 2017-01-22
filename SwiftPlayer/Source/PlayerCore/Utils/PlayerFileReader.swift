@@ -8,15 +8,15 @@
 
 import Foundation
 
-typealias ReadFrameCompletion = (inout packet: AVPacket) -> ()
+typealias ReadFrameCompletion = ( _ packet: inout AVPacket) -> ()
 
-enum FileReaderError: ErrorType {
-    case PathInvaild
-    case OpenFileFailed
-    case StreamInfoNotFound
-    case EmptyStreams
-    case CodecNotFound
-    case OpenCodecFailed
+enum FileReaderError: Error {
+    case pathInvaild
+    case openFileFailed
+    case streamInfoNotFound
+    case emptyStreams
+    case codecNotFound
+    case openCodecFailed
 }
 
 class PlayerFileReader: NSObject {
@@ -32,7 +32,7 @@ class PlayerFileReader: NSObject {
         if let codecCtx = videoCodecContext, var formatCtx = pFormatCtx {
             avcodec_close(codecCtx)
             videoCodecContext = nil
-            avformat_close_input(&formatCtx)
+            avformat_close_input(&formatCtx!)
             pFormatCtx = nil
         }
     }
@@ -46,24 +46,24 @@ class PlayerFileReader: NSObject {
         
         var formatContext = avformat_alloc_context()
         
-        if avformat_open_input(&formatContext, filePath.cStringUsingEncoding(NSUTF8StringEncoding), nil, nil) != 0{
+        if avformat_open_input(&formatContext, filePath.cString(using: String.Encoding.utf8.rawValue), nil, nil) != 0{
             if formatContext != nil {
                 avformat_free_context(formatContext)
             }
             
-            throw FileReaderError.OpenFileFailed
+            throw FileReaderError.openFileFailed
         }
         
         if avformat_find_stream_info(formatContext, nil) < 0{
             avformat_close_input(&formatContext)
             
-            throw FileReaderError.StreamInfoNotFound
+            throw FileReaderError.streamInfoNotFound
         }
         
-        av_dump_format(formatContext, 0, filePath.cStringUsingEncoding(NSUTF8StringEncoding), 0)
+        av_dump_format(formatContext, 0, filePath.cString(using: String.Encoding.utf8.rawValue), 0)
         
         do {
-            try openVideoStreams(formatContext)
+            try openVideoStreams(formartCtx: formatContext!)
         } catch let error as FileReaderError{
             throw error
         }
@@ -71,8 +71,8 @@ class PlayerFileReader: NSObject {
         self.pFormatCtx = formatContext
     }
     
-    func asyncReadFrame(completion: ReadFrameCompletion) {
-        let dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+    func asyncReadFrame(completion: @escaping ReadFrameCompletion) {
+        let dispatchQueue = DispatchQueue.global(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
         dispatch_async(dispatchQueue) {
             self.readFrame(completion)

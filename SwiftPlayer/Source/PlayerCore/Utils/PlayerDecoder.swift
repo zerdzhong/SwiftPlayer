@@ -9,26 +9,26 @@
 import Foundation
 import Accelerate
 
-enum DecodeError: ErrorType {
-    case OpenFileFailed
-    case StreamInfoNotFound
-    case CodecNotFound
-    case OpenCodecFailed
-    case ReSamplerFailed
-    case AllocateFrameFailed
-    case EmptyStreams
+enum DecodeError: Error {
+    case openFileFailed
+    case streamInfoNotFound
+    case codecNotFound
+    case openCodecFailed
+    case reSamplerFailed
+    case allocateFrameFailed
+    case emptyStreams
 }
 
 enum MovieFrameType {
-    case Audio
-    case Video
-    case Subtitle
-    case Artwork
+    case audio
+    case video
+    case subtitle
+    case artwork
 }
 
 enum VideoFrameFormat {
-    case RGB
-    case YUV
+    case rgb
+    case yuv
 }
 
 protocol MovieFrame {
@@ -56,35 +56,35 @@ class VideoFrame: MovieFrame {
     var duration: Double = 0.0
     
     var type: MovieFrameType {
-        return .Video
+        return .video
     }
 }
 
 class VideoFrameYUV: VideoFrame {
-    var luma = NSData()
-    var chromaB = NSData()
-    var chromaR = NSData()
+    var luma = Data()
+    var chromaB = Data()
+    var chromaR = Data()
 }
 
 class VideoFrameRGB: VideoFrame {
     var lineSize: UInt = 0
-    var rgb = NSData()
+    var rgb = Data()
 }
 
 class AudioFrame: MovieFrame {
     
-    var samples = NSData()
+    var samples = Data()
     
     var position: Double = 0.0
     var duration: Double = 0.0
     
     var type: MovieFrameType {
-        return .Audio
+        return .audio
     }
 }
 
-typealias SwsContext = COpaquePointer
-typealias SwrContext = COpaquePointer
+typealias SwsContext = OpaquePointer
+typealias SwrContext = OpaquePointer
 
 class PlayerDecoder: NSObject {
     
@@ -93,83 +93,83 @@ class PlayerDecoder: NSObject {
     var disableDeinterlacing: Bool = true
     var decoding: Bool = false;
     
-    private var pFormatCtx: UnsafeMutablePointer<AVFormatContext>?
+    fileprivate var pFormatCtx: UnsafeMutablePointer<AVFormatContext>?
     
-    private var videoCodecContext: UnsafeMutablePointer<AVCodecContext>?
-    private var videoStreamIndex: Int32 = -1
-    private var videoStream: UnsafeMutablePointer<AVStream>?
-    private var videoFrame: UnsafeMutablePointer<AVFrame>?
+    fileprivate var videoCodecContext: UnsafeMutablePointer<AVCodecContext>?
+    fileprivate var videoStreamIndex: Int32 = -1
+    fileprivate var videoStream: UnsafeMutablePointer<AVStream>?
+    fileprivate var videoFrame: UnsafeMutablePointer<AVFrame>?
 
-    private var audioCodecContext: UnsafeMutablePointer<AVCodecContext>?
-    private var audioStreamIndex: Int32 = -1
-    private var audioStream: UnsafeMutablePointer<AVStream>?
-    private var audioFrame: UnsafeMutablePointer<AVFrame>?
-    private var swrContext: UnsafeMutablePointer<SwrContext>?
+    fileprivate var audioCodecContext: UnsafeMutablePointer<AVCodecContext>?
+    fileprivate var audioStreamIndex: Int32 = -1
+    fileprivate var audioStream: UnsafeMutablePointer<AVStream>?
+    fileprivate var audioFrame: UnsafeMutablePointer<AVFrame>?
+    fileprivate var swrContext: UnsafeMutablePointer<SwrContext>?
     
-    private var subtitleIndexs = Array<Int>()
+    fileprivate var subtitleIndexs = Array<Int>()
     
-    private var audioTimeBase: Float = -1
+    fileprivate var audioTimeBase: Float = -1
     
-    private var frameFormat: VideoFrameFormat?
+    fileprivate var frameFormat: VideoFrameFormat?
     
-    private var videoTimeBase: Double = 0
+    fileprivate var videoTimeBase: Double = 0
     
-    private var picture: AVPicture?
-    private var pictureValid: Bool = false
+    fileprivate var picture: AVPicture?
+    fileprivate var pictureValid: Bool = false
     
-    private let dispatchQueue = dispatch_queue_create("SwiftPlayerDecoder", DISPATCH_QUEUE_SERIAL)
+    fileprivate let dispatchQueue = DispatchQueue(label: "SwiftPlayerDecoder", attributes: [])
     
     //    private var swsContext = SwsContext()
     
-    func openFile(path: NSString) throws {
+    func openFile(_ path: NSString) throws {
         av_register_all()
         
         var formatContext = avformat_alloc_context()
         
-        if avformat_open_input(&formatContext, path.cStringUsingEncoding(NSUTF8StringEncoding), nil, nil) != 0{
+        if avformat_open_input(&formatContext, path.cString(using: String.Encoding.utf8.rawValue), nil, nil) != 0{
             if formatContext != nil {
                 avformat_free_context(formatContext)
             }
             
-            throw DecodeError.OpenFileFailed
+            throw DecodeError.openFileFailed
         }
         
         if avformat_find_stream_info(formatContext, nil) < 0{
             avformat_close_input(&formatContext)
             
-            throw DecodeError.StreamInfoNotFound
+            throw DecodeError.streamInfoNotFound
         }
         
-        av_dump_format(formatContext, 0, path.cStringUsingEncoding(NSUTF8StringEncoding), 0)
+        av_dump_format(formatContext, 0, path.cString(using: String.Encoding.utf8.rawValue), 0)
         
         do {
-            try openVideoStreams(formatContext)
+            try openVideoStreams(formatContext!)
         } catch let error as DecodeError{
             throw error
         }
         
         do {
-            try openAudioStreams(formatContext)
+            try openAudioStreams(formatContext!)
         }catch let error as DecodeError{
             throw error
         }
         
-        subtitleIndexs = collectStreamIndexs(formatContext, codecType: AVMEDIA_TYPE_SUBTITLE)
+        subtitleIndexs = collectStreamIndexs(formatContext!, codecType: AVMEDIA_TYPE_SUBTITLE)
         
         self.pFormatCtx = formatContext
     }
     
-    func setupVideoFrameFormat(format: VideoFrameFormat) -> Bool {
-        if (format == .YUV) && (videoCodecContext != nil) && (videoCodecContext?.memory.pix_fmt == AV_PIX_FMT_YUV420P || videoCodecContext?.memory.pix_fmt == AV_PIX_FMT_YUVJ420P) {
-            frameFormat = VideoFrameFormat.YUV
+    func setupVideoFrameFormat(_ format: VideoFrameFormat) -> Bool {
+        if (format == .yuv) && (videoCodecContext != nil) && (videoCodecContext?.pointee.pix_fmt == AV_PIX_FMT_YUV420P || videoCodecContext?.pointee.pix_fmt == AV_PIX_FMT_YUVJ420P) {
+            frameFormat = VideoFrameFormat.yuv
             return true
         }
-        frameFormat = VideoFrameFormat.RGB
+        frameFormat = VideoFrameFormat.rgb
         
         return frameFormat == format
     }
     
-    func asyncDecodeFrames(minDuration: Double, completeBlock:(frames:Array<MovieFrame>?)->()) -> Void {
+    func asyncDecodeFrames(_ minDuration: Double, completeBlock:@escaping (_ frames:Array<MovieFrame>?)->()) -> Void {
         
         if decoding {
             return
@@ -177,14 +177,14 @@ class PlayerDecoder: NSObject {
         
         decoding = true
         
-        dispatch_async(dispatchQueue) {
-            completeBlock(frames: self.decodeFrames(minDuration))
+        dispatchQueue.async {
+            completeBlock(self.decodeFrames(minDuration))
             
             self.decoding = false;
         }
     }
     
-    func decodeFrames(minDuration: Double) -> Array<MovieFrame>? {
+    func decodeFrames(_ minDuration: Double) -> Array<MovieFrame>? {
         
         if videoStream == nil &&  audioStream == nil{
             return nil
@@ -206,7 +206,7 @@ class PlayerDecoder: NSObject {
                     break
                 }
                 
-                if let videoFrame = self.videoFrame where packet.stream_index == videoStreamIndex {
+                if let videoFrame = self.videoFrame, packet.stream_index == videoStreamIndex {
                     var packetSize = packet.size
                     
                     while packetSize > 0 {
@@ -235,7 +235,7 @@ class PlayerDecoder: NSObject {
                             packetSize -= length
                         }
                     }
-                }else if let audioFrame = self.audioFrame where packet.stream_index == audioStreamIndex {
+                }else if let audioFrame = self.audioFrame, packet.stream_index == audioStreamIndex {
                     var packetSize = packet.size
                     
                     while packetSize > 0 {
@@ -276,35 +276,35 @@ class PlayerDecoder: NSObject {
         return nil
     }
     
-    private func handleVideoFrame(frame: UnsafeMutablePointer<AVFrame>,
+    fileprivate func handleVideoFrame(_ frame: UnsafeMutablePointer<AVFrame>,
                                   codecContext: UnsafeMutablePointer<AVCodecContext>)
         -> VideoFrame?{
-            if frame.memory.data.0 == nil {
+            if frame.pointee.data.0 == nil {
                 return nil
             }
             
             var decodedFrame: VideoFrame?
             
-            if frameFormat == .Some(.YUV)  {
+            if frameFormat == .some(.yuv)  {
                 let yuvFrame = VideoFrameYUV()
-                yuvFrame.luma = copyFrameData(frame.memory.data.0,
-                                              lineSize: frame.memory.linesize.0,
-                                              width: codecContext.memory.width,
-                                              height: codecContext.memory.height)
+                yuvFrame.luma = copyFrameData(frame.pointee.data.0!,
+                                              lineSize: frame.pointee.linesize.0,
+                                              width: codecContext.pointee.width,
+                                              height: codecContext.pointee.height) as Data
                 
-                yuvFrame.chromaB = copyFrameData(frame.memory.data.1,
-                                                 lineSize: frame.memory.linesize.1,
-                                                 width: codecContext.memory.width / 2,
-                                                 height: codecContext.memory.height / 2)
+                yuvFrame.chromaB = copyFrameData(frame.pointee.data.1!,
+                                                 lineSize: frame.pointee.linesize.1,
+                                                 width: codecContext.pointee.width / 2,
+                                                 height: codecContext.pointee.height / 2) as Data
                 
-                yuvFrame.chromaR = copyFrameData(frame.memory.data.2,
-                                                 lineSize: frame.memory.linesize.1,
-                                                 width: codecContext.memory.width / 2,
-                                                 height: codecContext.memory.height / 2)
+                yuvFrame.chromaR = copyFrameData(frame.pointee.data.2!,
+                                                 lineSize: frame.pointee.linesize.1,
+                                                 width: codecContext.pointee.width / 2,
+                                                 height: codecContext.pointee.height / 2) as Data
                 
                 decodedFrame = yuvFrame
                 
-            }else if frameFormat == .Some(.RGB) {
+            }else if frameFormat == .some(.rgb) {
                 //                if swsContext != nil && !setupScaler() {
                 //                    print("fail setup video scaler")
                 //                    return nil
@@ -316,15 +316,15 @@ class PlayerDecoder: NSObject {
                 //                rgbFrame.rgb = picture?.data.0
             }
             
-            decodedFrame?.width = UInt(codecContext.memory.width)
-            decodedFrame?.height = UInt(codecContext.memory.height)
+            decodedFrame?.width = UInt(codecContext.pointee.width)
+            decodedFrame?.height = UInt(codecContext.pointee.height)
             decodedFrame?.position = Double(av_frame_get_best_effort_timestamp(frame)) * videoTimeBase
             
             let frameDuration = Double(av_frame_get_pkt_duration(frame))
             if (frameDuration > 0) {
                 
                 decodedFrame?.duration = frameDuration * videoTimeBase;
-                decodedFrame?.duration += Double(frame.memory.repeat_pict) * videoTimeBase * 0.5;
+                decodedFrame?.duration += Double(frame.pointee.repeat_pict) * videoTimeBase * 0.5;
                 
                 //if (_videoFrame->repeat_pict > 0) {
                 //    LoggerVideo(0, @"_videoFrame.repeat_pict %d", _videoFrame->repeat_pict);
@@ -372,15 +372,15 @@ class PlayerDecoder: NSObject {
     //    }
     //
     
-    private func handleAudioFrame(frame: UnsafeMutablePointer<AVFrame>,
+    fileprivate func handleAudioFrame(_ frame: UnsafeMutablePointer<AVFrame>,
                                   codecContext: UnsafeMutablePointer<AVCodecContext>)
         -> AudioFrame? {
-            if audioFrame?.memory.data.0  == nil {
+            if audioFrame?.pointee.data.0  == nil {
                 return nil
             }
             
             var numFrames: Int32 = 0
-            var audioData: UnsafeMutablePointer<Int16> = nil
+            var audioData: UnsafeMutablePointer<Int16>? = nil
             var numChannels: UInt8 = 1
  
             if let context = swrContext {
@@ -389,33 +389,33 @@ class PlayerDecoder: NSObject {
 //                swr_convert(context.memory, <#T##out: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>##UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>#>, audioFrame.memory.nb_samples * , <#T##in: UnsafeMutablePointer<UnsafePointer<UInt8>>##UnsafeMutablePointer<UnsafePointer<UInt8>>#>, <#T##in_count: Int32##Int32#>)
             } else {
                 
-                if (codecContext.memory.sample_fmt != AV_SAMPLE_FMT_S16) {
+                if (codecContext.pointee.sample_fmt != AV_SAMPLE_FMT_S16) {
                     print("bucheck, audio format is invalid")
                     return nil
                 }
                 
-                audioData = UnsafeMutablePointer<Int16>((audioFrame?.memory.data.0)!)
-                numFrames = (audioFrame?.memory.nb_samples)!
+                audioData = UnsafeMutablePointer<Int16>((audioFrame?.pointee.data.0)!)
+                numFrames = (audioFrame?.pointee.nb_samples)!
             }
             
             
             let numElements = Int(numFrames) * Int(numChannels)
-            let data = NSMutableData(capacity:numElements * sizeof(Float))
+            let data = NSMutableData(capacity:numElements * MemoryLayout<Float>.size)
             
             var scale = 1.0 / Float(INT16_MAX)
-            vDSP_vflt16(audioData, 1, UnsafeMutablePointer<Float>(data!.mutableBytes), 1, UInt(numElements))
+            vDSP_vflt16(audioData!, 1, UnsafeMutablePointer<Float>(data!.mutableBytes), 1, UInt(numElements))
             vDSP_vsmul(UnsafeMutablePointer<Float>(data!.mutableBytes), 1, &scale, UnsafeMutablePointer<Float>(data!.mutableBytes), 1, UInt(numElements))
             
             let frame = AudioFrame()
             frame.position = Double(av_frame_get_best_effort_timestamp(audioFrame!)) * Double(audioTimeBase)
             frame.duration = Double(av_frame_get_pkt_duration(audioFrame!)) * Double(audioTimeBase)
-            frame.samples = data!
+            frame.samples = data! as Data
             
             if frame.duration == 0 {
                 // sometimes ffmpeg can't determine the duration of audio frame
                 // especially of wma/wmv format
                 // so in this case must compute duration
-                frame.duration = Double(frame.samples.length / (sizeof(Float) * Int(numChannels) * 2))
+                frame.duration = Double(frame.samples.count / (MemoryLayout<Float>.size * Int(numChannels) * 2))
             }
             
             
@@ -424,19 +424,19 @@ class PlayerDecoder: NSObject {
     
     //MARK:- VideoStream
     
-    private func openVideoStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
+    fileprivate func openVideoStreams(_ formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
         videoStreamIndex = -1
         let videoStreams = collectStreamIndexs(formartCtx, codecType: AVMEDIA_TYPE_VIDEO)
         
         if videoStreams.count == 0 {
-            throw DecodeError.EmptyStreams
+            throw DecodeError.emptyStreams
         }
         
         for videoStreamIndex in videoStreams {
-            let stream = formartCtx.memory.streams[videoStreamIndex]
-            if (stream.memory.disposition & AV_DISPOSITION_ATTACHED_PIC) == 0 {
+            let stream = formartCtx.pointee.streams[videoStreamIndex]
+            if ((stream?.pointee.disposition)! & AV_DISPOSITION_ATTACHED_PIC) == 0 {
                 do {
-                    try openVideoStream(stream)
+                    try openVideoStream(stream!)
                     self.videoStreamIndex = Int32(videoStreamIndex)
                     break
                 } catch {
@@ -446,42 +446,42 @@ class PlayerDecoder: NSObject {
         }
     }
     
-    private func openVideoStream(stream: UnsafeMutablePointer<AVStream>) throws {
+    fileprivate func openVideoStream(_ stream: UnsafeMutablePointer<AVStream>) throws {
         
-        let codecContex = stream.memory.codec
-        let codec = avcodec_find_decoder(codecContex.memory.codec_id)
+        let codecContex = stream.pointee.codec
+        let codec = avcodec_find_decoder((codecContex?.pointee.codec_id)!)
         
         if codec == nil {
-            throw DecodeError.CodecNotFound
+            throw DecodeError.codecNotFound
         }
         
         if avcodec_open2(codecContex, codec, nil) < 0 {
-            throw DecodeError.OpenCodecFailed
+            throw DecodeError.openCodecFailed
         }
         
         videoFrame = av_frame_alloc()
         
         if videoFrame == nil {
-            throw DecodeError.AllocateFrameFailed
+            throw DecodeError.allocateFrameFailed
         }
         
         var timeBase, fps: CDouble
-        if (stream.memory.time_base.den != 0) && (stream.memory.time_base.num != 0) {
-            timeBase = av_q2d(stream.memory.time_base)
-        }else if (stream.memory.codec.memory.time_base.den != 0) && (stream.memory.codec.memory.time_base.num != 0) {
-            timeBase = av_q2d(stream.memory.codec.memory.time_base)
+        if (stream.pointee.time_base.den != 0) && (stream.pointee.time_base.num != 0) {
+            timeBase = av_q2d(stream.pointee.time_base)
+        }else if (stream.pointee.codec.pointee.time_base.den != 0) && (stream.pointee.codec.pointee.time_base.num != 0) {
+            timeBase = av_q2d(stream.pointee.codec.pointee.time_base)
         }else {
             timeBase = 0.4
         }
         
-        if stream.memory.codec.memory.ticks_per_frame != 1{
-            print("WARNING: st.codec.ticks_per_frame=\(stream.memory.codec.memory.ticks_per_frame)")
+        if stream.pointee.codec.pointee.ticks_per_frame != 1{
+            print("WARNING: st.codec.ticks_per_frame=\(stream.pointee.codec.pointee.ticks_per_frame)")
         }
         
-        if (stream.memory.avg_frame_rate.den != 0) && (stream.memory.avg_frame_rate.num != 0) {
-            fps = av_q2d(stream.memory.avg_frame_rate)
-        }else if (stream.memory.r_frame_rate.den != 0) && (stream.memory.r_frame_rate.num != 0) {
-            fps = av_q2d(stream.memory.r_frame_rate)
+        if (stream.pointee.avg_frame_rate.den != 0) && (stream.pointee.avg_frame_rate.num != 0) {
+            fps = av_q2d(stream.pointee.avg_frame_rate)
+        }else if (stream.pointee.r_frame_rate.den != 0) && (stream.pointee.r_frame_rate.num != 0) {
+            fps = av_q2d(stream.pointee.r_frame_rate)
         }else {
             fps = 1.0 / timeBase
         }
@@ -493,19 +493,19 @@ class PlayerDecoder: NSObject {
     }
     
     //MARK:- AudioStream
-    private func openAudioStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
+    fileprivate func openAudioStreams(_ formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
         audioStreamIndex = -1
         let audioStreams = collectStreamIndexs(formartCtx, codecType: AVMEDIA_TYPE_AUDIO)
         
         if audioStreams.count == 0 {
-            throw DecodeError.EmptyStreams
+            throw DecodeError.emptyStreams
         }
         
         for audioStreamIndex in audioStreams {
-            let stream = formartCtx.memory.streams[audioStreamIndex]
+            let stream = formartCtx.pointee.streams[audioStreamIndex]
             
             do {
-                try openAudioStream(stream)
+                try openAudioStream(stream!)
                 self.audioStreamIndex = Int32(audioStreamIndex)
                 break
             } catch {
@@ -514,27 +514,27 @@ class PlayerDecoder: NSObject {
         }
     }
     
-    private func openAudioStream(stream: UnsafeMutablePointer<AVStream>) throws {
-        let codecContex = stream.memory.codec
-        let codec = avcodec_find_decoder(codecContex.memory.codec_id)
+    fileprivate func openAudioStream(_ stream: UnsafeMutablePointer<AVStream>) throws {
+        let codecContex = stream.pointee.codec
+        let codec = avcodec_find_decoder((codecContex?.pointee.codec_id)!)
         var swrContext: SwrContext? = nil
         
         if codec == nil {
-            throw DecodeError.CodecNotFound
+            throw DecodeError.codecNotFound
         }
         
         if avcodec_open2(codecContex, codec, nil) < 0 {
-            throw DecodeError.OpenCodecFailed
+            throw DecodeError.openCodecFailed
         }
         
-        if !audioCodecIsSupported(codecContex) {
+        if !audioCodecIsSupported(codecContex!) {
             swrContext = swr_alloc_set_opts(nil,
                                                 av_get_default_channel_layout(4),
                                                 AV_SAMPLE_FMT_S16,
                                                 16,
-                                                av_get_default_channel_layout(codecContex.memory.channels),
-                                                codecContex.memory.sample_fmt,
-                                                codecContex.memory.sample_rate,
+                                                av_get_default_channel_layout((codecContex?.pointee.channels)!),
+                                                (codecContex?.pointee.sample_fmt)!,
+                                                (codecContex?.pointee.sample_rate)!,
                                                 0, nil)
             
             if swrContext == nil || swr_init(swrContext!) != 0 {
@@ -544,7 +544,7 @@ class PlayerDecoder: NSObject {
                 
                 avcodec_close(codecContex)
                 
-                throw DecodeError.ReSamplerFailed
+                throw DecodeError.reSamplerFailed
             }
         }
         
@@ -556,7 +556,7 @@ class PlayerDecoder: NSObject {
             }
             
             avcodec_close(codecContex)
-            throw DecodeError.AllocateFrameFailed
+            throw DecodeError.allocateFrameFailed
         }
         
         audioStream = stream
@@ -566,10 +566,10 @@ class PlayerDecoder: NSObject {
     
     }
     
-    private func audioCodecIsSupported(audioCodeCtx:UnsafeMutablePointer<AVCodecContext>) -> Bool{
-        if (audioCodeCtx.memory.sample_fmt == AV_SAMPLE_FMT_S16) {
+    fileprivate func audioCodecIsSupported(_ audioCodeCtx:UnsafeMutablePointer<AVCodecContext>) -> Bool{
+        if (audioCodeCtx.pointee.sample_fmt == AV_SAMPLE_FMT_S16) {
             
-            print("\(audioCodeCtx.memory.sample_rate),\(audioCodeCtx.memory.channels)")
+            print("\(audioCodeCtx.pointee.sample_rate),\(audioCodeCtx.pointee.channels)")
         
             return true
         }
@@ -582,7 +582,7 @@ class PlayerDecoder: NSObject {
 extension PlayerDecoder {
     func frameWidth() -> UInt {
         if let codecCtx = videoCodecContext {
-            return UInt(codecCtx.memory.width)
+            return UInt(codecCtx.pointee.width)
         }
         
         return 0
@@ -590,7 +590,7 @@ extension PlayerDecoder {
     
     func frameHeight() -> UInt {
         if let codecCtx = videoCodecContext {
-            return UInt(codecCtx.memory.height)
+            return UInt(codecCtx.pointee.height)
         }
         
         return 0
@@ -605,9 +605,9 @@ extension PlayerDecoder {
     }
 }
 
-private func audioCodecIsSupported(audio: UnsafePointer<AVCodecContext>) -> Bool
+private func audioCodecIsSupported(_ audio: UnsafePointer<AVCodecContext>) -> Bool
 {
-    if (audio.memory.sample_fmt == AV_SAMPLE_FMT_S16) {
+    if (audio.pointee.sample_fmt == AV_SAMPLE_FMT_S16) {
 
         return true
 //        let audioManager = AudioManager()
@@ -617,12 +617,12 @@ private func audioCodecIsSupported(audio: UnsafePointer<AVCodecContext>) -> Bool
     return false
 }
 
-private func collectStreamIndexs(formatContext: UnsafePointer<AVFormatContext>, codecType: AVMediaType) -> Array<Int>{
+private func collectStreamIndexs(_ formatContext: UnsafePointer<AVFormatContext>, codecType: AVMediaType) -> Array<Int>{
     
     var streamIndexs = Array<Int>()
     
-    for i in 0..<Int(formatContext.memory.nb_streams) {
-        if codecType == formatContext.memory.streams[i].memory.codec.memory.codec_type {
+    for i in 0..<Int(formatContext.pointee.nb_streams) {
+        if codecType == formatContext.pointee.streams[i]?.pointee.codec.pointee.codec_type {
             streamIndexs.append(i)
         }
     }
@@ -630,7 +630,7 @@ private func collectStreamIndexs(formatContext: UnsafePointer<AVFormatContext>, 
     return streamIndexs
 }
 
-private func copyFrameData(source: UnsafeMutablePointer<UInt8>, lineSize: Int32, width: Int32, height: Int32) -> NSMutableData{
+private func copyFrameData(_ source: UnsafeMutablePointer<UInt8>, lineSize: Int32, width: Int32, height: Int32) -> NSMutableData{
     let width = Int(min(width, lineSize))
     let height = Int(height)
     var src = source
@@ -643,35 +643,35 @@ private func copyFrameData(source: UnsafeMutablePointer<UInt8>, lineSize: Int32,
             
             memcpy(dst, src, width)
             dst += width
-            src = src.advancedBy(Int(lineSize))
+            src = src.advanced(by: Int(lineSize))
         }
     }
     
     return data
 }
 
-private func avStreamFPSTimeBase(st:UnsafeMutablePointer<AVStream> , defaultTimeBase: Float) -> (pFPS:Float, pTimeBase:Float) {
+private func avStreamFPSTimeBase(_ st:UnsafeMutablePointer<AVStream> , defaultTimeBase: Float) -> (pFPS:Float, pTimeBase:Float) {
     
     var fps: Float = 0
     var timebase: Float = 0
     
-    if (st.memory.time_base.den >= 1) && (st.memory.time_base.num >= 1) {
-        timebase = Float(av_q2d(st.memory.time_base))
-    } else if (st.memory.codec.memory.time_base.den >= 1) && (st.memory.codec.memory.time_base.num >= 1) {
-        timebase = Float(av_q2d(st.memory.codec.memory.time_base))
+    if (st.pointee.time_base.den >= 1) && (st.pointee.time_base.num >= 1) {
+        timebase = Float(av_q2d(st.pointee.time_base))
+    } else if (st.pointee.codec.pointee.time_base.den >= 1) && (st.pointee.codec.pointee.time_base.num >= 1) {
+        timebase = Float(av_q2d(st.pointee.codec.pointee.time_base))
     } else {
         timebase = defaultTimeBase;
     }
     
-    if (st.memory.codec.memory.ticks_per_frame != 1) {
-        print("WARNING: st.codec.ticks_per_frame=\(st.memory.codec.memory.ticks_per_frame)")
+    if (st.pointee.codec.pointee.ticks_per_frame != 1) {
+        print("WARNING: st.codec.ticks_per_frame=\(st.pointee.codec.pointee.ticks_per_frame)")
         //timebase *= st->codec->ticks_per_frame;
     }
     
-    if (st.memory.avg_frame_rate.den >= 1) && (st.memory.avg_frame_rate.num >= 1) {
-        fps = Float(av_q2d(st.memory.avg_frame_rate))
-    } else if (st.memory.r_frame_rate.den >= 1) && (st.memory.r_frame_rate.num >= 1) {
-        fps = Float(av_q2d(st.memory.r_frame_rate))
+    if (st.pointee.avg_frame_rate.den >= 1) && (st.pointee.avg_frame_rate.num >= 1) {
+        fps = Float(av_q2d(st.pointee.avg_frame_rate))
+    } else if (st.pointee.r_frame_rate.den >= 1) && (st.pointee.r_frame_rate.num >= 1) {
+        fps = Float(av_q2d(st.pointee.r_frame_rate))
     } else {
         fps = 1.0 / timebase
     }

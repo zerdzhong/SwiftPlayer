@@ -12,27 +12,27 @@ import AVFoundation
 typealias PlayerBackBlock = () -> ()
 
 enum PlayerState {
-    case Playing
-    case Pause
-    case Buffering
-    case Seeking
+    case playing
+    case pause
+    case buffering
+    case seeking
 }
 
 protocol PlayerControlProtocol: class {
-    func seekToProgress(progress: Float)
+    func seekToProgress(_ progress: Float)
     func play()
     func pause()
     func switchFullScreen()
 }
 
 protocol PlayerItemInfoProtocol: class {
-    func currentTime() -> NSTimeInterval!
-    func totalTime() -> NSTimeInterval!
+    func currentTime() -> TimeInterval!
+    func totalTime() -> TimeInterval!
 }
 
 class PlayerView: UIView{
     
-    var videoURL: NSURL? {
+    var videoURL: URL? {
         didSet {
             if  videoURL != nil{
                 startPlayer()
@@ -42,7 +42,7 @@ class PlayerView: UIView{
     
     internal lazy var player: AVPlayer? = {
         if let videoURL = self.videoURL {
-            let playerItem = AVPlayerItem(URL: videoURL)
+            let playerItem = AVPlayerItem(url: videoURL)
             let player = AVPlayer(playerItem: playerItem)
             
             return player
@@ -61,7 +61,7 @@ class PlayerView: UIView{
     }()
     
     var playerControlView = PlayerControlView()
-    var timer: NSTimer?
+    var timer: Timer?
     var isFullScreen = false
     
     override init(frame: CGRect) {
@@ -77,7 +77,7 @@ class PlayerView: UIView{
         commonInit()
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         addSubview(playerControlView)
         playerControlView.snp_makeConstraints { (make) -> Void in
             make.edges.equalTo(self)
@@ -93,7 +93,7 @@ class PlayerView: UIView{
     
     deinit {
         print("deinit")
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         player?.currentItem?.removeObserver(self, forKeyPath: "status")
         player?.currentItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
         player?.currentItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
@@ -102,7 +102,7 @@ class PlayerView: UIView{
     
     //MARK:- player kvo 监听
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if object !== player?.currentItem {
             return
         }
@@ -110,7 +110,7 @@ class PlayerView: UIView{
         if let keyPathString = keyPath {
             
             if keyPathString == "status" {
-                if player?.status == .ReadyToPlay {
+                if player?.status == .readyToPlay {
                     //添加手势
                     playerControlView.addPanGesture()
                 }
@@ -139,12 +139,12 @@ class PlayerView: UIView{
             playerControlView.videoSlider.value = Float(timeProgress)
             
             let currentMin = CMTimeGetSeconds(playerItem.currentTime()) / 60
-            let currentSec = CMTimeGetSeconds(playerItem.currentTime()) % 60
+            let currentSec = CMTimeGetSeconds(playerItem.currentTime()).truncatingRemainder(dividingBy: 60)
             
             playerControlView.currentTimeLabel.text = String(format: "%02ld:%02ld", Int(currentMin), Int(currentSec))
             
             let totalMin = Float(playerItem.duration.value) / Float(playerItem.duration.timescale) / 60
-            let totalSec = Float(playerItem.duration.value) / Float(playerItem.duration.timescale) % 60
+            let totalSec = (Float(playerItem.duration.value) / Float(playerItem.duration.timescale)).truncatingRemainder(dividingBy: 60)
             
             playerControlView.totalTimeLabel.text = String(format: "%02ld:%02ld", Int(totalMin), Int(totalSec))
         }
@@ -156,7 +156,7 @@ class PlayerView: UIView{
     func startPlayer() {
         if let playerLayer = playerLayer, let player = player {
             
-            layer.insertSublayer(playerLayer, atIndex: 0)
+            layer.insertSublayer(playerLayer, at: 0)
             player.play()
             
             playerControlView.playerControl = self
@@ -164,12 +164,12 @@ class PlayerView: UIView{
             
 //            NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoDidPlayEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
             
-            player.currentItem?.addObserver(self, forKeyPath: "status", options: .New, context: nil)
-            player.currentItem?.addObserver(self, forKeyPath: "loadedTimeRanges", options: .New, context: nil)
-            player.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .New, context: nil)
-            player.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .New, context: nil)
+            player.currentItem?.addObserver(self, forKeyPath: "status", options: .new, context: nil)
+            player.currentItem?.addObserver(self, forKeyPath: "loadedTimeRanges", options: .new, context: nil)
+            player.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
+            player.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
             
-            timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(PlayerView.playerTimerAction), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PlayerView.playerTimerAction), userInfo: nil, repeats: true)
         }
     }
     
@@ -177,9 +177,9 @@ class PlayerView: UIView{
         timer?.invalidate()
     }
     
-    func availableDuration() -> NSTimeInterval {
+    func availableDuration() -> TimeInterval {
         let loadedTimeRanges = player?.currentItem?.loadedTimeRanges
-        let timeRange = loadedTimeRanges?.first?.CMTimeRangeValue
+        let timeRange = loadedTimeRanges?.first?.timeRangeValue
         
         let startSeconds = CMTimeGetSeconds((timeRange?.start)!)
         let durationSeconds = CMTimeGetSeconds((timeRange?.duration)!)
@@ -187,15 +187,15 @@ class PlayerView: UIView{
         return startSeconds + durationSeconds
     }
     
-    func setInterfaceOrientation(orientation: UIInterfaceOrientation) {
-        UIDevice.currentDevice().setValue(orientation.rawValue, forKey: "orientation")
+    func setInterfaceOrientation(_ orientation: UIInterfaceOrientation) {
+        UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
     }
 }
 
 //MARK:- 视频信息接口
 
 extension PlayerView: PlayerItemInfoProtocol {
-    func currentTime() -> NSTimeInterval! {
+    func currentTime() -> TimeInterval! {
         if let playerItem = player?.currentItem {
             return CMTimeGetSeconds(playerItem.currentTime())
         }else {
@@ -203,7 +203,7 @@ extension PlayerView: PlayerItemInfoProtocol {
         }
     }
     
-    func totalTime() -> NSTimeInterval! {
+    func totalTime() -> TimeInterval! {
         if let playerItem = player?.currentItem {
             return CMTimeGetSeconds(playerItem.duration)
         }else {
@@ -229,34 +229,34 @@ extension PlayerView: PlayerControlProtocol {
     
     func switchFullScreen() {
         
-        let orientation = UIDevice.currentDevice().orientation
+        let orientation = UIDevice.current.orientation
 
         switch (orientation) {
             
-        case .PortraitUpsideDown, .FaceUp :
-            setInterfaceOrientation(.LandscapeRight)
+        case .portraitUpsideDown, .faceUp :
+            setInterfaceOrientation(.landscapeRight)
             
-        case .Portrait:
-            setInterfaceOrientation(.LandscapeRight)
+        case .portrait:
+            setInterfaceOrientation(.landscapeRight)
             
-        case .LandscapeLeft:
-            setInterfaceOrientation(.Portrait)
+        case .landscapeLeft:
+            setInterfaceOrientation(.portrait)
             
-        case .LandscapeRight:
-            setInterfaceOrientation(.Portrait)
+        case .landscapeRight:
+            setInterfaceOrientation(.portrait)
         default:
             break
         }
     }
     
-    func seekToProgress(progress: Float) {
-        if let player = player  where player.status == AVPlayerStatus.ReadyToPlay {
+    func seekToProgress(_ progress: Float) {
+        if let player = player, player.status == AVPlayerStatus.readyToPlay {
             let total = (player.currentItem?.duration.value)! / Int64((player.currentItem?.duration.timescale)!)
             let dragedSecond = Int64(floorf(Float(total) * progress))
             let dragedCMTime = CMTimeMake(dragedSecond, 1)
             
             player.pause()
-            player.seekToTime(dragedCMTime, completionHandler: { (finish) -> Void in
+            player.seek(to: dragedCMTime, completionHandler: { (finish) -> Void in
                 player.play()
             })
         }
