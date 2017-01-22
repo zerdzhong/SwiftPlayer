@@ -18,15 +18,15 @@ class ViewController: UITableViewController {
                                        "http://baobab.wdjcdn.com/14564977406580.mp4"]
     
     
-    var localDataSource: Array<String> = [NSBundle.mainBundle().pathForResource("150511_JiveBike", ofType: "mov")!,
-                                          NSBundle.mainBundle().pathForResource("snsd", ofType: "mp4")!]
+    var localDataSource: Array<String> = [Bundle.main.path(forResource: "150511_JiveBike", ofType: "mov")!,
+                                          Bundle.main.path(forResource: "snsd", ofType: "mp4")!]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(loadDocumentVideo))
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(addRemoteVideo))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadDocumentVideo))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addRemoteVideo))
         
         loadDocumentVideo()
     }
@@ -36,11 +36,11 @@ class ViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let movieVC = segue.destinationViewController as! MovieViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let movieVC = segue.destination as! MovieViewController
         let cell = sender as! UITableViewCell
         
-        let indexPath = tableView.indexPathForCell(cell)
+        let indexPath = tableView.indexPath(for: cell)
         
         if indexPath!.section == 0 {
             let urlString = localDataSource[indexPath!.row]
@@ -53,13 +53,13 @@ class ViewController: UITableViewController {
     
     func addRemoteVideo() {
         
-        let alert = UIAlertController(title: "输入视频URL", message: nil, preferredStyle: .Alert)
+        let alert = UIAlertController(title: "输入视频URL", message: nil, preferredStyle: .alert)
         
-        alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+        alert.addTextField(configurationHandler: { (textField) -> Void in
             textField.text = "http://"
         })
         
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action) -> Void in
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
             let textField = alert.textFields![0] as UITextField
             print("Text field: \(textField.text)")
             if let urlString = textField.text {
@@ -70,18 +70,18 @@ class ViewController: UITableViewController {
             }
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     func loadDocumentVideo() {
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as NSArray
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true) as NSArray
         let documentsDir = paths.firstObject as! String
         
         do {
-            let videos = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsDir).flatMap { (itemString: String) -> String? in
-                if itemString.containsString("mp4")
-                || itemString.containsString("rmvb")
-                || itemString.containsString("mkv")
+            let videos = try FileManager.default.contentsOfDirectory(atPath: documentsDir).flatMap { (itemString: String) -> String? in
+                if itemString.contains("mp4")
+                || itemString.contains("rmvb")
+                || itemString.contains("mkv")
                     {
                     let itemPath = documentsDir + "/" + itemString
                     
@@ -109,8 +109,8 @@ extension ViewController
 {
     
     //MARL:- UITableViewDelegate
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.section == 0 {
             print("本地视频,\(localDataSource[indexPath.row])")
@@ -120,24 +120,24 @@ extension ViewController
     }
     
     //MARK:- UITableViewDataSource
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return (section == 0) ? "本地视频" : "网络视频"
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return (section == 0) ? localDataSource.count : netDataSource.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("videoCell")!
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "videoCell")!
         if indexPath.section == 0 {
-            cell.textLabel?.text = NSURL(fileURLWithPath: localDataSource[indexPath.row]).lastPathComponent
+            cell.textLabel?.text = URL(fileURLWithPath: localDataSource[indexPath.row]).lastPathComponent
         }else if indexPath.section == 1 {
-            cell.textLabel?.text = NSURL(string: netDataSource[indexPath.row])?.lastPathComponent
+            cell.textLabel?.text = URL(string: netDataSource[indexPath.row])?.lastPathComponent
         }
         
         return cell

@@ -22,7 +22,7 @@ class MovieViewController: UIViewController {
         
 //        if videoURLString.containsString("rmvb") || videoURLString.containsString("mkv") {
         let glView = PlayerGLView(frame: self.view.bounds, fileURL: videoURLString)
-        glView.contentMode = .ScaleAspectFit
+        glView.contentMode = .scaleAspectFit
             self.view.addSubview(glView)
             glView.play()
 //        }
@@ -30,11 +30,11 @@ class MovieViewController: UIViewController {
         refreshNavigationBarHidden(view.bounds.size)
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        self.navigationController?.navigationBar.hidden = false
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = false
     }
     
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         refreshNavigationBarHidden(size)
     }
     
@@ -42,11 +42,11 @@ class MovieViewController: UIViewController {
         playerView.destoryPlayer()
     }
     
-    func refreshNavigationBarHidden(size: CGSize) {
+    func refreshNavigationBarHidden(_ size: CGSize) {
         if size.height < size.width {
-            navigationController?.navigationBar.hidden = true
+            navigationController?.navigationBar.isHidden = true
         }else {
-            navigationController?.navigationBar.hidden = false
+            navigationController?.navigationBar.isHidden = false
         }
     }
     

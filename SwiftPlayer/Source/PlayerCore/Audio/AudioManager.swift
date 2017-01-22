@@ -13,11 +13,11 @@ class AudioManager: NSObject {
     
     static let sharedInstance = AudioManager()
     
-    private var isAudioSessionInited = false
+    fileprivate var isAudioSessionInited = false
     
     func setupAudioSession() -> Void {
         if !isAudioSessionInited {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleInterruption), name: AVAudioSessionInterruptionNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(handleInterruption), name: NSNotification.Name.AVAudioSessionInterruption, object: nil)
             isAudioSessionInited = true
         }
         
@@ -29,7 +29,7 @@ class AudioManager: NSObject {
         }
     }
     
-    func setActive(active : Bool) {
+    func setActive(_ active : Bool) {
         do {
             try AVAudioSession.sharedInstance().setActive(active)
         } catch {
@@ -37,13 +37,13 @@ class AudioManager: NSObject {
         }
     }
     
-    func handleInterruption(notifacation: NSNotification) -> Void {
-        let reason = notifacation.userInfo![AVAudioSessionInterruptionTypeKey]?.unsignedIntegerValue
+    func handleInterruption(_ notifacation: Notification) -> Void {
+        let reason = (notifacation.userInfo![AVAudioSessionInterruptionTypeKey] as AnyObject).uintValue
         
-        if reason ==  AVAudioSessionInterruptionType.Began.rawValue {
+        if reason ==  AVAudioSessionInterruptionType.began.rawValue {
             print("AVAudioSessionInterruptionTypeBegan")
             setActive(false)
-        }else if reason == AVAudioSessionInterruptionType.Ended.rawValue {
+        }else if reason == AVAudioSessionInterruptionType.ended.rawValue {
             print("AVAudioSessionInterruptionTypeEnded")
             setActive(true)
         }

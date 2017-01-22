@@ -11,14 +11,14 @@ import MediaPlayer
 import SnapKit
 
 enum PlayerPanDirection {
-    case Horizontal
-    case Vertical
+    case horizontal
+    case vertical
 }
 
 struct PlayerPanInfo {
-    var startPoint: CGPoint = CGPointZero
-    var panDirection: PlayerPanDirection = .Horizontal
-    var changedTime: NSTimeInterval = 0.0
+    var startPoint: CGPoint = CGPoint.zero
+    var panDirection: PlayerPanDirection = .horizontal
+    var changedTime: TimeInterval = 0.0
     var seekProgress: Float = 0.0
 }
 
@@ -38,9 +38,9 @@ class PlayerControlView: UIView {
     
     lazy var horizontalLable: UILabel = {
        let tempLabel = UILabel()
-        tempLabel.backgroundColor = UIColor.blackColor()
-        tempLabel.hidden = true
-        tempLabel.textColor = UIColor.whiteColor()
+        tempLabel.backgroundColor = UIColor.black
+        tempLabel.isHidden = true
+        tempLabel.textColor = UIColor.white
         
         return tempLabel
     }()
@@ -50,9 +50,9 @@ class PlayerControlView: UIView {
         tempView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         
         let bottomLayer = CAGradientLayer()
-        bottomLayer.startPoint = CGPointZero
-        bottomLayer.endPoint = CGPointMake(0,1)
-        bottomLayer.colors = [UIColor.clearColor().CGColor,UIColor.blackColor().CGColor]
+        bottomLayer.startPoint = CGPoint.zero
+        bottomLayer.endPoint = CGPoint(x: 0,y: 1)
+        bottomLayer.colors = [UIColor.clear.cgColor,UIColor.black.cgColor]
         bottomLayer.locations = [0.0,1.0]
         
         tempView.layer.addSublayer(bottomLayer)
@@ -64,9 +64,9 @@ class PlayerControlView: UIView {
         tempView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         
         let topLayer = CAGradientLayer()
-        topLayer.startPoint = CGPointMake(1,0)
-        topLayer.endPoint = CGPointMake(1,1)
-        topLayer.colors = [UIColor.blackColor().CGColor,UIColor.clearColor().CGColor]
+        topLayer.startPoint = CGPoint(x: 1,y: 0)
+        topLayer.endPoint = CGPoint(x: 1,y: 1)
+        topLayer.colors = [UIColor.black.cgColor,UIColor.clear.cgColor]
         topLayer.locations = [0.0,1.0]
         
         tempView.layer.addSublayer(topLayer)
@@ -76,7 +76,7 @@ class PlayerControlView: UIView {
     
     var panInfo = PlayerPanInfo()
     
-    private let delayHiddenTime = 4.0
+    fileprivate let delayHiddenTime = 4.0
     
     //MARK:- life cycle
     override init(frame: CGRect) {
@@ -94,7 +94,7 @@ class PlayerControlView: UIView {
     }
     
     //MARK:- commonInit
-    private func commonInit() {
+    fileprivate func commonInit() {
         
         addSubview(horizontalLable)
         horizontalLable.snp_makeConstraints { (make) in
@@ -113,9 +113,9 @@ class PlayerControlView: UIView {
             make.height.equalTo(50)
         }
         
-        startBtn.addTarget(self, action: #selector(PlayerControlView.clickStartBtn(_:)), forControlEvents: .TouchUpInside)
-        startBtn.tintColor = UIColor.whiteColor()
-        startBtn.buttonState = .Playing
+        startBtn.addTarget(self, action: #selector(PlayerControlView.clickStartBtn(_:)), for: .touchUpInside)
+        startBtn.tintColor = UIColor.white
+        startBtn.buttonState = .playing
         bottomView.addSubview(startBtn)
         startBtn.snp_makeConstraints { (make) -> Void in
             make.width.height.equalTo(15)
@@ -124,8 +124,8 @@ class PlayerControlView: UIView {
         }
         
         currentTimeLabel.text = "00:00"
-        currentTimeLabel.textColor = UIColor.whiteColor()
-        currentTimeLabel.font = UIFont.systemFontOfSize(12)
+        currentTimeLabel.textColor = UIColor.white
+        currentTimeLabel.font = UIFont.systemFont(ofSize: 12)
         bottomView.addSubview(currentTimeLabel)
         
         currentTimeLabel.snp_makeConstraints { (make) -> Void in
@@ -133,8 +133,8 @@ class PlayerControlView: UIView {
             make.left.equalTo(startBtn.snp_right).offset(5)
         }
         
-        fullScreenBtn.setImage(UIImage(named: "kr-video-player-fullscreen"), forState: .Normal)
-        fullScreenBtn.addTarget(self, action: #selector(PlayerControlView.clickFullScreenBtn), forControlEvents: .TouchUpInside)
+        fullScreenBtn.setImage(UIImage(named: "kr-video-player-fullscreen"), for: UIControlState())
+        fullScreenBtn.addTarget(self, action: #selector(PlayerControlView.clickFullScreenBtn), for: .touchUpInside)
         bottomView.addSubview(fullScreenBtn)
         fullScreenBtn.snp_makeConstraints { (make) -> Void in
             make.width.height.equalTo(30)
@@ -143,8 +143,8 @@ class PlayerControlView: UIView {
         }
         
         totalTimeLabel.text = "00:00"
-        totalTimeLabel.textColor = UIColor.whiteColor()
-        totalTimeLabel.font = UIFont.systemFontOfSize(12)
+        totalTimeLabel.textColor = UIColor.white
+        totalTimeLabel.font = UIFont.systemFont(ofSize: 12)
         bottomView.addSubview(totalTimeLabel)
         totalTimeLabel.snp_makeConstraints { (make) -> Void in
             make.right.equalTo(fullScreenBtn.snp_left).offset(-2)
@@ -152,7 +152,7 @@ class PlayerControlView: UIView {
         }
         
         progressView.progressTintColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
-        progressView.trackTintColor = UIColor.clearColor()
+        progressView.trackTintColor = UIColor.clear
         bottomView.addSubview(progressView)
         
         progressView.snp_makeConstraints { (make) -> Void in
@@ -161,13 +161,13 @@ class PlayerControlView: UIView {
             make.centerY.equalTo(bottomView)
         }
         
-        videoSlider.setThumbImage(UIImage(named: "slider"), forState: .Normal)
-        videoSlider.minimumTrackTintColor = UIColor.whiteColor()
+        videoSlider.setThumbImage(UIImage(named: "slider"), for: UIControlState())
+        videoSlider.minimumTrackTintColor = UIColor.white
         videoSlider.maximumTrackTintColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.3)
         
-        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderTouchBegan(_:)), forControlEvents: .TouchDown)
-        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderValueChanged(_:)), forControlEvents: .ValueChanged)
-        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderTouchEnd(_:)), forControlEvents: .TouchUpInside)
+        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderTouchBegan(_:)), for: .touchDown)
+        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderValueChanged(_:)), for: .valueChanged)
+        videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderTouchEnd(_:)), for: .touchUpInside)
         
         bottomView.addSubview(videoSlider)
         videoSlider.snp_makeConstraints { (make) -> Void in
@@ -181,24 +181,24 @@ class PlayerControlView: UIView {
     
     func dismissControlView() {
         print("control view dismiss")
-        self.bottomView.hidden = true
-        self.topView.hidden = true
+        self.bottomView.isHidden = true
+        self.topView.isHidden = true
     }
     
     func cancelDismissControlView() {
-        NSObject.cancelPreviousPerformRequestsWithTarget(self, selector: #selector(dismissControlView), object: nil)
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(dismissControlView), object: nil)
     }
     
     func showControlView(delayDismiss isDelay: Bool = true) {
-        self.bottomView.hidden = false
-        self.topView.hidden = false
+        self.bottomView.isHidden = false
+        self.topView.isHidden = false
         
         if isDelay {
-            performSelector(#selector(dismissControlView), withObject: nil, afterDelay: delayHiddenTime)
+            perform(#selector(dismissControlView), with: nil, afterDelay: delayHiddenTime)
         }
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         showControlView()
     }
 }
@@ -213,13 +213,13 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         self.addGestureRecognizer(doubleTapGes)
     }
     
-    internal func doubleTapGestureHandler(tapGes: UITapGestureRecognizer) {
+    internal func doubleTapGestureHandler(_ tapGes: UITapGestureRecognizer) {
         print("double taped")
         clickStartBtn(startBtn)
         switch tapGes.state {
-        case .Began:
+        case .began:
             showControlView(delayDismiss: false)
-        case .Ended, .Cancelled, .Failed:
+        case .ended, .cancelled, .failed:
             showControlView()
         default:
             break
@@ -232,30 +232,30 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         self.addGestureRecognizer(panGesture)
     }
     
-    func panGestureHandler(panGes: UIPanGestureRecognizer) {
+    func panGestureHandler(_ panGes: UIPanGestureRecognizer) {
         
-        let point = panGes.locationInView(self)
-        let velocity = panGes.velocityInView(self)
+        let point = panGes.location(in: self)
+        let velocity = panGes.velocity(in: self)
         
         switch panGes.state {
-        case .Began:
+        case .began:
             showControlView(delayDismiss: false)
             
             if fabs(velocity.x) > fabs(velocity.y) {
-                panInfo.panDirection = .Horizontal
+                panInfo.panDirection = .horizontal
             }else {
-                panInfo.panDirection = .Vertical
+                panInfo.panDirection = .vertical
             }
             
             panInfo.startPoint = point
-        case .Changed:
+        case .changed:
             switch panInfo.panDirection {
-            case .Horizontal:
+            case .horizontal:
                 horizontalMoved(velocity.x)
-            case .Vertical:
+            case .vertical:
                 verticalMoved(velocity.y)
             }
-        case .Ended:
+        case .ended:
             showControlView()
             panGestureEnded()
         default:
@@ -263,7 +263,7 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         }
     }
     
-    func horizontalMoved(dtX :CGFloat) {
+    func horizontalMoved(_ dtX :CGFloat) {
         
         let videoTotalTime = playerItemInfo?.totalTime()
         let videoCurrenTime = playerItemInfo?.currentTime()
@@ -286,16 +286,16 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
                 destinationTime = 0
             }
             
-            dispatch_async(dispatch_get_main_queue(), { [unowned self] in
+            DispatchQueue.main.async(execute: { [unowned self] in
                 self.horizontalLable.text = style + " " + self.durationStringWithTime(destinationTime) + "/" + self.durationStringWithTime(totalTime)
-                self.horizontalLable.hidden = false
+                self.horizontalLable.isHidden = false
                 
                 self.panInfo.seekProgress = Float(destinationTime/totalTime)
             })
         }
     }
     
-    func verticalMoved(dtY: CGFloat)  {
+    func verticalMoved(_ dtY: CGFloat)  {
         
         if panInfo.startPoint.x > bounds.size.width / 2 {
             //音量
@@ -303,38 +303,38 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
             let volumeView = MPVolumeView()
             for view in volumeView.subviews {
                 if let slider = view as? UISlider{
-                    if slider.dynamicType.description() == "MPVolumeSlider" {
+                    if type(of: slider).description() == "MPVolumeSlider" {
                         slider.value -= Float(dtY / 10000)
                     }
                 }
             }
         }else {
             //亮度
-            UIScreen.mainScreen().brightness -= dtY / 10000
-            dispatch_async(dispatch_get_main_queue(), { [unowned self] in
-                self.horizontalLable.text = String(format: "亮度%.0f%%",UIScreen.mainScreen().brightness*100.0)
-                self.horizontalLable.hidden = false
+            UIScreen.main.brightness -= dtY / 10000
+            DispatchQueue.main.async(execute: { [unowned self] in
+                self.horizontalLable.text = String(format: "亮度%.0f%%",UIScreen.main.brightness*100.0)
+                self.horizontalLable.isHidden = false
             })
         }
     }
     
     func panGestureEnded() {
         
-        self.horizontalLable.hidden = true
+        self.horizontalLable.isHidden = true
         
-        if panInfo.panDirection == .Horizontal {
+        if panInfo.panDirection == .horizontal {
             self.playerControl?.seekToProgress(panInfo.seekProgress)
         }
     }
     
-    func durationStringWithTime(time: NSTimeInterval) -> String {
+    func durationStringWithTime(_ time: TimeInterval) -> String {
         
         if time.isNaN {
             return ""
         }
         
         let min = String(format: "%02d", Int(time / 60))
-        let sec = String(format: "%02d", Int(time % 60))
+        let sec = String(format: "%02d", Int(time.truncatingRemainder(dividingBy: 60)))
         
         return min + ":" + sec
     }
@@ -344,9 +344,9 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
 extension PlayerControlView
 {
     
-    func clickStartBtn(btn: PlayButton) {
+    func clickStartBtn(_ btn: PlayButton) {
         
-        if btn.buttonState == .Paused {
+        if btn.buttonState == .paused {
             if let control = playerControl {
                 control.play()
             }
@@ -365,15 +365,15 @@ extension PlayerControlView
         }
     }
     
-    func progressSliderTouchBegan(slider: UISlider) {
+    func progressSliderTouchBegan(_ slider: UISlider) {
         
     }
     
-    func progressSliderTouchEnd(slider: UISlider) {
+    func progressSliderTouchEnd(_ slider: UISlider) {
         
     }
     
-    func progressSliderValueChanged(slider: UISlider) {
+    func progressSliderValueChanged(_ slider: UISlider) {
         if let control = playerControl {
             control.seekToProgress(slider.value)
         }

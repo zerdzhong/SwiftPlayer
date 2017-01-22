@@ -9,9 +9,9 @@
 import Foundation
 import OpenGLES
 
-func loadShader(type: GLenum, shaderString: String) -> GLuint {
+func loadShader(_ type: GLenum, shaderString: String) -> GLuint {
     
-    if let cShtringPoint = shaderString.cStringUsingEncoding(NSUTF8StringEncoding) {
+    if let cShtringPoint = shaderString.cString(using: String.Encoding.utf8) {
         
         let shader = glCreateShader(type)
         if shader == 0 || shader == UInt32(GL_INVALID_ENUM) {
@@ -28,7 +28,7 @@ func loadShader(type: GLenum, shaderString: String) -> GLuint {
             glGetShaderiv(shader, UInt32(GL_INFO_LOG_LENGTH), &logLength)
             if logLength > 0 {
                 let log = malloc(Int(logLength))
-                glGetShaderInfoLog(shader, logLength, &logLength, unsafeBitCast(log, UnsafeMutablePointer<GLchar>.self))
+                glGetShaderInfoLog(shader, logLength, &logLength, unsafeBitCast(log, to: UnsafeMutablePointer<GLchar>.self))
                 print("Shader compile log:\(log)")
                 free(log)
             }
@@ -49,10 +49,10 @@ func loadShader(type: GLenum, shaderString: String) -> GLuint {
     return 0
 }
 
-func loadShader(type: GLenum, shaderPath: String) -> GLuint {
+func loadShader(_ type: GLenum, shaderPath: String) -> GLuint {
     
     do {
-        let shaderString = try NSString(contentsOfFile: shaderPath, encoding: NSUTF8StringEncoding)
+        let shaderString = try NSString(contentsOfFile: shaderPath, encoding: String.Encoding.utf8.rawValue)
         return loadShader(type, shaderString: shaderString as String)
     } catch {
         print("rend file error")

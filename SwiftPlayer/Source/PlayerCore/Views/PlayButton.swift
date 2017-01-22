@@ -10,22 +10,22 @@
 import UIKit
 
 enum PlayButtonState: CGFloat {
-    case Paused = 1.0
-    case Playing = 0.0
+    case paused = 1.0
+    case playing = 0.0
 }
 
 prefix func ~(state: PlayButtonState) -> PlayButtonState {
     switch state {
-    case .Paused:
-        return PlayButtonState.Playing
-    case .Playing:
-        return PlayButtonState.Paused
+    case .paused:
+        return PlayButtonState.playing
+    case .playing:
+        return PlayButtonState.paused
     }
 }
 
 class PlayButton: UIControl {
 
-    var buttonState = PlayButtonState.Paused {
+    var buttonState = PlayButtonState.paused {
         didSet{
             setButtonState(buttonState, animated: false)
         }
@@ -33,11 +33,11 @@ class PlayButton: UIControl {
     
     override var tintColor: UIColor! {
         didSet{
-            shapeLayer.fillColor = tintColor.CGColor
+            shapeLayer.fillColor = tintColor.cgColor
         }
     }
     
-    private var shapeLayer = CAShapeLayer()
+    fileprivate var shapeLayer = CAShapeLayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -50,10 +50,10 @@ class PlayButton: UIControl {
     }
     
     func commonInit() {
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
         layer.addSublayer(shapeLayer)
         
-        shapeLayer.fillColor = tintColor.CGColor
+        shapeLayer.fillColor = tintColor.cgColor
     }
     
     override func layoutSubviews() {
@@ -62,7 +62,7 @@ class PlayButton: UIControl {
         super.layoutSubviews()
     }
     
-    func setButtonState(buttonState: PlayButtonState, animated: Bool) {
+    func setButtonState(_ buttonState: PlayButtonState, animated: Bool) {
         if self.buttonState == buttonState {
             return
         }
@@ -79,21 +79,21 @@ class PlayButton: UIControl {
             let morphAnimation = CABasicAnimation(keyPath:"path")
             morphAnimation.timingFunction = timimgFunction
             
-            morphAnimation.removedOnCompletion = false
+            morphAnimation.isRemovedOnCompletion = false
             morphAnimation.fillMode = kCAFillModeForwards
             
             morphAnimation.duration = 0.3
             morphAnimation.fromValue = shapePathWithState(beforeButtonState)
             morphAnimation.toValue = shapePathWithState(buttonState)
             
-            shapeLayer.addAnimation(morphAnimation, forKey: morphAnimationKey)
+            shapeLayer.add(morphAnimation, forKey: morphAnimationKey)
         }else {
-            shapeLayer.removeAnimationForKey(morphAnimationKey)
+            shapeLayer.removeAnimation(forKey: morphAnimationKey)
             shapeLayer.path = shapePathWithState(buttonState)
         }
     }
     
-    func shapePathWithState(buttonState: PlayButtonState) -> CGPath{
+    func shapePathWithState(_ buttonState: PlayButtonState) -> CGPath{
         
         let height = bounds.height
         let minWidth = bounds.width * 0.4
@@ -106,18 +106,18 @@ class PlayButton: UIControl {
         
         let path = UIBezierPath()
         
-        path.moveToPoint(CGPointMake(0.0, 0.0))
-        path.addLineToPoint(CGPointMake(width, h1))
-        path.addLineToPoint(CGPointMake(width, height - h1))
-        path.addLineToPoint(CGPointMake(0.0, height))
-        path.closePath()
+        path.move(to: CGPoint(x: 0.0, y: 0.0))
+        path.addLine(to: CGPoint(x: width, y: h1))
+        path.addLine(to: CGPoint(x: width, y: height - h1))
+        path.addLine(to: CGPoint(x: 0.0, y: height))
+        path.close()
         
-        path.moveToPoint(CGPointMake(bounds.width - width, h1))
-        path.addLineToPoint(CGPointMake(bounds.width, h2))
-        path.addLineToPoint(CGPointMake(bounds.width, height - h2))
-        path.addLineToPoint(CGPointMake(bounds.width - width, height - h1))
-        path.closePath()
+        path.move(to: CGPoint(x: bounds.width - width, y: h1))
+        path.addLine(to: CGPoint(x: bounds.width, y: h2))
+        path.addLine(to: CGPoint(x: bounds.width, y: height - h2))
+        path.addLine(to: CGPoint(x: bounds.width - width, y: height - h1))
+        path.close()
         
-        return path.CGPath
+        return path.cgPath
     }
 }
