@@ -310,7 +310,7 @@ class PlayerDecoder: NSObject {
                 //                    return nil
                 //                }
                 //
-                //                sws_scale(swsContext, unsafeBitCast(videoFrame.memory.data, UnsafePointer<UnsafePointer<UInt8>>.self), unsafeBitCast(videoFrame.memory.linesize, UnsafePointer<Int32>.self), 0, videoCodecCtx.memory.height, picture!.data, picture!.linesize)
+                //                sws_scale(swsContext, unsafeBitCast(videoFrame.pointee.data, UnsafePointer<UnsafePointer<UInt8>>.self), unsafeBitCast(videoFrame.pointee.linesize, UnsafePointer<Int32>.self), 0, videoCodecCtx.pointee.height, picture!.data, picture!.linesize)
                 
                 //                let rgbFrame = VideoFrameRGB()
                 //                rgbFrame.rgb = picture?.data.0
@@ -344,13 +344,13 @@ class PlayerDecoder: NSObject {
     //        closeScaler()
     //
     //        if var picture = self.picture, let videoCodecCtx = self.videoCodecContext {
-    //            pictureValid = (avpicture_alloc(&picture, AV_PIX_FMT_RGB24, videoCodecCtx.memory.width, videoCodecCtx.memory.height) == 0)
+    //            pictureValid = (avpicture_alloc(&picture, AV_PIX_FMT_RGB24, videoCodecCtx.pointee.width, videoCodecCtx.pointee.height) == 0)
     //
     //            if !pictureValid {
     //                return false
     //            }
     //
-    //            swsContext = sws_getCachedContext(swsContext, videoCodecCtx.memory.width, videoCodecCtx.memory.height, videoCodecCtx.memory.pix_fmt, videoCodecCtx.memory.width, videoCodecCtx.memory.height, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, nil, nil, nil)
+    //            swsContext = sws_getCachedContext(swsContext, videoCodecCtx.pointee.width, videoCodecCtx.pointee.height, videoCodecCtx.pointee.pix_fmt, videoCodecCtx.pointee.width, videoCodecCtx.pointee.height, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, nil, nil, nil)
     //
     //            return (swsContext != nil)
     //
@@ -384,9 +384,9 @@ class PlayerDecoder: NSObject {
             var numChannels: UInt8 = 1
  
             if let context = swrContext {
-//                let bufferSize = av_samples_get_buffer_size(nil, codecContext.memory.channels, 1, AV_SAMPLE_FMT_S16, 1)
+//                let bufferSize = av_samples_get_buffer_size(nil, codecContext.pointee.channels, 1, AV_SAMPLE_FMT_S16, 1)
 //                
-//                swr_convert(context.memory, <#T##out: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>##UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>#>, audioFrame.memory.nb_samples * , <#T##in: UnsafeMutablePointer<UnsafePointer<UInt8>>##UnsafeMutablePointer<UnsafePointer<UInt8>>#>, <#T##in_count: Int32##Int32#>)
+//                swr_convert(context.memory, <#T##out: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>##UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>#>, audioFrame.pointee.nb_samples * , <#T##in: UnsafeMutablePointer<UnsafePointer<UInt8>>##UnsafeMutablePointer<UnsafePointer<UInt8>>#>, <#T##in_count: Int32##Int32#>)
             } else {
                 
                 if (codecContext.pointee.sample_fmt != AV_SAMPLE_FMT_S16) {
@@ -611,8 +611,8 @@ private func audioCodecIsSupported(_ audio: UnsafePointer<AVCodecContext>) -> Bo
 
         return true
 //        let audioManager = AudioManager()
-//        return  (Int32(audioManager.samplingRate) == audio.memory.sample_rate) &&
-//        (Int32(audioManager.numOutputChannels) == audio.memory.channels)
+//        return  (Int32(audioManager.samplingRate) == audio.pointee.sample_rate) &&
+//        (Int32(audioManager.numOutputChannels) == audio.pointee.channels)
     }
     return false
 }

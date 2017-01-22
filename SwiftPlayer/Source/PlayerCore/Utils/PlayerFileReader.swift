@@ -123,10 +123,10 @@ class PlayerFileReader: NSObject {
         }
         
         for videoStreamIndex in videoStreams {
-            let stream = formartCtx.memory.streams[videoStreamIndex]
-            if (stream.memory.disposition & AV_DISPOSITION_ATTACHED_PIC) == 0 {
+            let stream = formartCtx.pointee.streams[videoStreamIndex]
+            if ((stream?.pointee.disposition)! & AV_DISPOSITION_ATTACHED_PIC) == 0 {
                 do {
-                    try openVideoStream(stream)
+                    try openVideoStream(stream: stream!)
                     self.videoStreamIndex = Int32(videoStreamIndex)
                     break
                 } catch {
@@ -138,8 +138,8 @@ class PlayerFileReader: NSObject {
     
     private func openVideoStream(stream: UnsafeMutablePointer<AVStream>) throws {
         
-        let codecContex = stream.memory.codec
-        let codec = avcodec_find_decoder(codecContex.memory.codec_id)
+        let codecContex = stream.pointee.codec
+        let codec = avcodec_find_decoder(codecContex?.pointee.codec_id)
         
         if codec == nil {
             throw FileReaderError.codecNotFound
@@ -156,22 +156,22 @@ class PlayerFileReader: NSObject {
 //        }
         
 //        var timeBase, fps: CDouble
-//        if (stream.memory.time_base.den != 0) && (stream.memory.time_base.num != 0) {
-//            timeBase = av_q2d(stream.memory.time_base)
-//        }else if (stream.memory.codec.memory.time_base.den != 0) && (stream.memory.codec.memory.time_base.num != 0) {
-//            timeBase = av_q2d(stream.memory.codec.memory.time_base)
+//        if (stream.pointee.time_base.den != 0) && (stream.pointee.time_base.num != 0) {
+//            timeBase = av_q2d(stream.pointee.time_base)
+//        }else if (stream.pointee.codec.pointee.time_base.den != 0) && (stream.pointee.codec.pointee.time_base.num != 0) {
+//            timeBase = av_q2d(stream.pointee.codec.pointee.time_base)
 //        }else {
 //            timeBase = 0.4
 //        }
 //        
-//        if stream.memory.codec.memory.ticks_per_frame != 1{
-//            print("WARNING: st.codec.ticks_per_frame=\(stream.memory.codec.memory.ticks_per_frame)")
+//        if stream.pointee.codec.pointee.ticks_per_frame != 1{
+//            print("WARNING: st.codec.ticks_per_frame=\(stream.pointee.codec.pointee.ticks_per_frame)")
 //        }
 //        
-//        if (stream.memory.avg_frame_rate.den != 0) && (stream.memory.avg_frame_rate.num != 0) {
-//            fps = av_q2d(stream.memory.avg_frame_rate)
-//        }else if (stream.memory.r_frame_rate.den != 0) && (stream.memory.r_frame_rate.num != 0) {
-//            fps = av_q2d(stream.memory.r_frame_rate)
+//        if (stream.pointee.avg_frame_rate.den != 0) && (stream.pointee.avg_frame_rate.num != 0) {
+//            fps = av_q2d(stream.pointee.avg_frame_rate)
+//        }else if (stream.pointee.r_frame_rate.den != 0) && (stream.pointee.r_frame_rate.num != 0) {
+//            fps = av_q2d(stream.pointee.r_frame_rate)
 //        }else {
 //            fps = 1.0 / timeBase
 //        }
@@ -184,17 +184,17 @@ class PlayerFileReader: NSObject {
     
     private func openAudioStreams() throws {
         if let context = self.pFormatCtx {
-            let videoStreams = collectStreamIndexs(context, codecType: AVMEDIA_TYPE_AUDIO)
+            let videoStreams = collectStreamIndexs(formatContext: context, codecType: AVMEDIA_TYPE_AUDIO)
             
             if videoStreams.count == 0 {
                 throw FileReaderError.emptyStreams
             }
             
             for videoStreamIndex in videoStreams {
-                let stream = context.memory.streams[videoStreamIndex]
+                let stream = context.pointee.streams[videoStreamIndex]
                 
                 do {
-                    try openAudioStream(stream)
+                    try openAudioStream(stream: stream!)
                     break
                 } catch {
                     
@@ -204,8 +204,8 @@ class PlayerFileReader: NSObject {
     }
     
     private func openAudioStream(stream: UnsafeMutablePointer<AVStream>) throws {
-        let codecContex = stream.memory.codec
-        let codec = avcodec_find_decoder(codecContex.memory.codec_id)
+        let codecContex = stream.pointee.codec
+        let codec = avcodec_find_decoder((codecContex?.pointee.codec_id)!)
         
         if codec == nil {
             throw FileReaderError.codecNotFound
@@ -220,8 +220,8 @@ class PlayerFileReader: NSObject {
         
         var streamIndexs = Array<Int>()
         
-        for i in 0..<Int(formatContext.memory.nb_streams) {
-            if codecType == formatContext.memory.streams[i].memory.codec.memory.codec_type {
+        for i in 0..<Int(formatContext.pointee.nb_streams) {
+            if codecType == formatContext.pointee.streams[i]?.pointee.codec.pointee.codec_type {
                 streamIndexs.append(i)
             }
         }
