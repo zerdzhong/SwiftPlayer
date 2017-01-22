@@ -32,7 +32,7 @@ class PlayerFileReader: NSObject {
         if let codecCtx = videoCodecContext, var formatCtx = pFormatCtx {
             avcodec_close(codecCtx)
             videoCodecContext = nil
-            avformat_close_input(&formatCtx!)
+            avformat_close_input(&formatCtx)
             pFormatCtx = nil
         }
     }
@@ -72,10 +72,9 @@ class PlayerFileReader: NSObject {
     }
     
     func asyncReadFrame(completion: @escaping ReadFrameCompletion) {
-        let dispatchQueue = DispatchQueue.global(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
-        dispatch_async(dispatchQueue) {
-            self.readFrame(completion)
+        DispatchQueue.global().async {
+            self.readFrame(completion: completion)
         }
 
     }
@@ -95,7 +94,7 @@ class PlayerFileReader: NSObject {
         
         while av_read_frame(pFormatCtx!, &packet) >= 0 {
             if packet.stream_index == videoStreamIndex{
-                completion(packet: &packet)
+                completion(&packet)
                 av_packet_unref(&packet)
             }
             
@@ -117,10 +116,10 @@ class PlayerFileReader: NSObject {
     //MARK:- private func
     private func openVideoStreams(formartCtx: UnsafeMutablePointer<AVFormatContext>) throws {
         videoStreamIndex = -1
-        let videoStreams = collectStreamIndexs(formartCtx, codecType: AVMEDIA_TYPE_VIDEO)
+        let videoStreams = collectStreamIndexs(formatContext: formartCtx, codecType: AVMEDIA_TYPE_VIDEO)
         
         if videoStreams.count == 0 {
-            throw FileReaderError.EmptyStreams
+            throw FileReaderError.emptyStreams
         }
         
         for videoStreamIndex in videoStreams {
@@ -143,11 +142,11 @@ class PlayerFileReader: NSObject {
         let codec = avcodec_find_decoder(codecContex.memory.codec_id)
         
         if codec == nil {
-            throw FileReaderError.CodecNotFound
+            throw FileReaderError.codecNotFound
         }
         
         if avcodec_open2(codecContex, codec, nil) < 0 {
-            throw FileReaderError.OpenCodecFailed
+            throw FileReaderError.openCodecFailed
         }
         
 //        let videoFrame = av_frame_alloc()
@@ -188,7 +187,7 @@ class PlayerFileReader: NSObject {
             let videoStreams = collectStreamIndexs(context, codecType: AVMEDIA_TYPE_AUDIO)
             
             if videoStreams.count == 0 {
-                throw FileReaderError.EmptyStreams
+                throw FileReaderError.emptyStreams
             }
             
             for videoStreamIndex in videoStreams {
@@ -209,11 +208,11 @@ class PlayerFileReader: NSObject {
         let codec = avcodec_find_decoder(codecContex.memory.codec_id)
         
         if codec == nil {
-            throw FileReaderError.CodecNotFound
+            throw FileReaderError.codecNotFound
         }
         
         if avcodec_open2(codecContex, codec, nil) < 0 {
-            throw FileReaderError.OpenCodecFailed
+            throw FileReaderError.openCodecFailed
         }
     }
     

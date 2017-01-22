@@ -103,7 +103,8 @@ class PlayerView: UIView{
     //MARK:- player kvo 监听
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if object !== player?.currentItem {
+        
+        guard object as! AVPlayerItem? === player?.currentItem else {
             return
         }
         
