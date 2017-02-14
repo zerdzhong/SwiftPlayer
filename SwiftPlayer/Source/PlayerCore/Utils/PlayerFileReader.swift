@@ -32,7 +32,8 @@ class PlayerFileReader: NSObject {
         if let codecCtx = videoCodecContext, var formatCtx = pFormatCtx {
             avcodec_close(codecCtx)
             videoCodecContext = nil
-            avformat_close_input(&formatCtx)
+            avformat_close_input(&pFormatCtx)
+//            avformat_close_input(&formatCtx)
             pFormatCtx = nil
         }
     }
@@ -105,7 +106,7 @@ class PlayerFileReader: NSObject {
         
         avcodec_close(videoCodecContext!)
         videoCodecContext = nil
-        avformat_close_input(&pFormatCtx!)
+        avformat_close_input(&pFormatCtx)
         pFormatCtx = nil
     }
     
@@ -139,7 +140,7 @@ class PlayerFileReader: NSObject {
     private func openVideoStream(stream: UnsafeMutablePointer<AVStream>) throws {
         
         let codecContex = stream.pointee.codec
-        let codec = avcodec_find_decoder(codecContex?.pointee.codec_id)
+        let codec = avcodec_find_decoder((codecContex?.pointee.codec_id)!)
         
         if codec == nil {
             throw FileReaderError.codecNotFound

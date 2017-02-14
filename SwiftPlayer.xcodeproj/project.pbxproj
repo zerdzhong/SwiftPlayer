@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		47032AC71E52E785007B6136 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47032AC61E52E785007B6136 /* VideoToolbox.framework */; };
+		47032AC91E52E796007B6136 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47032AC81E52E796007B6136 /* libbz2.tbd */; };
+		47032ACB1E52E7A3007B6136 /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47032ACA1E52E7A3007B6136 /* libiconv.2.4.0.tbd */; };
+		47032ACF1E52E7C9007B6136 /* libz.1.1.3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 47032ACE1E52E7C9007B6136 /* libz.1.1.3.tbd */; };
 		47254D521E2F693B0027ECD9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47254D501E2F693B0027ECD9 /* Main.storyboard */; };
 		47254D541E2F693B0027ECD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47254D531E2F693B0027ECD9 /* Assets.xcassets */; };
 		47254D571E2F693B0027ECD9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47254D551E2F693B0027ECD9 /* LaunchScreen.storyboard */; };
@@ -50,6 +54,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		47032AC61E52E785007B6136 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		47032AC81E52E796007B6136 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		47032ACA1E52E7A3007B6136 /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
+		47032ACC1E52E7BA007B6136 /* libbz2.1.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.1.0.tbd; path = usr/lib/libbz2.1.0.tbd; sourceTree = SDKROOT; };
+		47032ACE1E52E7C9007B6136 /* libz.1.1.3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.1.3.tbd; path = usr/lib/libz.1.1.3.tbd; sourceTree = SDKROOT; };
 		47254D491E2F693B0027ECD9 /* SwiftPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47254D511E2F693B0027ECD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		47254D531E2F693B0027ECD9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -189,6 +198,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47032ACF1E52E7C9007B6136 /* libz.1.1.3.tbd in Frameworks */,
+				47032ACB1E52E7A3007B6136 /* libiconv.2.4.0.tbd in Frameworks */,
+				47032AC91E52E796007B6136 /* libbz2.tbd in Frameworks */,
+				47032AC71E52E785007B6136 /* VideoToolbox.framework in Frameworks */,
 				47254E151E2F6AFA0027ECD9 /* SnapKit.framework in Frameworks */,
 				47254E0F1E2F6A390027ECD9 /* libavutil.a in Frameworks */,
 				47254E111E2F6A390027ECD9 /* libswscale.a in Frameworks */,
@@ -519,6 +532,11 @@
 		47254E131E2F6AFA0027ECD9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				47032ACE1E52E7C9007B6136 /* libz.1.1.3.tbd */,
+				47032ACC1E52E7BA007B6136 /* libbz2.1.0.tbd */,
+				47032ACA1E52E7A3007B6136 /* libiconv.2.4.0.tbd */,
+				47032AC81E52E796007B6136 /* libbz2.tbd */,
+				47032AC61E52E785007B6136 /* VideoToolbox.framework */,
 				47254E141E2F6AFA0027ECD9 /* SnapKit.framework */,
 			);
 			name = Frameworks;

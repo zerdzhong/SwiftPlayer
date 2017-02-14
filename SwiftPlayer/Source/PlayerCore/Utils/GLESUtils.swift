@@ -19,7 +19,7 @@ func loadShader(_ type: GLenum, shaderString: String) -> GLuint {
             return 0
         }
         
-        var source = UnsafePointer<GLchar>(cShtringPoint)
+        var source: UnsafePointer<GLchar>? = unsafeBitCast(cShtringPoint, to: UnsafePointer<GLchar>.self)
         glShaderSource(shader, 1, &source, nil)
         glCompileShader(shader)
         

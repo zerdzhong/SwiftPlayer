@@ -394,7 +394,8 @@ class PlayerDecoder: NSObject {
                     return nil
                 }
                 
-                audioData = UnsafeMutablePointer<Int16>((audioFrame?.pointee.data.0)!)
+                audioData = unsafeBitCast(audioFrame?.pointee.data.0, to: UnsafeMutablePointer<Int16>.self)
+//                audioData = UnsafeMutablePointer<Int16>((audioFrame?.pointee.data.0)!)
                 numFrames = (audioFrame?.pointee.nb_samples)!
             }
             
@@ -403,8 +404,8 @@ class PlayerDecoder: NSObject {
             let data = NSMutableData(capacity:numElements * MemoryLayout<Float>.size)
             
             var scale = 1.0 / Float(INT16_MAX)
-            vDSP_vflt16(audioData!, 1, UnsafeMutablePointer<Float>(data!.mutableBytes), 1, UInt(numElements))
-            vDSP_vsmul(UnsafeMutablePointer<Float>(data!.mutableBytes), 1, &scale, UnsafeMutablePointer<Float>(data!.mutableBytes), 1, UInt(numElements))
+            vDSP_vflt16(audioData!, 1, unsafeBitCast(data!.mutableBytes, to: UnsafeMutablePointer<Float>.self), 1, UInt(numElements))
+            vDSP_vsmul(unsafeBitCast(data!.mutableBytes, to: UnsafeMutablePointer<Float>.self), 1, &scale, unsafeBitCast(data!.mutableBytes, to: UnsafeMutablePointer<Float>.self), 1, UInt(numElements))
             
             let frame = AudioFrame()
             frame.position = Double(av_frame_get_best_effort_timestamp(audioFrame!)) * Double(audioTimeBase)
@@ -539,7 +540,7 @@ class PlayerDecoder: NSObject {
             
             if swrContext == nil || swr_init(swrContext!) != 0 {
                 if swrContext != nil {
-                    swr_free(&swrContext!)
+                    swr_free(&swrContext)
                 }
                 
                 avcodec_close(codecContex)
@@ -551,9 +552,9 @@ class PlayerDecoder: NSObject {
         audioFrame = av_frame_alloc()
         
         if audioFrame == nil {
-            if var context = swrContext {
-                swr_free(&context)
-            }
+//            if var context = swrContext {
+                swr_free(&swrContext)
+//            }
             
             avcodec_close(codecContex)
             throw DecodeError.allocateFrameFailed
