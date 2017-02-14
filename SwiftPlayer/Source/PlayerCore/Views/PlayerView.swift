@@ -79,7 +79,7 @@ class PlayerView: UIView{
     
     fileprivate func commonInit() {
         addSubview(playerControlView)
-        playerControlView.snp_makeConstraints { (make) -> Void in
+        playerControlView.snp.makeConstraints { (make) in
             make.edges.equalTo(self)
         }
     }

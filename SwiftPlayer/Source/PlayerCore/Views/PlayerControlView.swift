@@ -97,18 +97,18 @@ class PlayerControlView: UIView {
     fileprivate func commonInit() {
         
         addSubview(horizontalLable)
-        horizontalLable.snp_makeConstraints { (make) in
+        horizontalLable.snp.makeConstraints { (make) in
             make.center.equalTo(self)
         }
         
         addSubview(bottomView)
-        bottomView.snp_makeConstraints { (make) -> Void in
+        bottomView.snp.makeConstraints { (make) -> Void in
             make.bottom.right.left.equalTo(self)
             make.height.equalTo(45)
         }
         
         addSubview(topView)
-        topView.snp_makeConstraints { (make) -> Void in
+        topView.snp.makeConstraints { (make) -> Void in
             make.top.left.right.equalTo(self)
             make.height.equalTo(50)
         }
@@ -117,7 +117,7 @@ class PlayerControlView: UIView {
         startBtn.tintColor = UIColor.white
         startBtn.buttonState = .playing
         bottomView.addSubview(startBtn)
-        startBtn.snp_makeConstraints { (make) -> Void in
+        startBtn.snp.makeConstraints { (make) -> Void in
             make.width.height.equalTo(15)
             make.left.equalTo(bottomView).offset(10)
             make.centerY.equalTo(bottomView)
@@ -128,15 +128,15 @@ class PlayerControlView: UIView {
         currentTimeLabel.font = UIFont.systemFont(ofSize: 12)
         bottomView.addSubview(currentTimeLabel)
         
-        currentTimeLabel.snp_makeConstraints { (make) -> Void in
+        currentTimeLabel.snp.makeConstraints { (make) -> Void in
             make.centerY.equalTo(bottomView)
-            make.left.equalTo(startBtn.snp_right).offset(5)
+            make.left.equalTo(startBtn.snp.right).offset(5)
         }
         
         fullScreenBtn.setImage(UIImage(named: "kr-video-player-fullscreen"), for: UIControlState())
         fullScreenBtn.addTarget(self, action: #selector(PlayerControlView.clickFullScreenBtn), for: .touchUpInside)
         bottomView.addSubview(fullScreenBtn)
-        fullScreenBtn.snp_makeConstraints { (make) -> Void in
+        fullScreenBtn.snp.makeConstraints { (make) -> Void in
             make.width.height.equalTo(30)
             make.right.equalTo(bottomView).offset(-10)
             make.centerY.equalTo(bottomView)
@@ -146,8 +146,8 @@ class PlayerControlView: UIView {
         totalTimeLabel.textColor = UIColor.white
         totalTimeLabel.font = UIFont.systemFont(ofSize: 12)
         bottomView.addSubview(totalTimeLabel)
-        totalTimeLabel.snp_makeConstraints { (make) -> Void in
-            make.right.equalTo(fullScreenBtn.snp_left).offset(-2)
+        totalTimeLabel.snp.makeConstraints { (make) -> Void in
+            make.right.equalTo(fullScreenBtn.snp.left).offset(-2)
             make.centerY.equalTo(bottomView)
         }
         
@@ -155,9 +155,9 @@ class PlayerControlView: UIView {
         progressView.trackTintColor = UIColor.clear
         bottomView.addSubview(progressView)
         
-        progressView.snp_makeConstraints { (make) -> Void in
-            make.left.equalTo(currentTimeLabel.snp_right).offset(10)
-            make.right.equalTo(totalTimeLabel.snp_left).offset(-10)
+        progressView.snp.makeConstraints { (make) -> Void in
+            make.left.equalTo(currentTimeLabel.snp.right).offset(10)
+            make.right.equalTo(totalTimeLabel.snp.left).offset(-10)
             make.centerY.equalTo(bottomView)
         }
         
@@ -170,7 +170,7 @@ class PlayerControlView: UIView {
         videoSlider.addTarget(self, action: #selector(PlayerControlView.progressSliderTouchEnd(_:)), for: .touchUpInside)
         
         bottomView.addSubview(videoSlider)
-        videoSlider.snp_makeConstraints { (make) -> Void in
+        videoSlider.snp.makeConstraints { (make) -> Void in
             make.left.right.equalTo(progressView)
             make.centerY.equalTo(bottomView)
         }

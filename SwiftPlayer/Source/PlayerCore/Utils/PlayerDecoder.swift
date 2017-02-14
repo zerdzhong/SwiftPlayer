@@ -381,9 +381,9 @@ class PlayerDecoder: NSObject {
             
             var numFrames: Int32 = 0
             var audioData: UnsafeMutablePointer<Int16>? = nil
-            var numChannels: UInt8 = 1
+            let numChannels: UInt8 = 1
  
-            if let context = swrContext {
+            if swrContext != nil {
 //                let bufferSize = av_samples_get_buffer_size(nil, codecContext.pointee.channels, 1, AV_SAMPLE_FMT_S16, 1)
 //                
 //                swr_convert(context.memory, <#T##out: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>##UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>#>, audioFrame.pointee.nb_samples * , <#T##in: UnsafeMutablePointer<UnsafePointer<UInt8>>##UnsafeMutablePointer<UnsafePointer<UInt8>>#>, <#T##in_count: Int32##Int32#>)
