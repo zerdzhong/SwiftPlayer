@@ -15,6 +15,12 @@ protocol PlayerControllable {
     func seekTo(time: TimeInterval)
 }
 
+protocol PlayerItemInfo {
+    var duration : TimeInterval {get}
+    var loadedDuration : TimeInterval {get}
+    var currentTime : TimeInterval {get}
+}
+
 protocol PlayerCallback {
     func player_playStart()
     func player_playFinish()

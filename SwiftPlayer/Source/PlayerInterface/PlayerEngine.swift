@@ -8,9 +8,15 @@
 
 import Foundation
 
-class PlayerEngine: PlayerControllable {
+class PlayerEngine: PlayerControllable, PlayerItemInfo {
     var delegate: PlayerCallback?
     
+    //MARK:- PlayerItemInfo
+    var duration : TimeInterval = 0
+    var loadedDuration : TimeInterval = 0
+    var currentTime : TimeInterval = 0
+    
+    //MARK:- public func
     func startPlayer(url: String, decodeType: PlayerDecodeType) -> Void {
         
     }
