@@ -12,7 +12,8 @@ protocol PlayerControllable {
     func play()
     func pause()
     func stop()
-    func seekTo(time: TimeInterval)
+    func seekTo(progress: Float)
+    func switchFullScreen()
 }
 
 protocol PlayerItemInfo {

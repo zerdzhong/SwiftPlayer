@@ -24,8 +24,8 @@ struct PlayerPanInfo {
 
 class PlayerControlView: UIView {
     
-    weak var playerControl: PlayerControlProtocol?
-    weak var playerItemInfo: PlayerItemInfoProtocol?
+    var playerControl: PlayerControllable?
+    var playerItemInfo: PlayerItemInfo?
     
     var videoSlider = UISlider()
     
@@ -265,8 +265,8 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
     
     func horizontalMoved(_ dtX :CGFloat) {
         
-        let videoTotalTime = playerItemInfo?.totalTime()
-        let videoCurrenTime = playerItemInfo?.currentTime()
+        let videoTotalTime = playerItemInfo?.duration
+        let videoCurrenTime = playerItemInfo?.currentTime
         
         if let totalTime = videoTotalTime, let currenTime = videoCurrenTime {
             var style = ""
@@ -323,7 +323,7 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         self.horizontalLable.isHidden = true
         
         if panInfo.panDirection == .horizontal {
-            self.playerControl?.seekToProgress(panInfo.seekProgress)
+            self.playerControl?.seekTo(progress:panInfo.seekProgress)
         }
     }
     
@@ -375,7 +375,7 @@ extension PlayerControlView
     
     func progressSliderValueChanged(_ slider: UISlider) {
         if let control = playerControl {
-            control.seekToProgress(slider.value)
+            control.seekTo(progress:slider.value)
         }
     }
 }

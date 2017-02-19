@@ -31,7 +31,10 @@ class PlayerEngine: PlayerControllable, PlayerItemInfo {
     func stop() {
         
     }
-    func seekTo(time: TimeInterval) {
+    func seekTo(progress: Float) {
+        
+    }
+    func switchFullScreen() {
         
     }
 }

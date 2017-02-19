@@ -18,18 +18,6 @@ enum PlayerState {
     case seeking
 }
 
-protocol PlayerControlProtocol: class {
-    func seekToProgress(_ progress: Float)
-    func play()
-    func pause()
-    func switchFullScreen()
-}
-
-protocol PlayerItemInfoProtocol: class {
-    func currentTime() -> TimeInterval!
-    func totalTime() -> TimeInterval!
-}
-
 class PlayerView: UIView{
     
     var videoURL: URL? {
@@ -175,6 +163,7 @@ class PlayerView: UIView{
     }
     
     func destoryPlayer() {
+        pause()
         timer?.invalidate()
     }
     
@@ -195,26 +184,36 @@ class PlayerView: UIView{
 
 //MARK:- 视频信息接口
 
-extension PlayerView: PlayerItemInfoProtocol {
-    func currentTime() -> TimeInterval! {
-        if let playerItem = player?.currentItem {
-            return CMTimeGetSeconds(playerItem.currentTime())
-        }else {
-            return CMTimeGetSeconds(kCMTimeIndefinite)
+extension PlayerView: PlayerItemInfo {
+    var currentTime: TimeInterval {
+        get {
+            if let playerItem = player?.currentItem {
+                return CMTimeGetSeconds(playerItem.currentTime())
+            }else {
+                return CMTimeGetSeconds(kCMTimeIndefinite)
+            }
         }
     }
     
-    func totalTime() -> TimeInterval! {
-        if let playerItem = player?.currentItem {
-            return CMTimeGetSeconds(playerItem.duration)
-        }else {
-            return CMTimeGetSeconds(kCMTimeIndefinite)
+    var duration: TimeInterval {
+        get {
+            if let playerItem = player?.currentItem {
+                return CMTimeGetSeconds(playerItem.duration)
+            }else {
+                return CMTimeGetSeconds(kCMTimeIndefinite)
+            }
+        }
+    }
+    
+    var loadedDuration: TimeInterval {
+        get {
+            return 0
         }
     }
 }
 
 //MARK:- 播放控制接口
-extension PlayerView: PlayerControlProtocol {
+extension PlayerView: PlayerControllable {
     
     func play() {
         if let player = player {
@@ -226,6 +225,10 @@ extension PlayerView: PlayerControlProtocol {
         if let player = player {
             player.pause()
         }
+    }
+    
+    func stop() {
+        
     }
     
     func switchFullScreen() {
@@ -250,7 +253,7 @@ extension PlayerView: PlayerControlProtocol {
         }
     }
     
-    func seekToProgress(_ progress: Float) {
+    func seekTo(progress: Float) {
         if let player = player, player.status == AVPlayerStatus.readyToPlay {
             let total = (player.currentItem?.duration.value)! / Int64((player.currentItem?.duration.timescale)!)
             let dragedSecond = Int64(floorf(Float(total) * progress))
