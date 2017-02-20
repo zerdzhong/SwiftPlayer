@@ -296,11 +296,11 @@
 			children = (
 				47902AA31E34997500AEF044 /* SwiftPlayer-Bridging-Header.h */,
 				47254D711E2F6A390027ECD9 /* AppDelegate.swift */,
+				47254D851E2F6A390027ECD9 /* ViewController.swift */,
 				47254D721E2F6A390027ECD9 /* MovieViewController.swift */,
 				47C620A91E56F01600FF9F58 /* View */,
 				47032B101E55847D007B6136 /* PlayerInterface */,
 				47254D731E2F6A390027ECD9 /* PlayerCore */,
-				47254D851E2F6A390027ECD9 /* ViewController.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
