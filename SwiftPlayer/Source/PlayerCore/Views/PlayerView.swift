@@ -9,8 +9,6 @@
 import UIKit
 import AVFoundation
 
-typealias PlayerBackBlock = () -> ()
-
 enum PlayerState {
     case playing
     case pause
@@ -48,28 +46,14 @@ class PlayerView: UIView{
         }
     }()
     
-    var playerControlView = PlayerControlView()
     var timer: Timer?
-    var isFullScreen = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        commonInit()
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-    }
-    
-    override func awakeFromNib() {
-        commonInit()
-    }
-    
-    fileprivate func commonInit() {
-        addSubview(playerControlView)
-        playerControlView.snp.makeConstraints { (make) in
-            make.edges.equalTo(self)
-        }
     }
     
     override func layoutSubviews() {
@@ -100,44 +84,42 @@ class PlayerView: UIView{
             
             if keyPathString == "status" {
                 if player?.status == .readyToPlay {
-                    //添加手势
-                    playerControlView.addPanGesture()
                 }
             }else if keyPathString == "loadedTimeRanges" {
-                let timeInterval = availableDuration()
-                let duration = player?.currentItem?.duration
-                let totalDuration = CMTimeGetSeconds(duration!)
-                
-                let progress = timeInterval / totalDuration
-                
-                playerControlView.progressView.setProgress(Float(progress), animated: false)
+//                let timeInterval = availableDuration()
+//                let duration = player?.currentItem?.duration
+//                let totalDuration = CMTimeGetSeconds(duration!)
+//                
+//                let progress = timeInterval / totalDuration
+//                
+////                playerControlView.progressView.setProgress(Float(progress), animated: false)
             }
         }
     }
     
     func playerTimerAction() {
-        if player?.currentItem?.duration.timescale == 0 {
-            return
-        }
-        
-        if let playerItem = player?.currentItem {
-            
-            let timeProgress = CMTimeGetSeconds(playerItem.currentTime()) / (Float64(playerItem.duration.value) / Float64(playerItem.duration.timescale))
-            
-            playerControlView.videoSlider.maximumValue = 1
-            playerControlView.videoSlider.value = Float(timeProgress)
-            
-            let currentMin = CMTimeGetSeconds(playerItem.currentTime()) / 60
-            let currentSec = CMTimeGetSeconds(playerItem.currentTime()).truncatingRemainder(dividingBy: 60)
-            
-            playerControlView.currentTimeLabel.text = String(format: "%02ld:%02ld", Int(currentMin), Int(currentSec))
-            
-            let totalMin = Float(playerItem.duration.value) / Float(playerItem.duration.timescale) / 60
-            let totalSec = (Float(playerItem.duration.value) / Float(playerItem.duration.timescale)).truncatingRemainder(dividingBy: 60)
-            
-            playerControlView.totalTimeLabel.text = String(format: "%02ld:%02ld", Int(totalMin), Int(totalSec))
-        }
-        
+//        if player?.currentItem?.duration.timescale == 0 {
+//            return
+//        }
+//        
+//        if let playerItem = player?.currentItem {
+//            
+//            let timeProgress = CMTimeGetSeconds(playerItem.currentTime()) / (Float64(playerItem.duration.value) / Float64(playerItem.duration.timescale))
+//            
+//            playerControlView.videoSlider.maximumValue = 1
+//            playerControlView.videoSlider.value = Float(timeProgress)
+//            
+//            let currentMin = CMTimeGetSeconds(playerItem.currentTime()) / 60
+//            let currentSec = CMTimeGetSeconds(playerItem.currentTime()).truncatingRemainder(dividingBy: 60)
+//            
+//            playerControlView.currentTimeLabel.text = String(format: "%02ld:%02ld", Int(currentMin), Int(currentSec))
+//            
+//            let totalMin = Float(playerItem.duration.value) / Float(playerItem.duration.timescale) / 60
+//            let totalSec = (Float(playerItem.duration.value) / Float(playerItem.duration.timescale)).truncatingRemainder(dividingBy: 60)
+//            
+//            playerControlView.totalTimeLabel.text = String(format: "%02ld:%02ld", Int(totalMin), Int(totalSec))
+//        }
+//        
     }
     
     //MARK:- private func
@@ -147,9 +129,6 @@ class PlayerView: UIView{
             
             layer.insertSublayer(playerLayer, at: 0)
             player.play()
-            
-            playerControlView.playerControl = self
-            playerControlView.playerItemInfo = self
             
 //            NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoDidPlayEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
             
