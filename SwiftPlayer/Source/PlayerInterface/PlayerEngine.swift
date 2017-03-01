@@ -27,13 +27,23 @@ class PlayerEngine: PlayerControllable, PlayerItemInfo {
         case .software: break
         case .hardware:
             let player = PlayerView()
-            player.videoURL = URL(string: url)
+            
+            if url.contains("http") {
+                player.videoURL = URL(string: url)
+            }else {
+                player.videoURL = URL(fileURLWithPath: url)
+            }
+            
             playerView = player
             playerControl = player
             playerItemInfo = player
             break
         }
         
+    }
+    
+    func destoryPlayer() {
+        playerControl?.stop()
     }
     
     //MARK:- PlayerControllable

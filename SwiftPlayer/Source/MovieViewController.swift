@@ -10,23 +10,20 @@ import UIKit
 
 class MovieViewController: UIViewController {
     
-    @IBOutlet weak var playerView: PlayerView!
+    @IBOutlet weak var playerContainer: UIView!
     var videoURLString: String = ""
+    var player = PlayerEngine()
     
     override func viewDidLoad() {
-
-        if videoURLString.contains("http") {
-            playerView.videoURL = URL(string: videoURLString)
-        }else {
-            playerView.videoURL = URL(fileURLWithPath: videoURLString)
-        }
         
-////        if videoURLString.containsString("rmvb") || videoURLString.containsString("mkv") {
-//        let glView = PlayerGLView(frame: self.view.bounds, fileURL: videoURLString)
-//        glView.contentMode = .scaleAspectFit
-//            self.view.addSubview(glView)
-//            glView.play()
-////        }
+        player.startPlayer(url: videoURLString, decodeType: .hardware)
+        
+        if let playerView = player.playerView {
+            playerContainer.addSubview(playerView)
+            playerView.snp.makeConstraints({ (make) in
+                make.edges.equalTo(playerContainer)
+            })
+        }
         
         refreshNavigationBarHidden(view.bounds.size)
     }
@@ -40,7 +37,7 @@ class MovieViewController: UIViewController {
     }
     
     deinit {
-        playerView.destoryPlayer()
+        player.destoryPlayer()
     }
     
     func refreshNavigationBarHidden(_ size: CGSize) {

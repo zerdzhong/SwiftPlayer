@@ -16,7 +16,9 @@ enum PlayerState {
     case seeking
 }
 
-class PlayerView: UIView{
+class PlayerView: UIView {
+    
+    var delegate: PlayerCallback?
     
     var videoURL: URL? {
         didSet {
@@ -46,8 +48,6 @@ class PlayerView: UIView{
         }
     }()
     
-    var timer: Timer?
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -65,61 +65,6 @@ class PlayerView: UIView{
     
     deinit {
         print("deinit")
-        NotificationCenter.default.removeObserver(self)
-        player?.currentItem?.removeObserver(self, forKeyPath: "status")
-        player?.currentItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
-        player?.currentItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
-        player?.currentItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
-    }
-    
-    //MARK:- player kvo 监听
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        
-        guard object as! AVPlayerItem? === player?.currentItem else {
-            return
-        }
-        
-        if let keyPathString = keyPath {
-            
-            if keyPathString == "status" {
-                if player?.status == .readyToPlay {
-                }
-            }else if keyPathString == "loadedTimeRanges" {
-//                let timeInterval = availableDuration()
-//                let duration = player?.currentItem?.duration
-//                let totalDuration = CMTimeGetSeconds(duration!)
-//                
-//                let progress = timeInterval / totalDuration
-//                
-////                playerControlView.progressView.setProgress(Float(progress), animated: false)
-            }
-        }
-    }
-    
-    func playerTimerAction() {
-//        if player?.currentItem?.duration.timescale == 0 {
-//            return
-//        }
-//        
-//        if let playerItem = player?.currentItem {
-//            
-//            let timeProgress = CMTimeGetSeconds(playerItem.currentTime()) / (Float64(playerItem.duration.value) / Float64(playerItem.duration.timescale))
-//            
-//            playerControlView.videoSlider.maximumValue = 1
-//            playerControlView.videoSlider.value = Float(timeProgress)
-//            
-//            let currentMin = CMTimeGetSeconds(playerItem.currentTime()) / 60
-//            let currentSec = CMTimeGetSeconds(playerItem.currentTime()).truncatingRemainder(dividingBy: 60)
-//            
-//            playerControlView.currentTimeLabel.text = String(format: "%02ld:%02ld", Int(currentMin), Int(currentSec))
-//            
-//            let totalMin = Float(playerItem.duration.value) / Float(playerItem.duration.timescale) / 60
-//            let totalSec = (Float(playerItem.duration.value) / Float(playerItem.duration.timescale)).truncatingRemainder(dividingBy: 60)
-//            
-//            playerControlView.totalTimeLabel.text = String(format: "%02ld:%02ld", Int(totalMin), Int(totalSec))
-//        }
-//        
     }
     
     //MARK:- private func
@@ -129,21 +74,46 @@ class PlayerView: UIView{
             
             layer.insertSublayer(playerLayer, at: 0)
             player.play()
-            
-//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoDidPlayEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
-            
-            player.currentItem?.addObserver(self, forKeyPath: "status", options: .new, context: nil)
-            player.currentItem?.addObserver(self, forKeyPath: "loadedTimeRanges", options: .new, context: nil)
-            player.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
-            player.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
-            
-            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PlayerView.playerTimerAction), userInfo: nil, repeats: true)
+
+            addPlayerObserver()
         }
     }
     
-    func destoryPlayer() {
+    func destory() {
         pause()
-        timer?.invalidate()
+        removePlayerObserver()
+    }
+    
+    func addPlayerObserver() {
+        guard let playerItem = player?.currentItem else {
+            return
+        }
+        playerItem.addObserver(self, forKeyPath: "status", options: .new, context: nil)
+        playerItem.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
+        playerItem.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
+        playerItem.addObserver(self, forKeyPath: "presentationSize", options: .new, context: nil)
+        playerItem.addObserver(self, forKeyPath: "currentItem", options: .new, context: nil)
+        playerItem.addObserver(self, forKeyPath: "rate", options: .new, context: nil)
+        playerItem.addObserver(self, forKeyPath: "airPlayVideoActive", options: .new, context: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didPlayToEndNotification(notification:)), name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
+        NotificationCenter.default.addObserver(self, selector: #selector(failedPlayToEndNotification(notification:)), name: .AVPlayerItemFailedToPlayToEndTime, object: playerItem)
+    }
+    
+    func removePlayerObserver() {
+        guard let playerItem = player?.currentItem else {
+            return
+        }
+        playerItem.removeObserver(self, forKeyPath: "status")
+        playerItem.removeObserver(self, forKeyPath: "playbackBufferEmpty")
+        playerItem.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
+        playerItem.removeObserver(self, forKeyPath: "presentationSize")
+        playerItem.removeObserver(self, forKeyPath: "currentItem")
+        playerItem.removeObserver(self, forKeyPath: "rate")
+        playerItem.removeObserver(self, forKeyPath: "airPlayVideoActive")
+        
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemFailedToPlayToEndTime, object: playerItem)
     }
     
     func availableDuration() -> TimeInterval {
@@ -158,6 +128,43 @@ class PlayerView: UIView{
     
     func setInterfaceOrientation(_ orientation: UIInterfaceOrientation) {
         UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+    }
+}
+
+//MARK:- 视频通知
+
+extension PlayerView {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        guard object as! AVPlayerItem? === player?.currentItem, let keyPathString = keyPath else {
+            return
+        }
+        
+        if keyPathString == "status" {
+            if player?.status == .readyToPlay {
+                delegate?.player_playStart()
+            } else if player?.status == .failed {
+                delegate?.player_playFailed()
+            } else if player?.status == .unknown {
+                delegate?.player_playFailed()
+            }
+        } else if keyPathString == "loadedTimeRanges" {
+            //                let timeInterval = availableDuration()
+            //                let duration = player?.currentItem?.duration
+            //                let totalDuration = CMTimeGetSeconds(duration!)
+            //
+            //                let progress = timeInterval / totalDuration
+            //
+            ////                playerControlView.progressView.setProgress(Float(progress), animated: false)
+        }
+    }
+    
+    func didPlayToEndNotification(notification: NSNotification) -> Void {
+        
+    }
+    
+    func failedPlayToEndNotification(notification: NSNotification) -> Void {
+        
     }
 }
 
@@ -207,7 +214,8 @@ extension PlayerView: PlayerControllable {
     }
     
     func stop() {
-        
+        pause()
+        removePlayerObserver()
     }
     
     func switchFullScreen() {
