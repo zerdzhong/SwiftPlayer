@@ -141,22 +141,26 @@ extension PlayerView {
         }
         
         if keyPathString == "status" {
-            if player?.status == .readyToPlay {
+    
+            if player?.currentItem?.status == .readyToPlay {
                 delegate?.player_playStart()
-            } else if player?.status == .failed {
+            } else if player?.currentItem?.status == .failed {
                 delegate?.player_playFailed()
-            } else if player?.status == .unknown {
+            } else if player?.currentItem?.status == .unknown {
                 delegate?.player_playFailed()
             }
-        } else if keyPathString == "loadedTimeRanges" {
-            //                let timeInterval = availableDuration()
-            //                let duration = player?.currentItem?.duration
-            //                let totalDuration = CMTimeGetSeconds(duration!)
-            //
-            //                let progress = timeInterval / totalDuration
-            //
-            ////                playerControlView.progressView.setProgress(Float(progress), animated: false)
-        }
+        } else if keyPathString == "playbackBufferEmpty" {
+            if (player?.currentItem?.isPlaybackBufferEmpty)! {
+                
+            }
+        } else if keyPathString == "playbackLikelyToKeepUp" {
+            
+        } else if keyPathString == "airPlayVideoActive" {
+            
+        } else if keyPathString == "currentItem" {
+            
+        } 
+        
     }
     
     func didPlayToEndNotification(notification: NSNotification) -> Void {

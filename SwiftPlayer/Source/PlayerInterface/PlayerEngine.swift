@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class PlayerEngine: PlayerControllable, PlayerItemInfo {
+class PlayerEngine: PlayerItemInfo {
     var delegate: PlayerCallback?
     
     //MARK:- PlayerItemInfo
@@ -26,17 +26,18 @@ class PlayerEngine: PlayerControllable, PlayerItemInfo {
         switch decodeType {
         case .software: break
         case .hardware:
-            let player = PlayerView()
+            let playerView = PlayerView()
+            playerView.delegate = self
             
             if url.contains("http") {
-                player.videoURL = URL(string: url)
+                playerView.videoURL = URL(string: url)
             }else {
-                player.videoURL = URL(fileURLWithPath: url)
+                playerView.videoURL = URL(fileURLWithPath: url)
             }
             
-            playerView = player
-            playerControl = player
-            playerItemInfo = player
+            self.playerView = playerView
+            playerControl = playerView
+            playerItemInfo = playerView
             break
         }
         
@@ -46,6 +47,9 @@ class PlayerEngine: PlayerControllable, PlayerItemInfo {
         playerControl?.stop()
     }
     
+}
+
+extension PlayerEngine: PlayerControllable {
     //MARK:- PlayerControllable
     func play() {
         guard let playerControl = self.playerControl else {
@@ -81,5 +85,39 @@ class PlayerEngine: PlayerControllable, PlayerItemInfo {
         }
         
         playerControl.switchFullScreen()
+    }
+}
+
+extension PlayerEngine: PlayerCallback {
+    func player_playStart() {
+        
+    }
+    
+    func player_playFinish() {
+        
+    }
+    
+    func player_playFailed() {
+        
+    }
+    
+    func player_play() {
+        
+    }
+    
+    func player_pause() {
+        
+    }
+    
+    func player_stop() {
+        
+    }
+    
+    func player_seekTo(time: TimeInterval) {
+        
+    }
+    
+    func player_seek(fromTime: TimeInterval, loadedTime: TimeInterval, toTime: TimeInterval) {
+        
     }
 }
