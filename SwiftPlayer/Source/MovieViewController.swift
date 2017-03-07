@@ -13,6 +13,7 @@ class MovieViewController: UIViewController {
     @IBOutlet weak var playerContainer: UIView!
     var videoURLString: String = ""
     var player = PlayerEngine()
+    var playerControlView = PlayerControlView()
     
     override func viewDidLoad() {
         
@@ -26,12 +27,12 @@ class MovieViewController: UIViewController {
             })
         }
         
-        let controllView = PlayerControlView()
-        controllView.playerControl = player
-        controllView.playerItemInfo = player
-        playerContainer.addSubview(controllView)
         
-        controllView.snp.makeConstraints { (make) in
+        playerControlView.playerControl = player
+        playerControlView.playerItemInfo = player
+        playerContainer.addSubview(playerControlView)
+        
+        playerControlView.snp.makeConstraints { (make) in
             make.edges.equalTo(playerContainer)
         }
         
@@ -60,29 +61,41 @@ class MovieViewController: UIViewController {
     
 }
 
-extension MovieViewController: PlayerCallback {
-    func player_playStart() {
+extension MovieViewController: PlayerCallbackDelegate {
+    func playerReadPlay() {
         
     }
-    func player_playFinish() {
+    func playerLoadFailed() {
         
     }
-    func player_playFailed() {
+    func playerBufferEmpty() {
         
     }
-    func player_play() {
+    func playerKeepToPlay() {
         
     }
-    func player_pause() {
+    func playerPlayEnd(reason: PlayerEndReason) {
         
     }
-    func player_stop() {
+    func playerObserver() {
         
-    }
-    func player_seekTo(time: TimeInterval) {
+        guard player.duration != 0 else {
+            return
+        }
         
-    }
-    func player_seek(fromTime: TimeInterval, loadedTime: TimeInterval, toTime: TimeInterval) {
+        let timeProgress = player.currentTime / player.duration
         
+        playerControlView.videoSlider.maximumValue = 1
+        playerControlView.videoSlider.value = Float(timeProgress)
+        
+        let currentMin = player.currentTime / 60
+        let currentSec = player.currentTime.truncatingRemainder(dividingBy: 60)
+        
+        playerControlView.currentTimeLabel.text = String(format: "%02ld:%02ld", Int(currentMin), Int(currentSec))
+        
+        let totalMin = player.duration / 60
+        let totalSec = player.duration.truncatingRemainder(dividingBy: 60)
+        
+        playerControlView.totalTimeLabel.text = String(format: "%02ld:%02ld", Int(totalMin), Int(totalSec))
     }
 }

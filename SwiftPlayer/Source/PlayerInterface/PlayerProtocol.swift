@@ -1,5 +1,5 @@
 //
-//  PlayerUIProtocol.swift
+//  PlayerProtocol.swift
 //  SwiftPlayer
 //
 //  Created by zhongzhendong on 2017/2/16.
@@ -22,14 +22,11 @@ protocol PlayerItemInfo {
     var currentTime : TimeInterval {get}
 }
 
-protocol PlayerCallback {
-    func player_playStart()
-    func player_playFinish()
-    func player_playFailed()
-    
-    func player_play()
-    func player_pause()
-    func player_stop()
-    func player_seekTo(time: TimeInterval)
-    func player_seek(fromTime: TimeInterval, loadedTime: TimeInterval, toTime: TimeInterval)
+protocol PlayerCallbackDelegate: class {
+    func playerReadPlay()
+    func playerLoadFailed()
+    func playerBufferEmpty()
+    func playerKeepToPlay()
+    func playerPlayEnd(reason: PlayerEndReason)
+    func playerObserver()
 }

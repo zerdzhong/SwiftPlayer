@@ -17,3 +17,9 @@ enum PlayerMediaType {
     case network
     case local
 }
+
+enum PlayerEndReason {
+    case userExit
+    case finish
+    case error
+}

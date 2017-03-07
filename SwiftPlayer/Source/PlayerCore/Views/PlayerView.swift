@@ -18,8 +18,6 @@ enum PlayerState {
 
 class PlayerView: UIView {
     
-    var delegate: PlayerCallback?
-    
     var videoURL: URL? {
         didSet {
             if  videoURL != nil{
@@ -47,6 +45,9 @@ class PlayerView: UIView {
             return nil
         }
     }()
+    
+    weak var delegate: PlayerCallbackDelegate?
+    var timeObserver: Any?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -76,12 +77,14 @@ class PlayerView: UIView {
             player.play()
 
             addPlayerObserver()
+            addTimeObserver()
         }
     }
     
     func destory() {
         pause()
         removePlayerObserver()
+        removeTimeObserver()
     }
     
     func addPlayerObserver() {
@@ -116,6 +119,24 @@ class PlayerView: UIView {
         NotificationCenter.default.removeObserver(self, name: .AVPlayerItemFailedToPlayToEndTime, object: playerItem)
     }
     
+    func addTimeObserver() {
+        guard let player = self.player, self.timeObserver == nil else {
+            return
+        }
+        
+        self.timeObserver = player.addPeriodicTimeObserver(forInterval: CMTimeMake(24, 24), queue: nil) { [weak self] (time) in
+            self?.delegate?.playerObserver()
+        }
+    }
+    
+    func removeTimeObserver() {
+        guard let timeObserver = self.timeObserver else {
+            return
+        }
+        self.player?.removeTimeObserver(timeObserver)
+        self.timeObserver = nil
+    }
+    
     func availableDuration() -> TimeInterval {
         let loadedTimeRanges = player?.currentItem?.loadedTimeRanges
         let timeRange = loadedTimeRanges?.first?.timeRangeValue
@@ -143,32 +164,34 @@ extension PlayerView {
         if keyPathString == "status" {
     
             if player?.currentItem?.status == .readyToPlay {
-                delegate?.player_playStart()
+                delegate?.playerReadPlay()
             } else if player?.currentItem?.status == .failed {
-                delegate?.player_playFailed()
+                delegate?.playerLoadFailed()
             } else if player?.currentItem?.status == .unknown {
-                delegate?.player_playFailed()
+                delegate?.playerLoadFailed()
             }
         } else if keyPathString == "playbackBufferEmpty" {
             if (player?.currentItem?.isPlaybackBufferEmpty)! {
-                
+                delegate?.playerBufferEmpty()
             }
         } else if keyPathString == "playbackLikelyToKeepUp" {
-            
+            if (player?.currentItem?.isPlaybackLikelyToKeepUp)! {
+                delegate?.playerKeepToPlay()
+            }
         } else if keyPathString == "airPlayVideoActive" {
             
         } else if keyPathString == "currentItem" {
-            
+            print("player.item change")
         } 
         
     }
     
     func didPlayToEndNotification(notification: NSNotification) -> Void {
-        
+        delegate?.playerPlayEnd(reason: .finish)
     }
     
     func failedPlayToEndNotification(notification: NSNotification) -> Void {
-        
+        delegate?.playerPlayEnd(reason: .error)
     }
 }
 
@@ -220,6 +243,7 @@ extension PlayerView: PlayerControllable {
     func stop() {
         pause()
         removePlayerObserver()
+        removeTimeObserver()
     }
     
     func switchFullScreen() {

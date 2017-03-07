@@ -10,12 +10,36 @@ import Foundation
 import UIKit
 
 class PlayerEngine: PlayerItemInfo {
-    var delegate: PlayerCallback?
+    weak var delegate: PlayerCallbackDelegate?
     
     //MARK:- PlayerItemInfo
-    var duration : TimeInterval = 0
-    var loadedDuration : TimeInterval = 0
-    var currentTime : TimeInterval = 0
+    var duration : TimeInterval {
+        get {
+            if let playerItemInfo = self.playerItemInfo {
+                return playerItemInfo.duration
+            }
+            
+            return 0
+        }
+    }
+    var loadedDuration : TimeInterval {
+        get {
+            if let playerItemInfo = self.playerItemInfo {
+                return playerItemInfo.loadedDuration
+            }
+            
+            return 0
+        }
+    }
+    var currentTime : TimeInterval {
+        get {
+            if let playerItemInfo = self.playerItemInfo {
+                return playerItemInfo.currentTime
+            }
+            
+            return 0
+        }
+    }
     
     var playerView: UIView?
     var playerControl: PlayerControllable?
@@ -88,36 +112,23 @@ extension PlayerEngine: PlayerControllable {
     }
 }
 
-extension PlayerEngine: PlayerCallback {
-    func player_playStart() {
-        
+extension PlayerEngine: PlayerCallbackDelegate {
+    func playerReadPlay() {
+        delegate?.playerKeepToPlay()
     }
-    
-    func player_playFinish() {
-        
+    func playerLoadFailed() {
+        delegate?.playerLoadFailed()
     }
-    
-    func player_playFailed() {
-        
+    func playerBufferEmpty() {
+        delegate?.playerBufferEmpty()
     }
-    
-    func player_play() {
-        
+    func playerKeepToPlay() {
+        delegate?.playerKeepToPlay()
     }
-    
-    func player_pause() {
-        
+    func playerPlayEnd(reason: PlayerEndReason) {
+        delegate?.playerPlayEnd(reason: reason)
     }
-    
-    func player_stop() {
-        
-    }
-    
-    func player_seekTo(time: TimeInterval) {
-        
-    }
-    
-    func player_seek(fromTime: TimeInterval, loadedTime: TimeInterval, toTime: TimeInterval) {
-        
+    func playerObserver() {
+        delegate?.playerObserver()
     }
 }
