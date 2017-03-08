@@ -185,17 +185,18 @@ class PlayerControlView: UIView {
         self.topView.isHidden = true
     }
     
-    func cancelDismissControlView() {
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(dismissControlView), object: nil)
-    }
-    
     func showControlView(delayDismiss isDelay: Bool = true) {
         self.bottomView.isHidden = false
         self.topView.isHidden = false
         
         if isDelay {
-            perform(#selector(dismissControlView), with: nil, afterDelay: delayHiddenTime)
+            hideControlViewAfterDelay()
         }
+    }
+    
+    func hideControlViewAfterDelay() {
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(dismissControlView), object: nil)
+        perform(#selector(dismissControlView), with: nil, afterDelay: delayHiddenTime)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -357,12 +358,15 @@ extension PlayerControlView
         }
         
         btn.setButtonState(~btn.buttonState, animated: true)
+        hideControlViewAfterDelay()
     }
     
     func clickFullScreenBtn() {
-        if let control = playerControl {
-            control.switchFullScreen()
+        guard let control = playerControl else {
+            return
         }
+        control.switchFullScreen()
+        hideControlViewAfterDelay()
     }
     
     func progressSliderTouchBegan(_ slider: UISlider) {
@@ -374,8 +378,10 @@ extension PlayerControlView
     }
     
     func progressSliderValueChanged(_ slider: UISlider) {
-        if let control = playerControl {
-            control.seekTo(progress:slider.value)
+        guard let control = playerControl else {
+            return
         }
+        control.seekTo(progress:slider.value)
+        hideControlViewAfterDelay()
     }
 }

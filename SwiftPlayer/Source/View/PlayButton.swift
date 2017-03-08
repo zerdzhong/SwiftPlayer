@@ -93,7 +93,7 @@ class PlayButton: UIControl {
         }
     }
     
-    func shapePathWithState(_ buttonState: PlayButtonState) -> CGPath{
+    func shapePathWithState(_ buttonState: PlayButtonState) -> CGPath {
         
         let height = bounds.height
         let minWidth = bounds.width * 0.4
@@ -119,5 +119,9 @@ class PlayButton: UIControl {
         path.close()
         
         return path.cgPath
+    }
+    
+    deinit {
+        print("deinit")
     }
 }

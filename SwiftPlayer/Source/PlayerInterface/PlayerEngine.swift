@@ -71,6 +71,9 @@ class PlayerEngine: PlayerItemInfo {
         playerControl?.stop()
     }
     
+    deinit {
+        print("deinit")
+    }
 }
 
 extension PlayerEngine: PlayerControllable {

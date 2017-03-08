@@ -62,7 +62,14 @@ class ViewController: UITableViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
             let textField = alert.textFields![0] as UITextField
             print("Text field: \(textField.text)")
+
             if let urlString = textField.text {
+                let url = URL(string: urlString)
+                
+                if url == nil {
+                    return
+                }
+                
                 if !self.netDataSource.contains(urlString) {
                     self.netDataSource.append(urlString)
                     self.tableView.reloadData()
