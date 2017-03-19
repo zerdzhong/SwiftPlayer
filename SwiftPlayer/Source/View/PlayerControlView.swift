@@ -176,6 +176,7 @@ class PlayerControlView: UIView {
         }
         
         addDouleTapGesture()
+        addPanGesture()
         showControlView()
     }
     
