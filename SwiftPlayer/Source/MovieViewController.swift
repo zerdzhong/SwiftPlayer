@@ -79,7 +79,7 @@ extension MovieViewController: PlayerCallbackDelegate {
     }
     func playerObserver() {
         
-        guard player.duration != 0 else {
+        guard player.duration != 0 && !player.duration.isNaN else {
             return
         }
         
