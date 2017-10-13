@@ -37,7 +37,7 @@ class AudioManager: NSObject {
         }
     }
     
-    func handleInterruption(_ notifacation: Notification) -> Void {
+    @objc func handleInterruption(_ notifacation: Notification) -> Void {
         let reason = (notifacation.userInfo![AVAudioSessionInterruptionTypeKey] as AnyObject).uintValue
         
         if reason ==  AVAudioSessionInterruptionType.began.rawValue {

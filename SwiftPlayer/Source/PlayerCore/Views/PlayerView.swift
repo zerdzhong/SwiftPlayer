@@ -186,11 +186,11 @@ extension PlayerView {
         
     }
     
-    func didPlayToEndNotification(notification: NSNotification) -> Void {
+    @objc func didPlayToEndNotification(notification: NSNotification) -> Void {
         delegate?.playerPlayEnd(reason: .finish)
     }
     
-    func failedPlayToEndNotification(notification: NSNotification) -> Void {
+    @objc func failedPlayToEndNotification(notification: NSNotification) -> Void {
         delegate?.playerPlayEnd(reason: .error)
     }
 }

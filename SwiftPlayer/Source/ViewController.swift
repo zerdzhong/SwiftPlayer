@@ -51,7 +51,7 @@ class ViewController: UITableViewController {
         }
     }
     
-    func addRemoteVideo() {
+    @objc func addRemoteVideo() {
         
         let alert = UIAlertController(title: "输入视频URL", message: nil, preferredStyle: .alert)
         
@@ -80,7 +80,7 @@ class ViewController: UITableViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    func loadDocumentVideo() {
+    @objc func loadDocumentVideo() {
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true) as NSArray
         let documentsDir = paths.firstObject as! String
         

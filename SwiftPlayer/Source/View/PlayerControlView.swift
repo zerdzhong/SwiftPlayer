@@ -180,7 +180,7 @@ class PlayerControlView: UIView {
         showControlView()
     }
     
-    func dismissControlView() {
+    @objc func dismissControlView() {
         print("control view dismiss")
         self.bottomView.isHidden = true
         self.topView.isHidden = true
@@ -215,7 +215,7 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         self.addGestureRecognizer(doubleTapGes)
     }
     
-    internal func doubleTapGestureHandler(_ tapGes: UITapGestureRecognizer) {
+    @objc internal func doubleTapGestureHandler(_ tapGes: UITapGestureRecognizer) {
         print("double taped")
         clickStartBtn(startBtn)
         switch tapGes.state {
@@ -234,7 +234,7 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         self.addGestureRecognizer(panGesture)
     }
     
-    func panGestureHandler(_ panGes: UIPanGestureRecognizer) {
+    @objc func panGestureHandler(_ panGes: UIPanGestureRecognizer) {
         
         let point = panGes.location(in: self)
         let velocity = panGes.velocity(in: self)
@@ -301,7 +301,7 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         
         if panInfo.startPoint.x > bounds.size.width / 2 {
             //音量
-            MPMusicPlayerController.applicationMusicPlayer()
+            MPMusicPlayerController.applicationMusicPlayer
             let volumeView = MPVolumeView()
             for view in volumeView.subviews {
                 if let slider = view as? UISlider{
@@ -346,7 +346,7 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
 extension PlayerControlView
 {
     
-    func clickStartBtn(_ btn: PlayButton) {
+    @objc func clickStartBtn(_ btn: PlayButton) {
         
         if btn.buttonState == .paused {
             if let control = playerControl {
@@ -362,7 +362,7 @@ extension PlayerControlView
         hideControlViewAfterDelay()
     }
     
-    func clickFullScreenBtn() {
+    @objc func clickFullScreenBtn() {
         guard let control = playerControl else {
             return
         }
@@ -370,15 +370,15 @@ extension PlayerControlView
         hideControlViewAfterDelay()
     }
     
-    func progressSliderTouchBegan(_ slider: UISlider) {
+    @objc func progressSliderTouchBegan(_ slider: UISlider) {
         
     }
     
-    func progressSliderTouchEnd(_ slider: UISlider) {
+    @objc func progressSliderTouchEnd(_ slider: UISlider) {
         
     }
     
-    func progressSliderValueChanged(_ slider: UISlider) {
+    @objc func progressSliderValueChanged(_ slider: UISlider) {
         guard let control = playerControl else {
             return
         }
