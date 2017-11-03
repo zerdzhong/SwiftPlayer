@@ -69,7 +69,7 @@ class PlayerGLView: UIView {
                 render = MovieGLRGBRender()
             }
             
-            decoder.setupVideoFrameFormat(VideoFrameFormat.yuv)
+            _ = decoder.setupVideoFrameFormat(VideoFrameFormat.yuv)
             
         } catch {
             print("error")
@@ -257,7 +257,7 @@ class PlayerGLView: UIView {
             print("failed to setup GL")
         }
         
-        setupShaders()
+        _ = setupShaders()
     }
     
     fileprivate func setupGLLayer() -> Void {
@@ -345,7 +345,7 @@ class PlayerGLView: UIView {
             if logLength > 0 {
                 let log = malloc(Int(logLength))
                 glGetProgramInfoLog(program, logLength, &logLength, unsafeBitCast(log, to: UnsafeMutablePointer<GLchar>.self));
-                print("Program validate log:\(log)")
+                print("Program validate log:\(String(describing:log))")
                 free(log);
             }
         #endif

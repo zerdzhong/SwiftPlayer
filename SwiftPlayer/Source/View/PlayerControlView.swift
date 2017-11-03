@@ -301,7 +301,7 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         
         if panInfo.startPoint.x > bounds.size.width / 2 {
             //音量
-            MPMusicPlayerController.applicationMusicPlayer
+//            MPMusicPlayerController.applicationMusicPlayer
             let volumeView = MPVolumeView()
             for view in volumeView.subviews {
                 if let slider = view as? UISlider{

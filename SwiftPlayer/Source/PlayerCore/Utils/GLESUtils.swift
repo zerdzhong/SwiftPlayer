@@ -29,7 +29,7 @@ func loadShader(_ type: GLenum, shaderString: String) -> GLuint {
             if logLength > 0 {
                 let log = malloc(Int(logLength))
                 glGetShaderInfoLog(shader, logLength, &logLength, unsafeBitCast(log, to: UnsafeMutablePointer<GLchar>.self))
-                print("Shader compile log:\(log)")
+                print("Shader compile log:\(String(describing:log))")
                 free(log)
             }
 //        #endif
