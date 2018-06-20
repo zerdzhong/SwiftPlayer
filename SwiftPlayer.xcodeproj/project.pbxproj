@@ -44,6 +44,7 @@
 		47254E151E2F6AFA0027ECD9 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47254E141E2F6AFA0027ECD9 /* SnapKit.framework */; };
 		47C620AC1E56F02C00FF9F58 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C620AA1E56F02C00FF9F58 /* PlayButton.swift */; };
 		47C620AD1E56F02C00FF9F58 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C620AB1E56F02C00FF9F58 /* PlayerControlView.swift */; };
+		47DDF83820DA8138005F9ECC /* String+Shorcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DDF83720DA8138005F9ECC /* String+Shorcuts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -197,6 +198,7 @@
 		47902AA31E34997500AEF044 /* SwiftPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		47C620AA1E56F02C00FF9F58 /* PlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		47C620AB1E56F02C00FF9F58 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
+		47DDF83720DA8138005F9ECC /* String+Shorcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Shorcuts.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -298,6 +300,7 @@
 				47254D711E2F6A390027ECD9 /* AppDelegate.swift */,
 				47254D851E2F6A390027ECD9 /* ViewController.swift */,
 				47254D721E2F6A390027ECD9 /* MovieViewController.swift */,
+				47DDF83620DA8087005F9ECC /* Utils */,
 				47C620A91E56F01600FF9F58 /* View */,
 				47032B101E55847D007B6136 /* PlayerInterface */,
 				47254D731E2F6A390027ECD9 /* PlayerCore */,
@@ -567,6 +570,14 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		47DDF83620DA8087005F9ECC /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				47DDF83720DA8138005F9ECC /* String+Shorcuts.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -711,6 +722,7 @@
 				47254E0A1E2F6A390027ECD9 /* ViewController.swift in Sources */,
 				47C620AD1E56F02C00FF9F58 /* PlayerControlView.swift in Sources */,
 				47254E051E2F6A390027ECD9 /* PlayerGLRender.swift in Sources */,
+				47DDF83820DA8138005F9ECC /* String+Shorcuts.swift in Sources */,
 				47254E021E2F6A390027ECD9 /* GLESUtils.swift in Sources */,
 				47254DFD1E2F6A390027ECD9 /* MovieViewController.swift in Sources */,
 			);
