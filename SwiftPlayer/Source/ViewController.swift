@@ -81,7 +81,7 @@ class ViewController: UITableViewController {
         let documentsDir = paths.firstObject as! String
         
         do {
-            let videos = try FileManager.default.contentsOfDirectory(atPath: documentsDir).flatMap { (itemString: String) -> String? in
+            let videos = try FileManager.default.contentsOfDirectory(atPath: documentsDir).compactMap { (itemString: String) -> String? in
                 if itemString.contains("mp4")
                 || itemString.contains("rmvb")
                 || itemString.contains("mkv")
