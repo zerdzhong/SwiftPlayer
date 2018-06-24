@@ -9,10 +9,47 @@
 import Foundation
 import UIKit
 
-class PlayerEngine: PlayerItemInfo {
+class PlayerEngine {
     weak var delegate: PlayerCallbackDelegate?
     
-    //MARK:- PlayerItemInfo
+    var playerView: UIView?
+    var playerControl: PlayerControllable?
+    var playerItemInfo: PlayerItemInfo?
+    
+    //MARK:- public func
+    func startPlayer(url: String, decodeType: PlayerDecodeType) {
+        switch decodeType {
+        case .software: break
+        case .hardware:
+            let playerView = PlayerView()
+            playerView.delegate = self
+            
+            if url.isValidHTTPURL() {
+                playerView.videoURL = URL(string: url)
+            } else {
+                playerView.videoURL = URL(fileURLWithPath: url)
+            }
+            
+            self.playerView = playerView
+            playerControl = playerView
+            playerItemInfo = playerView
+            break
+        }
+        
+    }
+    
+    func destoryPlayer() {
+        playerControl?.stop()
+    }
+    
+    deinit {
+        print("PlayerEngine deinit")
+    }
+}
+
+
+//MARK:- PlayerItemInfo
+extension PlayerEngine: PlayerItemInfo {
     var duration : TimeInterval {
         get {
             if let playerItemInfo = self.playerItemInfo {
@@ -40,44 +77,10 @@ class PlayerEngine: PlayerItemInfo {
             return 0
         }
     }
-    
-    var playerView: UIView?
-    var playerControl: PlayerControllable?
-    var playerItemInfo: PlayerItemInfo?
-    
-    //MARK:- public func
-    func startPlayer(url: String, decodeType: PlayerDecodeType) {
-        switch decodeType {
-        case .software: break
-        case .hardware:
-            let playerView = PlayerView()
-            playerView.delegate = self
-            
-            if url.contains("http") {
-                playerView.videoURL = URL(string: url)
-            }else {
-                playerView.videoURL = URL(fileURLWithPath: url)
-            }
-            
-            self.playerView = playerView
-            playerControl = playerView
-            playerItemInfo = playerView
-            break
-        }
-        
-    }
-    
-    func destoryPlayer() {
-        playerControl?.stop()
-    }
-    
-    deinit {
-        print("deinit")
-    }
 }
 
+//MARK:- PlayerControllable
 extension PlayerEngine: PlayerControllable {
-    //MARK:- PlayerControllable
     func play() {
         guard let playerControl = self.playerControl else {
             return
@@ -115,6 +118,7 @@ extension PlayerEngine: PlayerControllable {
     }
 }
 
+//MARK:- PlayerCallbackDelegate
 extension PlayerEngine: PlayerCallbackDelegate {
     func playerReadPlay() {
         delegate?.playerKeepToPlay()

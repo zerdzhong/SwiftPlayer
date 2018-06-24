@@ -20,7 +20,7 @@ class PlayerView: UIView {
     
     var videoURL: URL? {
         didSet {
-            if  videoURL != nil{
+            if  videoURL != nil {
                 startPlayer()
             }
         }
@@ -65,20 +65,21 @@ class PlayerView: UIView {
     }
     
     deinit {
-        print("deinit")
+        print("PlayerView deinit")
     }
     
     //MARK:- private func
     
     func startPlayer() {
-        if let playerLayer = playerLayer, let player = player {
-            
-            layer.insertSublayer(playerLayer, at: 0)
-            player.play()
-
-            addPlayerObserver()
-            addTimeObserver()
+        guard let playerLayer = playerLayer, let player = player  else {
+            return
         }
+            
+        layer.insertSublayer(playerLayer, at: 0)
+        player.play()
+        
+        addPlayerObserver()
+        addTimeObserver()
     }
     
     func destory() {
@@ -91,6 +92,7 @@ class PlayerView: UIView {
         guard let playerItem = player?.currentItem else {
             return
         }
+        
         playerItem.addObserver(self, forKeyPath: "status", options: .new, context: nil)
         playerItem.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
         playerItem.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
@@ -269,15 +271,16 @@ extension PlayerView: PlayerControllable {
     }
     
     func seekTo(progress: Float) {
-        if let player = player, player.status == AVPlayerStatus.readyToPlay {
-            let total = (player.currentItem?.duration.value)! / Int64((player.currentItem?.duration.timescale)!)
-            let dragedSecond = Int64(floorf(Float(total) * progress))
-            let dragedCMTime = CMTimeMake(dragedSecond, 1)
-            
-            player.pause()
-            player.seek(to: dragedCMTime, completionHandler: { (finish) -> Void in
-                player.play()
-            })
+        guard let player = player, player.status == AVPlayerStatus.readyToPlay else {
+            return
         }
+        let total = (player.currentItem?.duration.value)! / Int64((player.currentItem?.duration.timescale)!)
+        let dragedSecond = Int64(floorf(Float(total) * progress))
+        let dragedCMTime = CMTimeMake(dragedSecond, 1)
+        
+        player.pause()
+        player.seek(to: dragedCMTime, completionHandler: { (finish) -> Void in
+            player.play()
+        })
     }
 }

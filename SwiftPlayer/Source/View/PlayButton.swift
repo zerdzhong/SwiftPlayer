@@ -122,6 +122,6 @@ class PlayButton: UIControl {
     }
     
     deinit {
-        print("deinit")
+        print("PlayButton deinit")
     }
 }

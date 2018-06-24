@@ -16,7 +16,7 @@ extension String {
         return matchCount > 0
     }
     
-    func isValidURL() -> Bool {
+    func isValidHTTPURL() -> Bool {
         let regEx = "((https|http)://)((\\w|-)+)(([.]|[/])((\\w|-)+))+"
         do {
             let result = try isMatch(regex: regEx, options: .anchorsMatchLines)

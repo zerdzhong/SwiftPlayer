@@ -90,7 +90,7 @@ class PlayerControlView: UIView {
     }
     
     deinit {
-        print("deinit")
+        print("PlayerControlView deinit")
     }
     
     //MARK:- commonInit

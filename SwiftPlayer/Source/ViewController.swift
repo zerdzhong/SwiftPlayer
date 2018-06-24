@@ -63,7 +63,7 @@ class ViewController: UITableViewController {
             let textField = alert.textFields![0] as UITextField
             print("Text field: \(textField.text ?? "")")
 
-            guard let urlString = textField.text, urlString.isValidURL() else {
+            guard let urlString = textField.text, urlString.isValidHTTPURL() else {
                 return;
             }
             
