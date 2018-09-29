@@ -133,7 +133,7 @@ class PlayerControlView: UIView {
             make.left.equalTo(startBtn.snp.right).offset(5)
         }
         
-        fullScreenBtn.setImage(UIImage(named: "kr-video-player-fullscreen"), for: UIControlState())
+        fullScreenBtn.setImage(UIImage(named: "kr-video-player-fullscreen"), for: UIControl.State())
         fullScreenBtn.addTarget(self, action: #selector(PlayerControlView.clickFullScreenBtn), for: .touchUpInside)
         bottomView.addSubview(fullScreenBtn)
         fullScreenBtn.snp.makeConstraints { (make) -> Void in
@@ -161,7 +161,7 @@ class PlayerControlView: UIView {
             make.centerY.equalTo(bottomView)
         }
         
-        videoSlider.setThumbImage(UIImage(named: "slider"), for: UIControlState())
+        videoSlider.setThumbImage(UIImage(named: "slider"), for: UIControl.State())
         videoSlider.minimumTrackTintColor = UIColor.white
         videoSlider.maximumTrackTintColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.3)
         
@@ -243,7 +243,7 @@ extension PlayerControlView: UIGestureRecognizerDelegate {
         case .began:
             showControlView(delayDismiss: false)
             
-            if fabs(velocity.x) > fabs(velocity.y) {
+            if abs(velocity.x) > abs(velocity.y) {
                 panInfo.panDirection = .horizontal
             }else {
                 panInfo.panDirection = .vertical

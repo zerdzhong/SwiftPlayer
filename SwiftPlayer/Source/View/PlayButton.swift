@@ -74,13 +74,13 @@ class PlayButton: UIControl {
         
         if animated {
             
-            let timimgFunction = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseInEaseOut)
+            let timimgFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
             
             let morphAnimation = CABasicAnimation(keyPath:"path")
             morphAnimation.timingFunction = timimgFunction
             
             morphAnimation.isRemovedOnCompletion = false
-            morphAnimation.fillMode = kCAFillModeForwards
+            morphAnimation.fillMode = CAMediaTimingFillMode.forwards
             
             morphAnimation.duration = 0.3
             morphAnimation.fromValue = shapePathWithState(beforeButtonState)

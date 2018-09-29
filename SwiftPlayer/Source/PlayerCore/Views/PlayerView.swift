@@ -126,7 +126,7 @@ class PlayerView: UIView {
             return
         }
         
-        self.timeObserver = player.addPeriodicTimeObserver(forInterval: CMTimeMake(24, 24), queue: nil) { [weak self] (time) in
+        self.timeObserver = player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 24, timescale: 24), queue: nil) { [weak self] (time) in
             self?.delegate?.playerObserver()
         }
     }
@@ -205,7 +205,7 @@ extension PlayerView: PlayerItemInfo {
             if let playerItem = player?.currentItem {
                 return CMTimeGetSeconds(playerItem.currentTime())
             }else {
-                return CMTimeGetSeconds(kCMTimeIndefinite)
+                return CMTimeGetSeconds(CMTime.indefinite)
             }
         }
     }
@@ -215,7 +215,7 @@ extension PlayerView: PlayerItemInfo {
             if let playerItem = player?.currentItem {
                 return CMTimeGetSeconds(playerItem.duration)
             }else {
-                return CMTimeGetSeconds(kCMTimeIndefinite)
+                return CMTimeGetSeconds(CMTime.indefinite)
             }
         }
     }
@@ -271,12 +271,12 @@ extension PlayerView: PlayerControllable {
     }
     
     func seekTo(progress: Float) {
-        guard let player = player, player.status == AVPlayerStatus.readyToPlay else {
+        guard let player = player, player.status == AVPlayer.Status.readyToPlay else {
             return
         }
         let total = (player.currentItem?.duration.value)! / Int64((player.currentItem?.duration.timescale)!)
         let dragedSecond = Int64(floorf(Float(total) * progress))
-        let dragedCMTime = CMTimeMake(dragedSecond, 1)
+        let dragedCMTime = CMTimeMake(value: dragedSecond, timescale: 1)
         
         player.pause()
         player.seek(to: dragedCMTime, completionHandler: { (finish) -> Void in
