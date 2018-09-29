@@ -404,8 +404,8 @@ class PlayerDecoder: NSObject {
             let data = NSMutableData(capacity:numElements * MemoryLayout<Float>.size)
             
             var scale = 1.0 / Float(INT16_MAX)
-            vDSP_vflt16(audioData!, 1, unsafeBitCast(data!.mutableBytes, to: UnsafeMutablePointer<Float>.self), 1, UInt(numElements))
-            vDSP_vsmul(unsafeBitCast(data!.mutableBytes, to: UnsafeMutablePointer<Float>.self), 1, &scale, unsafeBitCast(data!.mutableBytes, to: UnsafeMutablePointer<Float>.self), 1, UInt(numElements))
+            vDSP_vflt16(audioData!, 1, data!.mutableBytes.assumingMemoryBound(to: Float.self), 1, UInt(numElements))
+            vDSP_vsmul(data!.mutableBytes.assumingMemoryBound(to: Float.self), 1, &scale, data!.mutableBytes.assumingMemoryBound(to: Float.self), 1, UInt(numElements))
             
             let frame = AudioFrame()
             frame.position = Double(av_frame_get_best_effort_timestamp(audioFrame!)) * Double(audioTimeBase)

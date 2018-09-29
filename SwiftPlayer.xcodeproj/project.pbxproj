@@ -630,13 +630,13 @@
 					47254D481E2F693B0027ECD9 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = F533MB5ELV;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 					};
 					47254D5C1E2F693B0027ECD9 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = WY2GX9YNYL;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 						TestTargetID = 47254D481E2F693B0027ECD9;
 					};
@@ -933,6 +933,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = WY2GX9YNYL;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SwiftPlayer/Vendor/FFmpeg-iOS/include";
 				INFOPLIST_FILE = SwiftPlayerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zdzhong.SwiftPlayerTests;
@@ -949,6 +950,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = WY2GX9YNYL;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SwiftPlayer/Vendor/FFmpeg-iOS/include";
 				INFOPLIST_FILE = SwiftPlayerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zdzhong.SwiftPlayerTests;

@@ -29,7 +29,7 @@ class PlayerFileReader: NSObject {
     private var cancelRead: Bool = false
     
     deinit {
-        if let codecCtx = videoCodecContext, var formatCtx = pFormatCtx {
+        if let codecCtx = videoCodecContext, var _ = pFormatCtx {
             avcodec_close(codecCtx)
             videoCodecContext = nil
             avformat_close_input(&pFormatCtx)
