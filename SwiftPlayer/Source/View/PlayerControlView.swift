@@ -47,7 +47,7 @@ class PlayerControlView: UIView {
     
     lazy var bottomView: UIView = {
         let tempView = UIView()
-        tempView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        tempView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
         
         let bottomLayer = CAGradientLayer()
         bottomLayer.startPoint = CGPoint.zero
@@ -107,11 +107,11 @@ class PlayerControlView: UIView {
             make.height.equalTo(45)
         }
         
-        addSubview(topView)
-        topView.snp.makeConstraints { (make) -> Void in
-            make.top.left.right.equalTo(self)
-            make.height.equalTo(50)
-        }
+//        addSubview(topView)
+//        topView.snp.makeConstraints { (make) -> Void in
+//            make.top.left.right.equalTo(self)
+//            make.height.equalTo(50)
+//        }
         
         startBtn.addTarget(self, action: #selector(PlayerControlView.clickStartBtn(_:)), for: .touchUpInside)
         startBtn.tintColor = UIColor.white

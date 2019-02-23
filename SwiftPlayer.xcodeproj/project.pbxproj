@@ -630,13 +630,13 @@
 					47254D481E2F693B0027ECD9 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = F533MB5ELV;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					47254D5C1E2F693B0027ECD9 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = WY2GX9YNYL;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 47254D481E2F693B0027ECD9;
 					};
@@ -897,7 +897,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zdzhong.SwiftPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SwiftPlayer/Source/SwiftPlayer-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -921,7 +921,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zdzhong.SwiftPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SwiftPlayer/Source/SwiftPlayer-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -936,7 +936,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zdzhong.SwiftPlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftPlayer.app/SwiftPlayer";
 			};
 			name = Debug;
@@ -952,7 +952,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zdzhong.SwiftPlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftPlayer.app/SwiftPlayer";
 			};
 			name = Release;

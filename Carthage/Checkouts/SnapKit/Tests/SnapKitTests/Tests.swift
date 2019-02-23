@@ -264,6 +264,40 @@ class SnapKitTests: XCTestCase {
         
     }
     
+    func testSetIsActivatedConstraints() {
+        let v1 = View()
+        let v2 = View()
+        self.container.addSubview(v1)
+        self.container.addSubview(v2)
+        
+        var c1: Constraint? = nil
+        var c2: Constraint? = nil
+        
+        v1.snp.prepareConstraints { (make) -> Void in
+            c1 = make.top.equalTo(v2.snp.top).offset(50).constraint
+            c2 = make.left.equalTo(v2.snp.top).offset(50).constraint
+            return
+        }
+        
+        XCTAssertEqual(self.container.snp_constraints.count, 0, "Should have 0 constraints")
+        
+        c1?.isActive = true
+        c2?.isActive = false
+        
+        XCTAssertEqual(self.container.snp_constraints.count, 1, "Should have 1 constraint")
+        
+        c1?.isActive = true
+        c2?.isActive = true
+        
+        XCTAssertEqual(self.container.snp_constraints.count, 2, "Should have 2 constraints")
+        
+        c1?.isActive = false
+        c2?.isActive = false
+        
+        XCTAssertEqual(self.container.snp_constraints.count, 0, "Should have 0 constraints")
+        
+    }
+    
     func testEdgeConstraints() {
         let view = View()
         self.container.addSubview(view)
@@ -395,7 +429,7 @@ class SnapKitTests: XCTestCase {
         let constraints = view.snp_constraints as! [NSLayoutConstraint]
 
         // no guarantee which order the constraints are in, but we should test their couple
-        let widthHeight = (NSLayoutAttribute.width.rawValue, NSLayoutAttribute.height.rawValue)
+        let widthHeight = (LayoutAttribute.width.rawValue, LayoutAttribute.height.rawValue)
         let heightWidth = (widthHeight.1, widthHeight.0)
         let firstSecond = (constraints[0].firstAttribute.rawValue, constraints[1].firstAttribute.rawValue)
 
@@ -416,10 +450,11 @@ class SnapKitTests: XCTestCase {
         XCTAssertEqual(self.container.snp_constraints.count, 2, "Should have 2 constraints")
         
         
-        let constraints = self.container.snp_constraints as! [NSLayoutConstraint]
+        if let constraints = self.container.snp_constraints as? [NSLayoutConstraint], constraints.count > 0 {
         
-        XCTAssertEqual(constraints[0].constant, 50, "Should be 50")
-        XCTAssertEqual(constraints[1].constant, 50, "Should be 50")
+            XCTAssertEqual(constraints[0].constant, 50, "Should be 50")
+            XCTAssertEqual(constraints[1].constant, 50, "Should be 50")
+        }
     }
     
     func testConstraintIdentifier() {
@@ -436,8 +471,8 @@ class SnapKitTests: XCTestCase {
     }
     
     func testEdgesToEdges() {
-        var fromAttributes = Set<NSLayoutAttribute>()
-        var toAttributes = Set<NSLayoutAttribute>()
+        var fromAttributes = Set<LayoutAttribute>()
+        var toAttributes = Set<LayoutAttribute>()
         
         let view = View()
         self.container.addSubview(view)
@@ -539,5 +574,10 @@ class SnapKitTests: XCTestCase {
         XCTAssertEqual(self.container.snp_constraints.count, 1, "Should have 1 constraint")
         XCTAssertEqual(self.container.snp_constraints.first?.priority, ConstraintPriority.low.value + 1)
     }
-    
+
+    func testPriorityStride() {
+        let highPriority: ConstraintPriority = .high
+        let higherPriority: ConstraintPriority = ConstraintPriority.high.advanced(by: 1)
+        XCTAssertEqual(higherPriority.value, highPriority.value + 1)
+    }
 }
