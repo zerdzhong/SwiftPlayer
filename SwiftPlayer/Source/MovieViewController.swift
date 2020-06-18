@@ -17,7 +17,7 @@ class MovieViewController: UIViewController {
     
     override func viewDidLoad() {
         
-        player.startPlayer(url: videoURLString, decodeType: .hardware)
+        player.startPlayer(url: videoURLString, decodeType: .software)
         player.delegate = self
         
         if let playerView = player.playerView {

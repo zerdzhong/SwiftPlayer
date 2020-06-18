@@ -22,17 +22,15 @@ func loadShader(_ type: GLenum, shaderString: String) -> GLuint {
         var source: UnsafePointer<GLchar>? = unsafeBitCast(cShtringPoint, to: UnsafePointer<GLchar>.self)
         glShaderSource(shader, 1, &source, nil)
         glCompileShader(shader)
-        
-//        #if DEBUG
-            var logLength: GLint = 0
-            glGetShaderiv(shader, UInt32(GL_INFO_LOG_LENGTH), &logLength)
-            if logLength > 0 {
-                let log = malloc(Int(logLength))
-                glGetShaderInfoLog(shader, logLength, &logLength, unsafeBitCast(log, to: UnsafeMutablePointer<GLchar>.self))
-                print("Shader compile log:\(String(describing:log))")
-                free(log)
-            }
-//        #endif
+		
+		var logLength: GLint = 0
+		glGetShaderiv(shader, UInt32(GL_INFO_LOG_LENGTH), &logLength)
+		if logLength > 0 {
+			let log = UnsafeMutableRawPointer.allocate(byteCount: Int(logLength), alignment: 1)
+			glGetShaderInfoLog(shader, logLength, &logLength, log.assumingMemoryBound(to: GLchar.self))
+			print("Shader compile log:\(String(cString: log.assumingMemoryBound(to: CChar.self))))")
+			log.deallocate()
+		}
         
         var status: GLint = 0
         glGetShaderiv(shader, UInt32(GL_COMPILE_STATUS), &status)

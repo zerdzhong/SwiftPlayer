@@ -20,7 +20,7 @@ class PlayerView: UIView {
     
     var videoURL: URL? {
         didSet {
-            if  videoURL != nil {
+            if videoURL != nil {
                 startPlayer()
             }
         }
@@ -41,7 +41,7 @@ class PlayerView: UIView {
         if let player = self.player{
             let playerLayer = AVPlayerLayer(player: player)
             return playerLayer
-        }else {
+        } else {
             return nil
         }
     }()

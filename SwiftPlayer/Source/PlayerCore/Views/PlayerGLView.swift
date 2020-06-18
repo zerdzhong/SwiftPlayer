@@ -62,14 +62,7 @@ class PlayerGLView: UIView {
         
         do {
             try decoder.openFile(fileURL as NSString)
-            
-            if decoder.setupVideoFrameFormat(VideoFrameFormat.yuv) {
-                render = MovieGLYUVRender()
-            }else {
-                render = MovieGLRGBRender()
-            }
-            
-            _ = decoder.setupVideoFrameFormat(VideoFrameFormat.yuv)
+			render = MovieGLYUVRender()
             
         } catch {
             print("error")
@@ -78,42 +71,42 @@ class PlayerGLView: UIView {
         commonInit()
     }
     
-    func play() -> Void{
+	func playInternal() -> Void{
         
-        decoder.asyncDecodeFrames(0.4, completeBlock: { (frames) in
-            self.addFrames(frames)
-        })
-        
-        let popTime = DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: popTime) {
-            self.tick(self.decoder)
-        }
+//        decoder.asyncDecodeFrames(0.4, completeBlock: { (frames) in
+//            self.addFrames(frames)
+//        })
+//
+//        let popTime = DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+//        DispatchQueue.main.asyncAfter(deadline: popTime) {
+//            self.tick(self.decoder)
+//        }
     }
     
     fileprivate func tick(_ decoder: PlayerDecoder) {
-        let leftFrame = (decoder.validVideo() ? videoFrames.count : 0) + (decoder.validAudio() ? audioFrames.count : 0)
-        
-        let interval = presentFrame()
-        
-        if 0 == leftFrame {
-            if decoder.isEOF {
-                return
-            }
-        }
-        
-        if (leftFrame == 0 || bufferedDuration < minBufferedDuration) {
-            decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
-                self.addFrames(frames)
-            })
-        }
-        
-        let correction = tickCorrection()
-        let time = max(interval + correction, 0.01)
-        
-        let popTime = DispatchTime.now() + Double(Int64(time * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: popTime) {
-            self.tick(decoder)
-        }
+//        let leftFrame = (decoder.validVideo() ? videoFrames.count : 0) + (decoder.validAudio() ? audioFrames.count : 0)
+//        
+//        let interval = presentFrame()
+//        
+//        if 0 == leftFrame {
+//            if decoder.isEOF {
+//                return
+//            }
+//        }
+//        
+//        if (leftFrame == 0 || bufferedDuration < minBufferedDuration) {
+//            decoder.asyncDecodeFrames(0.1, completeBlock: { (frames) in
+//                self.addFrames(frames)
+//            })
+//        }
+//        
+//        let correction = tickCorrection()
+//        let time = max(interval + correction, 0.01)
+//        
+//        let popTime = DispatchTime.now() + Double(Int64(time * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+//        DispatchQueue.main.asyncAfter(deadline: popTime) {
+//            self.tick(decoder)
+//        }
     }
     
     func tickCorrection() -> TimeInterval {
@@ -236,7 +229,7 @@ class PlayerGLView: UIView {
         let status = glCheckFramebufferStatus(UInt32(GL_FRAMEBUFFER))
         if status != UInt32(GL_FRAMEBUFFER_COMPLETE) {
             print("failed to make complete framebuffer object \(status)")
-        }else {
+        } else {
             print("OK setup GL framebuffer \(backingWidth), \(backingHeight)")
         }
         
@@ -420,4 +413,22 @@ private func mat4f_LoadOrtho(_ left: Float, right: Float, bottom: Float, top: Fl
     mout[15] = 1.0
     
     return mout
+}
+
+extension PlayerGLView: PlayerControllable {
+	func play() {
+		playInternal()
+	}
+	func pause() {
+		
+	}
+	func stop() {
+		
+	}
+	func seekTo(progress: Float) {
+		
+	}
+	func switchFullScreen() {
+		
+	}
 }

@@ -18,9 +18,26 @@ class PlayerEngine {
     
     //MARK:- public func
     func startPlayer(url: String, decodeType: PlayerDecodeType) {
+		
+		guard let _ = URL(string: url) else {
+			return
+		}
+		
         switch decodeType {
-        case .software: break
-        case .hardware:
+		case .software:
+			let playerView = PlayerDisplayView()
+			
+			if url.isValidHTTPURL() {
+				playerView.videoURL = URL(string: url)
+			} else {
+				playerView.videoURL = URL(fileURLWithPath: url)
+			}
+			
+			self.playerView = playerView
+			playerControl = playerView
+			
+			break
+		case .hardware:
             let playerView = PlayerView()
             playerView.delegate = self
             

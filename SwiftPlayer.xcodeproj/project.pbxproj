@@ -17,7 +17,7 @@
 		47254D521E2F693B0027ECD9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47254D501E2F693B0027ECD9 /* Main.storyboard */; };
 		47254D541E2F693B0027ECD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47254D531E2F693B0027ECD9 /* Assets.xcassets */; };
 		47254D571E2F693B0027ECD9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47254D551E2F693B0027ECD9 /* LaunchScreen.storyboard */; };
-		47254D621E2F693B0027ECD9 /* SwiftPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D611E2F693B0027ECD9 /* SwiftPlayerTests.swift */; };
+		47254D621E2F693B0027ECD9 /* PlayerDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D611E2F693B0027ECD9 /* PlayerDecoderTests.swift */; };
 		47254DF91E2F6A390027ECD9 /* 150511_JiveBike.mov in Resources */ = {isa = PBXBuildFile; fileRef = 47254D6D1E2F6A390027ECD9 /* 150511_JiveBike.mov */; };
 		47254DFA1E2F6A390027ECD9 /* audiotest.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 47254D6E1E2F6A390027ECD9 /* audiotest.mp3 */; };
 		47254DFB1E2F6A390027ECD9 /* snsd.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 47254D6F1E2F6A390027ECD9 /* snsd.mp4 */; };
@@ -28,9 +28,6 @@
 		47254E001E2F6A390027ECD9 /* VertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 47254D781E2F6A390027ECD9 /* VertexShader.glsl */; };
 		47254E011E2F6A390027ECD9 /* YUVFragmentShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 47254D791E2F6A390027ECD9 /* YUVFragmentShader.glsl */; };
 		47254E021E2F6A390027ECD9 /* GLESUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D7C1E2F6A390027ECD9 /* GLESUtils.swift */; };
-		47254E031E2F6A390027ECD9 /* PlayerDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D7D1E2F6A390027ECD9 /* PlayerDecoder.swift */; };
-		47254E041E2F6A390027ECD9 /* PlayerFileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D7E1E2F6A390027ECD9 /* PlayerFileReader.swift */; };
-		47254E051E2F6A390027ECD9 /* PlayerGLRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D7F1E2F6A390027ECD9 /* PlayerGLRender.swift */; };
 		47254E081E2F6A390027ECD9 /* PlayerGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D831E2F6A390027ECD9 /* PlayerGLView.swift */; };
 		47254E091E2F6A390027ECD9 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D841E2F6A390027ECD9 /* PlayerView.swift */; };
 		47254E0A1E2F6A390027ECD9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47254D851E2F6A390027ECD9 /* ViewController.swift */; };
@@ -42,8 +39,20 @@
 		47254E101E2F6A390027ECD9 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 47254DF71E2F6A390027ECD9 /* libswresample.a */; };
 		47254E111E2F6A390027ECD9 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 47254DF81E2F6A390027ECD9 /* libswscale.a */; };
 		47254E151E2F6AFA0027ECD9 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47254E141E2F6AFA0027ECD9 /* SnapKit.framework */; };
+		47685E7E2498C16900B1A1EC /* PlayerDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47685E7D2498C16900B1A1EC /* PlayerDisplayView.swift */; };
+		47685E812499095F00B1A1EC /* CastCVPixelBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47685E802499095F00B1A1EC /* CastCVPixelBuffer.cpp */; };
+		479ACBB1248F9C3D0094EAEA /* snsd.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 47254D6F1E2F6A390027ECD9 /* snsd.mp4 */; };
+		47AD2E122499F66700DCF686 /* PacketQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AD2E0F2499F66700DCF686 /* PacketQueue.swift */; };
+		47AD2E132499F66700DCF686 /* PacketQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AD2E0F2499F66700DCF686 /* PacketQueue.swift */; };
+		47AD2E142499F66700DCF686 /* PlayerGLRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AD2E102499F66700DCF686 /* PlayerGLRender.swift */; };
+		47AD2E152499F66700DCF686 /* PlayerGLRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AD2E102499F66700DCF686 /* PlayerGLRender.swift */; };
+		47AD2E162499F66700DCF686 /* PlayerDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AD2E112499F66700DCF686 /* PlayerDecoder.swift */; };
+		47AD2E172499F66700DCF686 /* PlayerDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AD2E112499F66700DCF686 /* PlayerDecoder.swift */; };
 		47C620AC1E56F02C00FF9F58 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C620AA1E56F02C00FF9F58 /* PlayButton.swift */; };
 		47C620AD1E56F02C00FF9F58 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C620AB1E56F02C00FF9F58 /* PlayerControlView.swift */; };
+		47CA27E8248E7138000A0AAF /* PacketQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47CA27E7248E7138000A0AAF /* PacketQueueTests.swift */; };
+		47CA27EE248F3370000A0AAF /* MemoryAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47CA27ED248F3370000A0AAF /* MemoryAddress.swift */; };
+		47CA27EF248F3377000A0AAF /* MemoryAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47CA27ED248F3370000A0AAF /* MemoryAddress.swift */; };
 		47DDF83820DA8138005F9ECC /* String+Shorcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DDF83720DA8138005F9ECC /* String+Shorcuts.swift */; };
 /* End PBXBuildFile section */
 
@@ -72,7 +81,7 @@
 		47254D561E2F693B0027ECD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		47254D581E2F693B0027ECD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47254D5D1E2F693B0027ECD9 /* SwiftPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		47254D611E2F693B0027ECD9 /* SwiftPlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPlayerTests.swift; sourceTree = "<group>"; };
+		47254D611E2F693B0027ECD9 /* PlayerDecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerDecoderTests.swift; sourceTree = "<group>"; };
 		47254D631E2F693B0027ECD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47254D6D1E2F6A390027ECD9 /* 150511_JiveBike.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 150511_JiveBike.mov; sourceTree = "<group>"; };
 		47254D6E1E2F6A390027ECD9 /* audiotest.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = audiotest.mp3; sourceTree = "<group>"; };
@@ -84,9 +93,6 @@
 		47254D781E2F6A390027ECD9 /* VertexShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = VertexShader.glsl; sourceTree = "<group>"; };
 		47254D791E2F6A390027ECD9 /* YUVFragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = YUVFragmentShader.glsl; sourceTree = "<group>"; };
 		47254D7C1E2F6A390027ECD9 /* GLESUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLESUtils.swift; sourceTree = "<group>"; };
-		47254D7D1E2F6A390027ECD9 /* PlayerDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerDecoder.swift; sourceTree = "<group>"; };
-		47254D7E1E2F6A390027ECD9 /* PlayerFileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerFileReader.swift; sourceTree = "<group>"; };
-		47254D7F1E2F6A390027ECD9 /* PlayerGLRender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLRender.swift; sourceTree = "<group>"; };
 		47254D831E2F6A390027ECD9 /* PlayerGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLView.swift; sourceTree = "<group>"; };
 		47254D841E2F6A390027ECD9 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		47254D851E2F6A390027ECD9 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -99,7 +105,6 @@
 		47254D901E2F6A390027ECD9 /* dxva2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dxva2.h; sourceTree = "<group>"; };
 		47254D911E2F6A390027ECD9 /* qsv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qsv.h; sourceTree = "<group>"; };
 		47254D921E2F6A390027ECD9 /* vaapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vaapi.h; sourceTree = "<group>"; };
-		47254D931E2F6A390027ECD9 /* vda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vda.h; sourceTree = "<group>"; };
 		47254D941E2F6A390027ECD9 /* vdpau.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vdpau.h; sourceTree = "<group>"; };
 		47254D951E2F6A390027ECD9 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 		47254D961E2F6A390027ECD9 /* videotoolbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = videotoolbox.h; sourceTree = "<group>"; };
@@ -195,9 +200,17 @@
 		47254DF71E2F6A390027ECD9 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libswresample.a; sourceTree = "<group>"; };
 		47254DF81E2F6A390027ECD9 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libswscale.a; sourceTree = "<group>"; };
 		47254E141E2F6AFA0027ECD9 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
+		47685E7D2498C16900B1A1EC /* PlayerDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerDisplayView.swift; sourceTree = "<group>"; };
+		47685E7F2499095F00B1A1EC /* CastCVPixelBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CastCVPixelBuffer.h; sourceTree = "<group>"; };
+		47685E802499095F00B1A1EC /* CastCVPixelBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CastCVPixelBuffer.cpp; sourceTree = "<group>"; };
 		47902AA31E34997500AEF044 /* SwiftPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
+		47AD2E0F2499F66700DCF686 /* PacketQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PacketQueue.swift; sourceTree = "<group>"; };
+		47AD2E102499F66700DCF686 /* PlayerGLRender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerGLRender.swift; sourceTree = "<group>"; };
+		47AD2E112499F66700DCF686 /* PlayerDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerDecoder.swift; sourceTree = "<group>"; };
 		47C620AA1E56F02C00FF9F58 /* PlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		47C620AB1E56F02C00FF9F58 /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
+		47CA27E7248E7138000A0AAF /* PacketQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketQueueTests.swift; sourceTree = "<group>"; };
+		47CA27ED248F3370000A0AAF /* MemoryAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryAddress.swift; sourceTree = "<group>"; };
 		47DDF83720DA8138005F9ECC /* String+Shorcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Shorcuts.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -277,7 +290,8 @@
 		47254D601E2F693B0027ECD9 /* SwiftPlayerTests */ = {
 			isa = PBXGroup;
 			children = (
-				47254D611E2F693B0027ECD9 /* SwiftPlayerTests.swift */,
+				47254D611E2F693B0027ECD9 /* PlayerDecoderTests.swift */,
+				47CA27E7248E7138000A0AAF /* PacketQueueTests.swift */,
 				47254D631E2F693B0027ECD9 /* Info.plist */,
 			);
 			path = SwiftPlayerTests;
@@ -312,6 +326,7 @@
 			isa = PBXGroup;
 			children = (
 				47254D741E2F6A390027ECD9 /* Audio */,
+				47AD2E0E2499F66700DCF686 /* Decode */,
 				47254D761E2F6A390027ECD9 /* GLSL */,
 				47254D7B1E2F6A390027ECD9 /* Utils */,
 				47254D801E2F6A390027ECD9 /* Views */,
@@ -340,10 +355,10 @@
 		47254D7B1E2F6A390027ECD9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				47685E7F2499095F00B1A1EC /* CastCVPixelBuffer.h */,
+				47685E802499095F00B1A1EC /* CastCVPixelBuffer.cpp */,
 				47254D7C1E2F6A390027ECD9 /* GLESUtils.swift */,
-				47254D7D1E2F6A390027ECD9 /* PlayerDecoder.swift */,
-				47254D7E1E2F6A390027ECD9 /* PlayerFileReader.swift */,
-				47254D7F1E2F6A390027ECD9 /* PlayerGLRender.swift */,
+				47CA27ED248F3370000A0AAF /* MemoryAddress.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -353,6 +368,7 @@
 			children = (
 				47254D831E2F6A390027ECD9 /* PlayerGLView.swift */,
 				47254D841E2F6A390027ECD9 /* PlayerView.swift */,
+				47685E7D2498C16900B1A1EC /* PlayerDisplayView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -400,7 +416,6 @@
 				47254D901E2F6A390027ECD9 /* dxva2.h */,
 				47254D911E2F6A390027ECD9 /* qsv.h */,
 				47254D921E2F6A390027ECD9 /* vaapi.h */,
-				47254D931E2F6A390027ECD9 /* vda.h */,
 				47254D941E2F6A390027ECD9 /* vdpau.h */,
 				47254D951E2F6A390027ECD9 /* version.h */,
 				47254D961E2F6A390027ECD9 /* videotoolbox.h */,
@@ -561,6 +576,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		47AD2E0E2499F66700DCF686 /* Decode */ = {
+			isa = PBXGroup;
+			children = (
+				47AD2E0F2499F66700DCF686 /* PacketQueue.swift */,
+				47AD2E102499F66700DCF686 /* PlayerGLRender.swift */,
+				47AD2E112499F66700DCF686 /* PlayerDecoder.swift */,
+			);
+			path = Decode;
+			sourceTree = "<group>";
+		};
 		47C620A91E56F01600FF9F58 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -624,7 +649,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = zhongzhendong;
 				TargetAttributes = {
 					47254D481E2F693B0027ECD9 = {
@@ -644,7 +669,7 @@
 			};
 			buildConfigurationList = 47254D441E2F693B0027ECD9 /* Build configuration list for PBXProject "SwiftPlayer" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -682,6 +707,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				479ACBB1248F9C3D0094EAEA /* snsd.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -709,22 +735,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47685E7E2498C16900B1A1EC /* PlayerDisplayView.swift in Sources */,
 				47032B141E558632007B6136 /* PlayerProtocol.swift in Sources */,
 				47C620AC1E56F02C00FF9F58 /* PlayButton.swift in Sources */,
 				47032B121E55850A007B6136 /* PlayerDef.swift in Sources */,
 				47254DFE1E2F6A390027ECD9 /* AudioManager.swift in Sources */,
-				47254E041E2F6A390027ECD9 /* PlayerFileReader.swift in Sources */,
 				47254E081E2F6A390027ECD9 /* PlayerGLView.swift in Sources */,
 				47032B161E558CE5007B6136 /* PlayerEngine.swift in Sources */,
 				47254E091E2F6A390027ECD9 /* PlayerView.swift in Sources */,
-				47254E031E2F6A390027ECD9 /* PlayerDecoder.swift in Sources */,
 				47254DFC1E2F6A390027ECD9 /* AppDelegate.swift in Sources */,
+				47AD2E142499F66700DCF686 /* PlayerGLRender.swift in Sources */,
 				47254E0A1E2F6A390027ECD9 /* ViewController.swift in Sources */,
+				47AD2E162499F66700DCF686 /* PlayerDecoder.swift in Sources */,
 				47C620AD1E56F02C00FF9F58 /* PlayerControlView.swift in Sources */,
-				47254E051E2F6A390027ECD9 /* PlayerGLRender.swift in Sources */,
+				47AD2E122499F66700DCF686 /* PacketQueue.swift in Sources */,
 				47DDF83820DA8138005F9ECC /* String+Shorcuts.swift in Sources */,
+				47CA27EE248F3370000A0AAF /* MemoryAddress.swift in Sources */,
 				47254E021E2F6A390027ECD9 /* GLESUtils.swift in Sources */,
 				47254DFD1E2F6A390027ECD9 /* MovieViewController.swift in Sources */,
+				47685E812499095F00B1A1EC /* CastCVPixelBuffer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -732,7 +761,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				47254D621E2F693B0027ECD9 /* SwiftPlayerTests.swift in Sources */,
+				47254D621E2F693B0027ECD9 /* PlayerDecoderTests.swift in Sources */,
+				47CA27EF248F3377000A0AAF /* MemoryAddress.swift in Sources */,
+				47AD2E172499F66700DCF686 /* PlayerDecoder.swift in Sources */,
+				47CA27E8248E7138000A0AAF /* PacketQueueTests.swift in Sources */,
+				47AD2E132499F66700DCF686 /* PacketQueue.swift in Sources */,
+				47AD2E152499F66700DCF686 /* PlayerGLRender.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -770,6 +804,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -829,6 +864,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -931,11 +967,12 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = WY2GX9YNYL;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SwiftPlayer/Vendor/FFmpeg-iOS/include";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SwiftPlayer/Vendor/FFmpeg-iOS/include/**";
 				INFOPLIST_FILE = SwiftPlayerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zdzhong.SwiftPlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftPlayer/Source/SwiftPlayer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftPlayer.app/SwiftPlayer";
 			};
@@ -947,11 +984,12 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = WY2GX9YNYL;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SwiftPlayer/Vendor/FFmpeg-iOS/include";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SwiftPlayer/Vendor/FFmpeg-iOS/include/**";
 				INFOPLIST_FILE = SwiftPlayerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zdzhong.SwiftPlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftPlayer/Source/SwiftPlayer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftPlayer.app/SwiftPlayer";
 			};
